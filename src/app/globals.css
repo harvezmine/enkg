@@ -274,6 +274,69 @@
   .marquee:hover .animate-marquee {
     animation-play-state: paused;
   }
+
+  /* Isi News dan event dari admin panel (components/rich-text.tsx). */
+  .prose-enkg {
+    color: var(--color-ink);
+    font-size: 1.0625rem;
+    line-height: 1.8;
+  }
+  .prose-enkg > * + * {
+    margin-top: 1.25em;
+  }
+  .prose-enkg h2,
+  .prose-enkg h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+  .prose-enkg h2 {
+    margin-top: 2em;
+    font-size: 1.75rem;
+    line-height: 1.2;
+  }
+  .prose-enkg h3 {
+    margin-top: 1.75em;
+    font-size: 1.3125rem;
+    line-height: 1.3;
+  }
+  .prose-enkg h2 + *,
+  .prose-enkg h3 + * {
+    margin-top: 0.6em;
+  }
+  .prose-enkg p {
+    text-wrap: pretty;
+  }
+  .prose-enkg blockquote {
+    border-left: 3px solid var(--color-sun-500);
+    padding: 0.25rem 0 0.25rem 1.25rem;
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-style: italic;
+    line-height: 1.45;
+    color: var(--color-navy-800);
+  }
+  .prose-enkg ul,
+  .prose-enkg ol {
+    padding-left: 1.35rem;
+  }
+  .prose-enkg ul {
+    list-style: disc;
+  }
+  .prose-enkg ol {
+    list-style: decimal;
+  }
+  .prose-enkg li + li {
+    margin-top: 0.4em;
+  }
+  .prose-enkg li::marker {
+    color: var(--color-navy-700);
+    font-weight: 600;
+  }
+  .prose-enkg strong {
+    font-weight: 700;
+  }
 }
 
 /*

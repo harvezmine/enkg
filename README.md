@@ -4,8 +4,8 @@ Situs satu halaman untuk Every Nation Kelapa Gading (ENKG).
 Urutan section: **Beranda → Siapa Kita → Nilai & Statement of Faith → Pelayanan → News → ProCon → Contact Us → Give**.
 
 - **Stack**: Next.js 15 (App Router) · React 19 · Tailwind CSS v4 · Vitest
-- **Data**: file statis di `src/content/`, tanpa database
-- **Form**: diteruskan ke Google Form gereja yang sudah ada, jadi jawaban masuk ke Google Sheet yang sama
+- **Data**: file statis di `src/content/`; News, event, ProCon, dan kiriman Contact Us dikelola lewat [admin panel](#admin-panel) (Supabase)
+- **Form**: disimpan ke database admin panel sekaligus diteruskan ke Google Form gereja yang sudah ada, jadi Google Sheet tetap terisi
 - **Deploy**: home server + PM2 + nginx + Cloudflare Tunnel (lihat [Deploy](#deploy))
 - **Bahan mentah** (Linktree, YouTube, Google Form): `resources/README.md`
 
@@ -28,8 +28,8 @@ Semua teks dan data ada di `src/content/`. Untuk perubahan konten, komponen tida
 | Cerita, angka, gembala, visi, misi, nilai, Statement of Faith | `src/content/about.ts` |
 | Jadwal ibadah & doa | `src/content/schedule.ts` |
 | Kartu pelayanan | `src/content/ministries.ts` |
-| Kabar & event (News) | `src/content/news.ts` |
-| Event ProCon | `src/content/procon.ts` |
+| Kabar, artikel & event (News) | **Admin panel** `/admin` → News / Event & ProCon (cadangan: `src/content/news.ts`) |
+| Event ProCon | **Admin panel** `/admin` → Event & ProCon (cadangan: `src/content/procon.ts`) |
 | Koreksi salah ketik judul khotbah | `TITLE_FIXES` di `src/content/sermons.ts` |
 
 ### Rekening Give
@@ -38,7 +38,7 @@ Isi `bank` dan `accountNumber` di `site.give` (`src/content/site.ts`). Selama ke
 
 ### ProCon
 
-Event di `src/content/procon.ts` masih **placeholder**. Isi `date` dengan format `yyyy-mm-dd`; kalau dibiarkan `null`, kartu menampilkan "Segera hadir". Isi `href` kalau pendaftarannya sudah punya link. Kalau kosong, tombolnya membuka WhatsApp.
+Kelola ProCon di admin panel (**Event & ProCon → ProCon baru**). Selama belum ada ProCon yang terbit dari admin panel, section ProCon memakai placeholder di `src/content/procon.ts`. Isi `date` dengan format `yyyy-mm-dd`; kalau dibiarkan `null`, kartu menampilkan "Segera hadir". Isi `href` kalau pendaftarannya sudah punya link. Kalau kosong, tombolnya membuka WhatsApp.
 
 ### Jadwal
 
@@ -67,6 +67,34 @@ Pengaturannya sama dengan situs Janji Pengharapan (`jp/`):
 ### Aset brand
 
 `npm run brand` membuat logo transparan, `opengraph-image.png`, `icon.png`, dan `apple-icon.png` dari `resources/linktree/avatar-enkg.png`.
+
+## Admin panel
+
+Pengurus mengelola konten di **`/admin`**. Polanya sama dengan admin panel Janji Pengharapan (`jp/`): satu kata sandi bersama, sesi berlaku 7 hari, dan login dikunci 15 menit setelah 5 kali salah.
+
+| Menu | Isi | Tampil di situs |
+|---|---|---|
+| Ringkasan | Jumlah kiriman baru, draf, dan event mendatang | Tidak |
+| Contact Us | Pendaftaran Life Group dan permohonan doa: status (Baru / Sudah dihubungi / Selesai), catatan pengurus, tombol WhatsApp | Tidak (privat) |
+| News | Kabar dan artikel dengan gambar sampul | Section News + `/news/<slug>` |
+| Event & ProCon | Event gereja dan kelas ProCon | Event gereja di section News, ProCon di section ProCon, detail di `/event/<slug>` |
+
+Isi artikel ditulis sebagai teks biasa: `## Judul`, `### Subjudul`, `> kutipan`, `- daftar`, `1. daftar bernomor`, `**tebal**`, `*miring*`.
+
+### Menyiapkan (sekali)
+
+1. Isi `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, dan `ADMIN_PASSWORD` di `.env.local` (komputer sendiri) atau `.env.production` (server). Boleh memakai project Supabase dan kata sandi yang sama dengan `jp/`.
+2. Buka Supabase → SQL Editor, lalu jalankan seluruh isi `supabase/schema.sql`. Aman dijalankan ulang. File ini membuat tabel `enkg_posts`, `enkg_events`, `enkg_contact_submissions`, aturan RLS, dan bucket gambar `enkg-media`, tanpa menyentuh tabel milik `jp`.
+3. Build ulang (`npm run build` atau `deploy/deploy.sh`), karena alamat Supabase ikut ditanam ke bundel dan ke daftar host gambar.
+
+Tanpa langkah di atas situs tetap berjalan: section News dan ProCon memakai konten statis, form Contact Us tetap diteruskan ke Google Form, dan `/admin` menampilkan petunjuk konfigurasi.
+
+### Cara kerja singkat
+
+- Simpan, terbitkan, atau hapus langsung memperbarui beranda dan halaman detail tanpa build ulang.
+- Kiriman Contact Us disimpan ke database **dan** diteruskan ke Google Form. Pengunjung hanya melihat pesan gagal kalau keduanya gagal.
+- Gambar sampul diunggah ke Supabase Storage (JPG, PNG, WebP, GIF, AVIF; maksimal 5 MB).
+- `SUPABASE_SERVICE_ROLE_KEY` hanya dipakai di server. Jangan dibagikan dan jangan diberi awalan `NEXT_PUBLIC_`.
 
 ## Google Form
 

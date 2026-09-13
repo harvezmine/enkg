@@ -151,4 +151,75 @@ export const Icon = {
       <path d="M12 16h.01" />
     </Svg>
   ),
+  plus: (props: IconProps) => (
+    <Svg {...props}>
+      <path d="M12 5l0 14" />
+      <path d="M5 12l14 0" />
+    </Svg>
+  ),
+  edit: (props: IconProps) => (
+    <Svg {...props}>
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+    </Svg>
+  ),
+  trash: (props: IconProps) => (
+    <Svg {...props}>
+      <path d="M4 7l16 0" />
+      <path d="M10 11l0 6" />
+      <path d="M14 11l0 6" />
+      <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+      <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+    </Svg>
+  ),
+  logout: (props: IconProps) => (
+    <Svg {...props}>
+      <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+      <path d="M9 12h12l-3 -3" />
+      <path d="M18 15l3 -3" />
+    </Svg>
+  ),
+  arrowLeft: (props: IconProps) => (
+    <Svg {...props}>
+      <path d="M5 12l14 0" />
+      <path d="M5 12l6 6" />
+      <path d="M5 12l6 -6" />
+    </Svg>
+  ),
+  image: (props: IconProps) => (
+    <Svg {...props}>
+      <path d="M15 8h.01" />
+      <path d="M3 6a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3v-12z" />
+      <path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l5 5" />
+      <path d="M14 14l1 -1c.928 -.893 2.072 -.893 3 0l3 3" />
+    </Svg>
+  ),
+  inbox: (props: IconProps) => (
+    <Svg {...props}>
+      <path d="M4 6a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" />
+      <path d="M4 13h3l3 3h4l3 -3h3" />
+    </Svg>
+  ),
+  news: (props: IconProps) => (
+    <Svg {...props}>
+      <path d="M16 6h3a1 1 0 0 1 1 1v11a2 2 0 0 1 -4 0v-13a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1v12a3 3 0 0 0 3 3h11" />
+      <path d="M8 8l4 0" />
+      <path d="M8 12l4 0" />
+      <path d="M8 16l4 0" />
+    </Svg>
+  ),
+  layout: (props: IconProps) => (
+    <Svg {...props}>
+      <path d="M4 4h6v8h-6z" />
+      <path d="M4 16h6v4h-6z" />
+      <path d="M14 12h6v8h-6z" />
+      <path d="M14 4h6v4h-6z" />
+    </Svg>
+  ),
+  eye: (props: IconProps) => (
+    <Svg {...props}>
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
+    </Svg>
+  ),
 };

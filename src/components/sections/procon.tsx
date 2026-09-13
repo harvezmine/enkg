@@ -1,5 +1,6 @@
-import { procon, proconEvents } from "@/content/procon";
+import { procon, type ProconEvent } from "@/content/procon";
 import { whatsappMessages, whatsappUrl } from "@/content/site";
+import { linkTarget } from "@/lib/images";
 
 import { Icon } from "../icons";
 import { Reveal } from "../reveal";
@@ -11,7 +12,23 @@ function formatIsoDate(date: string) {
   );
 }
 
-export function Procon() {
+/** Tombol kartu: detail di situs, link pendaftaran, atau WhatsApp bila belum ada keduanya. */
+function cardAction(event: ProconEvent) {
+  if (!event.href) return { href: whatsappUrl(`${whatsappMessages.procon} (${event.title})`), label: "Kabari saya" };
+  return { href: event.href, label: event.href.startsWith("/") ? "Lihat detail" : "Daftar" };
+}
+
+/** Huruf besar samar di kartu utama: "AI" untuk event AI, selain itu huruf awal topiknya. */
+function watermark(event: ProconEvent) {
+  return /\bAI\b/.test(event.title) ? "AI" : event.topic.charAt(0).toUpperCase();
+}
+
+/** `events`: ProCon dari admin panel (atau placeholder statis bila kosong). */
+export function Procon({ events }: { events: ProconEvent[] }) {
+  const shown = events.slice(0, 5);
+  // Kartu utama setinggi dua baris hanya bila sisa kartunya genap, supaya kisi tetap rapi.
+  const spanFeatured = shown.length % 2 === 1;
+
   return (
     <section id="procon" className="relative isolate overflow-hidden bg-navy-950 px-5 pt-24 pb-28 text-cream-100 sm:px-8 lg:pt-32 lg:pb-36">
       <Grain className="opacity-8" />
@@ -44,11 +61,12 @@ export function Procon() {
           </Reveal>
         </div>
 
-        <ul className="mt-14 grid gap-5 lg:grid-cols-2 lg:grid-rows-2">
-          {proconEvents.map((event, index) => {
+        <ul className="mt-14 grid gap-5 lg:grid-cols-2">
+          {shown.map((event, index) => {
             const featured = index === 0;
+            const action = cardAction(event);
             return (
-              <Reveal as="li" key={event.id} delay={index * 90} className={featured ? "lg:row-span-2" : ""}>
+              <Reveal as="li" key={event.id} delay={index * 90} className={featured && spanFeatured && shown.length > 1 ? "lg:row-span-2" : ""}>
                 <article
                   className={`group relative flex h-full flex-col overflow-hidden rounded-[1.75rem] p-7 transition duration-300 sm:p-9 ${
                     featured
@@ -58,10 +76,10 @@ export function Procon() {
                 >
                   {featured && (
                     <span aria-hidden="true" className="font-display pointer-events-none absolute top-20 -right-4 text-[20rem] leading-none font-bold tracking-tighter text-ink/10">
-                      AI
+                      {watermark(event)}
                     </span>
                   )}
-                  <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
+                  <div className="relative flex flex-wrap items-center justify-between gap-3 text-sm">
                     <span className={`rounded-full px-3 py-1 font-semibold ${featured ? "bg-ink text-sun-400" : "bg-white/10 text-cream-100"}`}>
                       {event.topic}
                     </span>
@@ -71,9 +89,9 @@ export function Procon() {
                     </span>
                   </div>
 
-                  <div className="mt-auto pt-10 sm:pt-14">
+                  <div className="relative mt-auto pt-10 sm:pt-14">
                     <h3
-                      className={`font-display font-bold tracking-tight ${
+                      className={`font-display font-bold tracking-tight text-balance ${
                         featured ? "text-5xl sm:text-6xl" : "text-2xl sm:text-3xl"
                       }`}
                     >
@@ -82,16 +100,17 @@ export function Procon() {
                     {event.partner && (
                       <p className={`mt-2 font-semibold ${featured ? "text-ink" : "text-sun-400"}`}>{event.partner}</p>
                     )}
-                    <p className={`mt-3 max-w-md leading-relaxed ${featured ? "text-ink/75" : "text-cream-100/65"}`}>
-                      {event.summary}
-                    </p>
+                    {event.summary && (
+                      <p className={`mt-3 max-w-md leading-relaxed ${featured ? "text-ink/75" : "text-cream-100/65"}`}>
+                        {event.summary}
+                      </p>
+                    )}
                     <a
-                      href={event.href ?? whatsappUrl(`${whatsappMessages.procon} (${event.title})`)}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      href={action.href}
+                      {...linkTarget(action.href)}
                       className={`mt-6 inline-flex items-center gap-2 font-semibold ${featured ? "text-ink" : "text-cream-100"}`}
                     >
-                      <span className="link-sweep">Kabari saya</span>
+                      <span className="link-sweep">{action.label}</span>
                       <Icon.arrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                     </a>
                   </div>

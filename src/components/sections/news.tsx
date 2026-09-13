@@ -1,9 +1,10 @@
 import Image from "next/image";
 
-import { news, NEWS_LABEL, type NewsItem } from "@/content/news";
+import { NEWS_LABEL, type NewsItem } from "@/content/news";
 import { schedule } from "@/content/schedule";
 import { sermons } from "@/content/sermons";
 import { site } from "@/content/site";
+import { canOptimizeImage, linkTarget } from "@/lib/images";
 import { nextOccurrence } from "@/lib/schedule";
 
 import { Icon } from "../icons";
@@ -42,6 +43,7 @@ function NewsCard({ item, past, featured }: { item: NewsItem; past: boolean; fea
             alt={item.image.alt}
             fill
             sizes={featured ? "(min-width: 1024px) 22rem, 100vw" : "9rem"}
+            unoptimized={!canOptimizeImage(item.image.src)}
             className="object-cover transition duration-700 ease-out-soft group-hover:scale-[1.04]"
           />
         </div>
@@ -66,7 +68,7 @@ function NewsCard({ item, past, featured }: { item: NewsItem; past: boolean; fea
     : "group flex h-full items-start gap-5 rounded-[1.5rem] p-4 transition duration-300 hover:bg-paper";
 
   return item.href ? (
-    <a href={item.href} target="_blank" rel="noopener noreferrer" className={className}>
+    <a href={item.href} {...linkTarget(item.href)} className={className}>
       {body}
     </a>
   ) : (
@@ -74,7 +76,8 @@ function NewsCard({ item, past, featured }: { item: NewsItem; past: boolean; fea
   );
 }
 
-export function News({ now }: { now: Date }) {
+/** `items`: kabar, artikel, dan event dari admin panel (atau konten statis bila kosong). */
+export function News({ now, items }: { now: Date; items: NewsItem[] }) {
   const today = new Date(now.getTime() + JAKARTA_OFFSET_MS).toISOString().slice(0, 10);
 
   // Event rutin terdekat ikut tampil sebagai kabar, tanggalnya selalu terkini.
@@ -94,7 +97,7 @@ export function News({ now }: { now: Date }) {
     },
   };
 
-  const [featuredItem, ...restItems] = [upcomingPrayer, ...news].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 3);
+  const [featuredItem, ...restItems] = [upcomingPrayer, ...items].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
   const mosaic = sermons.slice(0, 6);
   const latest = sermons.slice(0, 4);
 

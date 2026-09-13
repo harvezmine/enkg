@@ -9,13 +9,16 @@ import { Services } from "@/components/sections/services";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { WhatsAppFab } from "@/components/whatsapp-fab";
+import { getNewsItems, getProconEvents } from "@/lib/queries";
 
 // Halaman statis yang dibangun ulang tiap jam, supaya "ibadah berikutnya"
 // dan tanggal jadwal selalu terkini tanpa merender ulang di setiap kunjungan.
+// Simpan/terbitkan di admin panel langsung memperbarui halaman ini (revalidatePath).
 export const revalidate = 3600;
 
-export default function HomePage() {
+export default async function HomePage() {
   const now = new Date();
+  const [newsItems, proconEvents] = await Promise.all([getNewsItems(), getProconEvents()]);
 
   return (
     <>
@@ -31,8 +34,8 @@ export default function HomePage() {
         <About />
         <Beliefs />
         <Services now={now} />
-        <News now={now} />
-        <Procon />
+        <News now={now} items={newsItems} />
+        <Procon events={proconEvents} />
         <Connect />
         <Give />
       </main>
