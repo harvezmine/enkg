@@ -113,7 +113,7 @@ export function News({ now }: { now: Date }) {
         </Reveal>
       </div>
 
-      <div className="mt-14 grid gap-10 lg:grid-cols-12 lg:gap-8">
+      <div className="mt-12 grid gap-10 sm:mt-14 lg:grid-cols-12 lg:gap-8">
         <Reveal variant="scale" className="lg:col-span-7">
           <LiteYouTube src={site.youtube.latestEmbed} title="Rekaman ibadah terbaru Every Nation Kelapa Gading">
             <span className="absolute inset-0 grid grid-cols-3 grid-rows-2">
@@ -167,11 +167,11 @@ export function News({ now }: { now: Date }) {
       <div className="mt-20 flex items-end justify-between gap-4 border-t border-ink/10 pt-10">
         <h3 className="font-display text-2xl font-bold">Kabar & event</h3>
       </div>
-      <div className="mt-6 grid gap-6 lg:grid-cols-12">
-        <Reveal className="lg:col-span-7">
+      <div className="mt-6 grid gap-6 xl:grid-cols-12">
+        <Reveal className="xl:col-span-7">
           <NewsCard item={featuredItem} past={featuredItem.date < today} featured />
         </Reveal>
-        <ul className="flex flex-col gap-2 lg:col-span-5">
+        <ul className="grid gap-2 lg:grid-cols-2 xl:col-span-5 xl:grid-cols-1">
           {restItems.map((item, index) => (
             <Reveal as="li" key={item.id} delay={index * 80}>
               <NewsCard item={item} past={item.date < today} featured={false} />

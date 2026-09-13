@@ -10,14 +10,16 @@ function BeliefGrid({ items, offset }: { items: readonly Belief[]; offset: numbe
   return (
     <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {items.map((belief, index) => (
-        <li
+        <Reveal
+          as="li"
           key={belief.title}
-          className="rounded-3xl bg-white/4 p-7 ring-1 ring-white/10 transition duration-300 hover:bg-white/7 hover:ring-white/20"
+          delay={(index % 3) * 80}
+          className="rounded-3xl bg-white/4 p-6 ring-1 ring-white/10 transition duration-300 hover:bg-white/7 hover:ring-white/20 sm:p-7"
         >
           <span className="tabular text-sm text-sun-400">{String(offset + index + 1).padStart(2, "0")}</span>
           <h3 className="font-display mt-3 text-xl font-semibold">{belief.title}</h3>
           <p className="mt-2 text-[0.9375rem] leading-relaxed text-cream-100/70">{belief.body}</p>
-        </li>
+        </Reveal>
       ))}
     </ul>
   );
@@ -33,24 +35,24 @@ export function Beliefs() {
 
       <div className="mx-auto max-w-7xl">
         {/* Nilai */}
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
-          <Reveal className="lg:sticky lg:top-28 lg:col-span-4 lg:self-start">
+        <div className="grid gap-10 lg:grid-cols-12 lg:gap-12 xl:gap-16">
+          <Reveal className="lg:sticky lg:top-28 lg:col-span-5 lg:self-start xl:col-span-4">
             <Eyebrow tone="navy">Nilai kami</Eyebrow>
-            <h2 className="text-headline mt-5 font-bold">Lima hal yang membentuk cara kami membangun gereja.</h2>
-            <p className="text-lead mt-5 text-cream-100/70">
-              Dari kelompok pemuridan sampai Ibadah Minggu, nilai ini jadi dasar setiap pelayanan kami.
+            <h2 className="text-headline mt-5 font-bold">Lima nilai yang membentuk kami.</h2>
+            <p className="text-lead mt-5 max-w-md text-cream-100/70">
+              Dasar dari setiap pelayanan, dari kelompok kecil sampai Ibadah Minggu.
             </p>
           </Reveal>
 
-          <ol className="border-t border-white/10 lg:col-span-8">
+          <ol className="border-t border-white/10 lg:col-span-7 xl:col-span-8">
             {values.map((value, index) => (
               <Reveal
                 as="li"
                 key={value.name}
-                delay={index * 60}
-                className="group grid gap-3 border-b border-white/10 py-8 sm:grid-cols-[5rem_1fr] sm:gap-6 lg:grid-cols-[5rem_1fr_11rem]"
+                delay={index * 50}
+                className="group grid grid-cols-[3.5rem_1fr] gap-x-4 gap-y-2 border-b border-white/10 py-7 sm:grid-cols-[5rem_1fr] sm:gap-x-6 xl:grid-cols-[5rem_1fr_11rem]"
               >
-                <span className="font-display tabular text-5xl leading-none font-bold text-white/15 transition-colors duration-500 group-hover:text-sun-400">
+                <span className="font-display tabular row-span-2 text-4xl leading-none font-bold text-white/15 transition-colors duration-500 group-hover:text-sun-400 sm:text-5xl xl:row-span-1">
                   0{index + 1}
                 </span>
                 <div>
@@ -62,7 +64,7 @@ export function Beliefs() {
                   </h3>
                   <p className="mt-2 max-w-xl leading-relaxed text-cream-100/70">{value.body}</p>
                 </div>
-                <p className="font-serif text-lg text-sun-300 italic sm:col-start-2 lg:col-start-auto lg:pt-1.5 lg:text-right">
+                <p className="font-serif col-start-2 text-lg text-sun-300 italic xl:col-start-auto xl:pt-1.5 xl:text-right">
                   {value.verse}
                 </p>
               </Reveal>
@@ -71,16 +73,19 @@ export function Beliefs() {
         </div>
 
         {/* Statement of Faith */}
-        <div className="mt-28 lg:mt-36">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+        <div className="mt-24 lg:mt-36">
+          <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
             <Reveal className="max-w-2xl">
               <Eyebrow tone="navy">Statement of Faith</Eyebrow>
               <h2 className="text-headline mt-5 font-bold">Apa yang kami percaya.</h2>
-              <p className="text-lead mt-5 text-cream-100/70">
-                Ringkasan pernyataan iman Every Nation. {creeds}
-              </p>
+              <p className="text-lead mt-5 text-cream-100/70">Ringkasan pernyataan iman Every Nation. {creeds}</p>
             </Reveal>
-            <a href={beliefsSource} target="_blank" rel="noopener noreferrer" className="btn btn-light self-start lg:self-auto">
+            <a
+              href={beliefsSource}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-light shrink-0 self-start md:self-auto"
+            >
               Baca versi lengkap <Icon.arrowUpRight className="lift h-4 w-4" />
             </a>
           </div>

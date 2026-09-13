@@ -10,10 +10,10 @@ import { Reveal } from "../reveal";
 import { Section, SectionHeading } from "../section";
 import { Grain } from "../ui";
 
-/** Tata letak bento per kartu (grid 6 kolom di layar ≥ md). */
+/** Tata letak bento per kartu: seimbang 3/3 di tablet, 2/4 di layar lebar. */
 const SPAN: Record<string, string> = {
-  "sunday-service": "md:col-span-2",
-  "kids-church": "md:col-span-4",
+  "sunday-service": "md:col-span-3 xl:col-span-2",
+  "kids-church": "md:col-span-3 xl:col-span-4",
   "life-group": "md:col-span-3",
   prayer: "md:col-span-3",
   youth: "md:col-span-6",
@@ -41,9 +41,9 @@ function SundayServiceCard({ ministry }: { ministry: Ministry }) {
         <p className="mt-3 leading-relaxed text-cream-100/75">{ministry.summary}</p>
       </div>
       <div>
-        <p className="font-display tabular text-7xl leading-none font-bold tracking-tight">
+        <p className="font-display tabular text-6xl leading-none font-bold tracking-tight xl:text-7xl">
           {service.start.replace(":", ".")}
-          <span className="ml-2 text-2xl text-sun-400">WIB</span>
+          <span className="ml-2 text-xl text-sun-400 xl:text-2xl">WIB</span>
         </p>
         <p className="mt-3 flex items-center gap-2 text-sm text-cream-100/75">
           <Icon.mapPin className="h-4 w-4 shrink-0 text-sun-400" />
@@ -58,7 +58,10 @@ function SundayServiceCard({ ministry }: { ministry: Ministry }) {
 function YouthCard({ ministry }: { ministry: Ministry }) {
   return (
     <article className="relative flex h-full flex-col gap-6 overflow-hidden rounded-[1.75rem] bg-sun-500 p-7 text-ink shadow-soft sm:flex-row sm:items-center sm:justify-between sm:p-8">
-      <span aria-hidden="true" className="font-display pointer-events-none absolute -right-4 -bottom-10 text-[9rem] leading-none font-bold text-ink/6">
+      <span
+        aria-hidden="true"
+        className="font-display pointer-events-none absolute -right-4 -bottom-10 text-[9rem] leading-none font-bold text-ink/6"
+      >
         Youth
       </span>
       <div className="relative flex items-start gap-5">
@@ -71,7 +74,11 @@ function YouthCard({ ministry }: { ministry: Ministry }) {
           <p className="mt-1.5 max-w-xl leading-relaxed text-ink/75">{ministry.summary}</p>
         </div>
       </div>
-      <CtaLink href={ministry.cta.href} label={ministry.cta.label} className="btn relative shrink-0 bg-ink text-cream-100 hover:bg-navy-950" />
+      <CtaLink
+        href={ministry.cta.href}
+        label={ministry.cta.label}
+        className="btn relative shrink-0 self-start bg-ink text-cream-100 hover:bg-navy-950 sm:self-auto"
+      />
     </article>
   );
 }
@@ -90,20 +97,16 @@ function MinistryCard({ ministry }: { ministry: Ministry }) {
             alt={ministry.image.alt}
             width={ministry.image.width}
             height={ministry.image.height}
-            sizes="(min-width: 1024px) 40rem, 100vw"
+            sizes="(min-width: 1280px) 40rem, (min-width: 768px) 50vw, 100vw"
             className="h-auto w-full transition duration-700 ease-out-soft group-hover:scale-[1.03]"
           />
         </div>
       )}
-      <div className="flex flex-1 flex-col p-7">
+      <div className="flex flex-1 flex-col p-6 sm:p-7">
         <p className="text-sm font-semibold text-navy-700">{ministry.meta}</p>
         <h3 className="font-display mt-1.5 text-2xl font-bold">{ministry.name}</h3>
         <p className="mt-3 flex-1 leading-relaxed text-ink-soft">{ministry.summary}</p>
-        <CtaLink
-          href={ministry.cta.href}
-          label={ministry.cta.label}
-          className="btn btn-outline mt-6 self-start px-5 py-2.5 text-sm"
-        />
+        <CtaLink href={ministry.cta.href} label={ministry.cta.label} className="btn btn-outline mt-6 self-start px-5 py-2.5 text-sm" />
       </div>
     </article>
   );
@@ -121,12 +124,12 @@ export function Services({ now }: { now: Date }) {
 
   return (
     <Section id="pelayanan">
-      <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
+      <div className="grid gap-6 lg:grid-cols-12 lg:items-end">
         <div className="lg:col-span-7">
           <SectionHeading
             eyebrow="Pelayanan"
             title="Ada tempat untukmu di sini."
-            intro="Dari Ibadah Minggu sampai doa bersama di tengah minggu. Pilih langkah pertama yang paling pas buatmu dan keluargamu."
+            intro="Ibadah, doa, dan kelompok kecil setiap minggu."
           />
         </div>
         <Reveal delay={100} className="lg:col-span-5 lg:pb-2">
@@ -134,25 +137,23 @@ export function Services({ now }: { now: Date }) {
             <Icon.mapPin className="mt-0.5 h-5 w-5 shrink-0 text-navy-700 lg:order-last" />
             <span>
               <span className="font-semibold text-ink">{site.address.venue}</span>, {site.address.building}
-              <br />
-              Kids Church di {site.address.kidsRoom}
             </span>
           </p>
         </Reveal>
       </div>
 
-      {/* Jadwal mingguan */}
-      <Reveal delay={120} className="mt-14">
-        <ol className="grid overflow-hidden rounded-[2rem] bg-cream-50 shadow-soft ring-1 ring-ink/5 lg:grid-cols-[1.45fr_1fr_1fr]">
-          {groups.map((group) => (
-            <li key={group.label} className="border-ink/10 p-7 not-last:border-b sm:p-8 lg:not-last:border-r lg:not-last:border-b-0">
-              <div className="flex items-baseline justify-between gap-4">
+      {/* Jadwal: 1 kolom di HP, 2 kolom di tablet (Minggu selebar penuh), 3 kolom di layar lebar. */}
+      <Reveal delay={100} className="mt-12 sm:mt-14">
+        <ol className="grid gap-px overflow-hidden rounded-[2rem] bg-ink/10 shadow-soft ring-1 ring-ink/5 md:grid-cols-2 xl:grid-cols-[1.45fr_1fr_1fr]">
+          {groups.map((group, index) => (
+            <li key={group.label} className={`bg-cream-50 p-6 sm:p-8 ${index === 0 ? "md:col-span-2 xl:col-span-1" : ""}`}>
+              <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
                 <h3 className="font-display text-xl font-bold">{group.label}</h3>
                 <p className="text-sm text-navy-700">{formatJakartaDate(group.next)}</p>
               </div>
-              <ul className="mt-6 space-y-5">
+              <ul className={`mt-6 grid gap-5 ${index === 0 ? "lg:grid-cols-3 xl:grid-cols-1" : ""}`}>
                 {group.items.map((item) => (
-                  <li key={item.id} className="grid grid-cols-[5.5rem_1fr] gap-4">
+                  <li key={item.id} className="grid grid-cols-[5rem_1fr] gap-3">
                     <p className="font-display tabular text-3xl leading-none font-bold tracking-tight">
                       {item.start.replace(":", ".")}
                     </p>
@@ -160,23 +161,24 @@ export function Services({ now }: { now: Date }) {
                       <p className="font-semibold">{item.title}</p>
                       <p className="mt-0.5 flex items-center gap-1.5 text-sm text-ink-soft">
                         {item.mode === "online" ? (
-                          <Icon.video className="h-4 w-4 text-navy-700" />
+                          <Icon.video className="h-4 w-4 shrink-0 text-navy-700" />
                         ) : (
-                          <Icon.mapPin className="h-4 w-4 text-navy-700" />
+                          <Icon.mapPin className="h-4 w-4 shrink-0 text-navy-700" />
                         )}
                         {item.place}
                         {item.end && ` · sampai ${item.end.replace(":", ".")}`}
                       </p>
-                      {item.note && item.href && (
+                      {item.href && (
                         <a
                           href={item.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="mt-2.5 inline-flex flex-wrap items-center gap-x-2 rounded-xl bg-navy-50 px-3 py-2 text-sm text-navy-800 transition hover:bg-navy-100"
+                          className="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-navy-700 underline-offset-4 hover:underline"
                         >
-                          {item.note} <Icon.arrowUpRight className="h-3.5 w-3.5" />
+                          Buka Zoom <Icon.arrowUpRight className="h-3.5 w-3.5" />
                         </a>
                       )}
+                      {item.note && <p className="mt-0.5 text-xs text-ink-soft">{item.note}</p>}
                     </div>
                   </li>
                 ))}
@@ -187,9 +189,9 @@ export function Services({ now }: { now: Date }) {
       </Reveal>
 
       {/* Pelayanan */}
-      <ul className="mt-6 grid gap-5 md:grid-cols-6">
+      <ul className="mt-5 grid gap-5 md:grid-cols-6">
         {ministries.map((ministry, index) => (
-          <Reveal as="li" key={ministry.id} delay={index * 70} className={SPAN[ministry.id] ?? "md:col-span-3"}>
+          <Reveal as="li" key={ministry.id} delay={index * 60} className={SPAN[ministry.id] ?? "md:col-span-3"}>
             <MinistryCard ministry={ministry} />
           </Reveal>
         ))}

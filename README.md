@@ -56,6 +56,14 @@ Pemutar di section News selalu memutar video terbaru dari channel YouTube, tanpa
 
 Foto di situs adalah potongan frame asli dari rekaman ibadah ENKG di YouTube (`resources/youtube/frames/`). Ganti atau tambah potongan di `scripts/make-photos.mjs`, lalu jalankan `node scripts/make-photos.mjs`. Kalau nanti ada foto dokumentasi resmi, cukup timpa file di `public/images/photos/` dengan nama yang sama.
 
+### Animasi (AOS + parallax)
+
+Pengaturannya sama dengan situs Janji Pengharapan (`jp/`):
+
+- `src/components/motion.tsx`: menjalankan AOS dan `ParallaxProvider`. Keduanya otomatis mati bila perangkat meminta "kurangi gerakan".
+- `<Reveal variant="up|left|right|scale|fade|curtain" delay={100}>`: animasi masuk saat scroll lewat atribut `data-aos`. Jarak geraknya disetel di `globals.css`. Jangan dipakai di hero.
+- `<Parallax speed={-8}>`: elemen bergerak lebih lambat (angka negatif) atau lebih cepat (positif) dari scroll. Dipakai di hero, Siapa Kita, Give, dan footer.
+
 ### Aset brand
 
 `npm run brand` membuat logo transparan, `opengraph-image.png`, `icon.png`, dan `apple-icon.png` dari `resources/linktree/avatar-enkg.png`.

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Instrument_Serif, Plus_Jakarta_Sans } from "next/font/google";
 import type { ReactNode } from "react";
 
+import { MotionProvider } from "@/components/motion";
 import { site } from "@/content/site";
 
 import "./globals.css";
@@ -71,11 +72,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="id" className={`${display.variable} ${sans.variable} ${serif.variable}`}>
       <body>
-        {/* Tanpa JavaScript, elemen reveal tetap terlihat. */}
+        {/* Tanpa JavaScript, elemen AOS tetap terlihat. */}
         <noscript>
-          <style>{"[data-reveal]{opacity:1;transform:none}"}</style>
+          <style>{"[data-aos]{opacity:1!important;transform:none!important;clip-path:none!important}"}</style>
         </noscript>
-        {children}
+        <MotionProvider>{children}</MotionProvider>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}

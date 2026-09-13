@@ -71,7 +71,7 @@ export function Procon() {
                     </span>
                   </div>
 
-                  <div className="mt-auto pt-14">
+                  <div className="mt-auto pt-10 sm:pt-14">
                     <h3
                       className={`font-display font-bold tracking-tight ${
                         featured ? "text-5xl sm:text-6xl" : "text-2xl sm:text-3xl"

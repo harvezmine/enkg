@@ -11,7 +11,7 @@ export const site = {
   tagline: "Honor God. Make Disciples.",
   taglineId: "Menghormati Tuhan. Menjadikan murid.",
   /** Dari banner "Join Life Group" milik gereja. */
-  headline: "Bertumbuh, terhubung, dan berjalan bersama dalam iman.",
+  headline: "Bertumbuh bersama dalam iman.",
   description:
     "Gereja Every Nation di Mahaka Square, Kelapa Gading, Jakarta Utara. Ibadah Minggu pukul 10.00 WIB, Kids Church, Life Group, dan persekutuan doa.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
@@ -67,7 +67,7 @@ export const navigation = [
 ] as const;
 
 export const whatsappMessages = {
-  visit: "Halo Every Nation Kelapa Gading, saya ingin berkunjung ke Ibadah Minggu. Boleh minta info lebih lanjut?",
+  contact: "Halo Every Nation Kelapa Gading, saya ingin bertanya.",
   kids: "Halo Every Nation Kelapa Gading, saya ingin bertanya tentang Kids Church.",
   procon: "Halo Every Nation Kelapa Gading, saya tertarik dengan kelas ProCon. Boleh minta info jadwalnya?",
   give: "Halo Every Nation Kelapa Gading, saya ingin memberi persembahan. Boleh minta info rekening gereja?",

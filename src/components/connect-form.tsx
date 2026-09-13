@@ -412,7 +412,7 @@ function MessageForm() {
   return (
     <form onSubmit={onSubmit} className="space-y-7">
       <FormHeader title="Kirim Pesan">
-        Pertanyaan seputar ibadah, kunjungan pertama, atau pelayanan? Pesanmu akan dibuka di WhatsApp gereja.
+        Tulis pertanyaanmu di sini. Pesan akan dibuka di WhatsApp gereja.
       </FormHeader>
       <TextField label="Nama" name="name" icon="user" autoComplete="name" placeholder="Nama lengkap" />
       <TextArea label="Pesan" name="message" placeholder="Halo, saya ingin bertanya tentang…" max={1000} />

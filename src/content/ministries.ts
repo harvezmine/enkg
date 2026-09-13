@@ -1,4 +1,4 @@
-import { whatsappMessages, whatsappUrl } from "./site";
+import { site, whatsappMessages, whatsappUrl } from "./site";
 
 export type Ministry = {
   id: string;
@@ -20,7 +20,7 @@ export const ministries: Ministry[] = [
     meta: "Minggu · 10.00 WIB",
     summary:
       "Ibadah raya setiap Minggu di Stream Hall, Mahaka Square. Sebelumnya kami berdoa bersama pukul 09.15 WIB.",
-    cta: { label: "Rencanakan kunjungan", href: "#terhubung" },
+    cta: { label: "Petunjuk arah", href: site.maps.link },
   },
   {
     id: "kids-church",

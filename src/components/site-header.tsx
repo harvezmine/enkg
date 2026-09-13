@@ -127,7 +127,7 @@ export function SiteHeader() {
               Ibadah Minggu 10.00 WIB · {site.address.venue}, Mahaka Square
             </p>
             <a
-              href={whatsappUrl(whatsappMessages.visit)}
+              href={whatsappUrl(whatsappMessages.contact)}
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-wa w-full"

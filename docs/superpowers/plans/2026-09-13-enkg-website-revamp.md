@@ -288,3 +288,24 @@ Hero → **Siapa Kita** (cerita, angka, gembala, visi, misi) → **Nilai & State
 5. Uji kirim form ke Google Form, setelah ada izin pengurus.
 6. Nomor unit (A30-32 / B5 / B6) dan izin koreksi judul khotbah, dari revisi 1.
 
+---
+
+# Revisi 3 — 13 September 2026 (masukan user)
+
+- **Hero lebih ringkas:**
+  - judul "Bertumbuh bersama *dalam iman.*", satu baris tagline, dan tombol "Jadwal ibadah" serta "Tonton khotbah"
+  - kartu ibadah berikutnya tinggal tanggal, jam, dan tempat
+  - baris jam dan caption foto dihapus
+- **Kontak tanpa nuansa "kunjungan":** judul section "Hubungi kami.", pesan WhatsApp jadi "saya ingin bertanya". Semua tombol "Rencanakan kunjungan" diganti "Hubungi kami" atau "Petunjuk arah" (link mati `#terhubung` ikut beres).
+- **Responsif:**
+  - hero dua kolom mulai 768 px
+  - tumpukan kartu di hero dan Siapa Kita baru dipakai mulai 1280 px
+  - jadwal jadi 2 kolom di tablet, bento pelayanan 3/3 di tablet
+  - Nilai dan Visi/Misi tidak lagi sempit di 1024 px
+  - kolom Jadwal di footer dihapus
+- **Animasi:** AOS dan `react-scroll-parallax`, sama dengan `jp/`, lewat `components/motion.tsx`, `reveal.tsx`, dan `parallax.tsx`.
+- **Verifikasi di 390, 768, 1024, dan 1440 px:**
+  - tidak ada teks meluber, scroll horizontal, maupun error console
+  - 63 elemen AOS teranimasi setelah scroll
+  - parallax bergerak
+
