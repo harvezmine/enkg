@@ -117,9 +117,21 @@ Di dashboard Cloudflare, atur **SSL/TLS → Full** dan aktifkan **Always Use HTT
 
 ### Setiap kali memperbarui
 
+Push ke GitHub, lalu di server cukup satu perintah:
+
 ```bash
-git pull && ./deploy/deploy.sh
+~/enkg/deploy.sh           # pull + test + build + reload, lalu cek situs sehat
+~/enkg/deploy.sh --force   # ulangi walau tidak ada commit baru
 ```
+
+Urutannya: `git pull --ff-only` → `deploy/deploy.sh` (test, build, rilis baru,
+tukar symlink, `pm2 startOrReload`) → cek situs menjawab 200 dan semua worker
+PM2 online. Kalau tidak ada commit baru (dan commit sekarang sudah ter-deploy),
+skrip ini langsung selesai tanpa build.
+
+Kalau test atau build gagal, rilis lama tetap jalan dan commit itu tidak dicatat
+sebagai ter-deploy (`/var/www/enkg/.deployed-rev`), jadi menjalankan `deploy.sh`
+lagi akan mencobanya ulang. Log: `/var/www/enkg/logs/deploy.log`.
 
 ### Perintah PM2 harian
 
