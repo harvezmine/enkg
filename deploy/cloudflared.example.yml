@@ -1,0 +1,20 @@
+# Contoh konfigurasi Cloudflare Tunnel untuk situs ENKG.
+# Salin ke /etc/cloudflared/config.yml setelah tunnel dibuat (lihat README → Deploy).
+#
+#   cloudflared tunnel login
+#   cloudflared tunnel create enkg                 # mencetak TUNNEL_ID + membuat file kredensial
+#   cloudflared tunnel route dns enkg everynationkg.com
+#   cloudflared tunnel route dns enkg www.everynationkg.com
+#   sudo cloudflared service install               # jalan otomatis saat server menyala
+
+tunnel: TUNNEL_ID
+credentials-file: /etc/cloudflared/TUNNEL_ID.json
+
+ingress:
+  # Semua trafik situs diteruskan ke nginx lokal (deploy/nginx.conf).
+  - hostname: everynationkg.com
+    service: http://127.0.0.1:8080
+  - hostname: www.everynationkg.com
+    service: http://127.0.0.1:8080
+  # Wajib ada sebagai aturan terakhir.
+  - service: http_status:404

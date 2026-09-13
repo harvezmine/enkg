@@ -1,0 +1,117 @@
+{
+ "lifegroup": {
+  "url": "https://docs.google.com/forms/d/e/1FAIpQLSdj8YC0NoHAuaBHLq2gv2wmFgY9Iyj9ri2KSN2AFhh1Y0Ct2w/viewform",
+  "title": "FORM PENDAFTARAN LIFE GROUP EVERY NATION CHURCH KELAPA GADING",
+  "description": "Life Group merupakan wadah dimana saudara bisa terlibat dan bertumbuh bersama dalam pemuridan yang ada dalam setiap kelompok kecil. Life Group Every Nation Kelapa Gading terbagi atas 3 yakni Life Group Family (Keluarga), Young Profesional, dan Youth.\n\nBagi saudara yang berminat mengikuti Life Group bisa mengisi form dibawah ini.",
+  "questions": [
+   {
+    "title": "Nama",
+    "desc": null,
+    "type": "short text",
+    "required": true,
+    "options": [],
+    "entry_id": 45587488
+   },
+   {
+    "title": "Jenis Kelamin",
+    "desc": null,
+    "type": "multiple choice",
+    "required": true,
+    "options": [
+     "Laki-Laki",
+     "Perempuan"
+    ],
+    "entry_id": 1212948792
+   },
+   {
+    "title": "No Telepon (WhatsApp)",
+    "desc": null,
+    "type": "short text",
+    "required": true,
+    "options": [],
+    "entry_id": 733602486
+   },
+   {
+    "title": "Alamat saat ini",
+    "desc": null,
+    "type": "multiple choice",
+    "required": true,
+    "options": [
+     "Jakarta",
+     "Luar Jakarta",
+     ""
+    ],
+    "entry_id": 1242317519
+   },
+   {
+    "title": "Usia",
+    "desc": null,
+    "type": "multiple choice",
+    "required": true,
+    "options": [
+     "12 - 17 Tahun",
+     "18 - 25 Tahun",
+     "26 - 35 Tahun",
+     "36 - 45 Tahun",
+     "46 Tahun ke atas"
+    ],
+    "entry_id": 1718285839
+   },
+   {
+    "title": "Ingin bergabung pada Life Group",
+    "desc": null,
+    "type": "multiple choice",
+    "required": true,
+    "options": [
+     "Family",
+     "Young Professional",
+     "Youth",
+     ""
+    ],
+    "entry_id": 316669310
+   }
+  ]
+ },
+ "prayer": {
+  "url": "https://docs.google.com/forms/d/e/1FAIpQLSf5k_QcPfYObbZVqynScOk2eWLjfXNxtBqzkODxVpDvljmPRw/viewform",
+  "title": "FORM PERMOHONAN DOA EVERY NATION CHURCH KELAPA GADING",
+  "description": "Bagi saudara yang rindu untuk didoakan, saudara bisa tuliskan pokok doa saudara ke dalam form ini dan tim doa gereja akan mendoakan permohonan doa saudara.\n\nKarena itu hendaklah kamu saling mengaku dosamu dan saling mendoakan, supaya kamu sembuh. Doa orang yang benar, bila dengan yakin didoakan, sangat besar kuasanya. Yakobus 5:16 TB.",
+  "questions": [
+   {
+    "title": "Nama",
+    "desc": null,
+    "type": "short text",
+    "required": true,
+    "options": [],
+    "entry_id": 45587488
+   },
+   {
+    "title": "Jenis Kelamin",
+    "desc": null,
+    "type": "multiple choice",
+    "required": true,
+    "options": [
+     "Laki-Laki",
+     "Perempuan"
+    ],
+    "entry_id": 1212948792
+   },
+   {
+    "title": "No Telepon (WhatsApp)",
+    "desc": null,
+    "type": "short text",
+    "required": true,
+    "options": [],
+    "entry_id": 733602486
+   },
+   {
+    "title": "Permohonan Doa",
+    "desc": "Silahkan tuliskan permohonan doa saudara.",
+    "type": "paragraph",
+    "required": true,
+    "options": [],
+    "entry_id": 1242317519
+   }
+  ]
+ }
+}
