@@ -1,7 +1,5 @@
 # ENKG Website Revamp — Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
-
 **Goal:** Membangun ulang situs Every Nation Kelapa Gading sebagai satu halaman utama yang rapi (Hero → Pelayanan → Kabar & Khotbah → Kenapa Kami Ada → Terhubung), menggantikan Linktree sebagai pintu masuk jemaat dan tamu baru.
 
 **Architecture:** Next.js 15 App Router, dirender statis. Konten tinggal di file TypeScript/JSON di `src/content/`, tanpa database di v1. Formulir mengirim data lewat server action ke Google Form yang sudah dipakai gereja, jadi data tetap masuk ke Google Sheet yang sama. Peta memakai embed Google Maps tanpa API key. Khotbah terbaru memakai embed playlist *uploads* YouTube yang otomatis mengikuti video terbaru.
