@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 import { ministries, type Ministry } from "@/content/ministries";
 import { schedule, upcomingSchedule } from "@/content/schedule";
 import { site } from "@/content/site";
@@ -10,10 +8,10 @@ import { Reveal } from "../reveal";
 import { Section, SectionHeading } from "../section";
 import { Grain } from "../ui";
 
-/** Tata letak bento per kartu: seimbang 3/3 di tablet, 2/4 di layar lebar. */
+/** Two balanced columns keep ministry information easy to scan. */
 const SPAN: Record<string, string> = {
-  "sunday-service": "md:col-span-3 xl:col-span-2",
-  "kids-church": "md:col-span-3 xl:col-span-4",
+  "sunday-service": "md:col-span-3",
+  "kids-church": "md:col-span-3",
   "life-group": "md:col-span-3",
   prayer: "md:col-span-3",
   youth: "md:col-span-6",
@@ -89,24 +87,39 @@ function MinistryCard({ ministry }: { ministry: Ministry }) {
 
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] bg-cream-50 shadow-soft ring-1 ring-ink/5 transition duration-500 ease-out-soft hover:-translate-y-1 hover:shadow-lift">
-      {ministry.image && (
-        // Poster Canva berisi teks, jadi ditampilkan utuh (tanpa crop).
-        <div className="overflow-hidden bg-navy-900">
-          <Image
-            src={ministry.image.src}
-            alt={ministry.image.alt}
-            width={ministry.image.width}
-            height={ministry.image.height}
-            sizes="(min-width: 1280px) 40rem, (min-width: 768px) 50vw, 100vw"
-            className="h-auto w-full transition duration-700 ease-out-soft group-hover:scale-[1.03]"
+      <div
+        aria-hidden="true"
+        className={`relative flex h-44 items-center justify-center overflow-hidden border-b border-ink/5 ${ministry.id === "kids-church" ? "bg-[#efe5d6] text-[#946646]" : ministry.id === "life-group" ? "bg-[#e4e9df] text-[#53705e]" : "bg-[#e1e7ef] text-navy-700"}`}
+      >
+        <div className="absolute h-64 w-64 rounded-full border border-current opacity-10" />
+        <div className="absolute h-44 w-44 rounded-full border border-current opacity-15" />
+        {ministry.id === "kids-church" ? (
+          <div className="relative flex items-end gap-3 transition-transform duration-500 group-hover:-translate-y-2">
+            <span className="block h-16 w-14 rounded-t-full bg-[#ba7b57]" />
+            <span className="block h-24 w-14 rounded-t-full bg-[#d6aa58]" />
+            <span className="block h-12 w-14 rounded-t-full bg-[#738572]" />
+          </div>
+        ) : ministry.id === "life-group" ? (
+          <Icon.users
+            className="relative h-16 w-16 transition-transform duration-500 group-hover:scale-110"
+            strokeWidth={1}
           />
-        </div>
-      )}
+        ) : (
+          <div className="relative text-center transition-transform duration-500 group-hover:-translate-y-1">
+            <span className="font-serif text-4xl italic">Mari berdoa.</span>
+            <span className="mt-2 block text-xs tracking-[0.15em] uppercase">Bersama dalam iman</span>
+          </div>
+        )}
+      </div>
       <div className="flex flex-1 flex-col p-6 sm:p-7">
         <p className="text-sm font-semibold text-navy-700">{ministry.meta}</p>
         <h3 className="font-display mt-1.5 text-2xl font-bold">{ministry.name}</h3>
         <p className="mt-3 flex-1 leading-relaxed text-ink-soft">{ministry.summary}</p>
-        <CtaLink href={ministry.cta.href} label={ministry.cta.label} className="btn btn-outline mt-6 self-start px-5 py-2.5 text-sm" />
+        <CtaLink
+          href={ministry.cta.href}
+          label={ministry.cta.label}
+          className="btn btn-outline mt-6 self-start px-5 py-2.5 text-sm"
+        />
       </div>
     </article>
   );
@@ -146,7 +159,10 @@ export function Services({ now }: { now: Date }) {
       <Reveal delay={100} className="mt-12 sm:mt-14">
         <ol className="grid gap-px overflow-hidden rounded-[2rem] bg-ink/10 shadow-soft ring-1 ring-ink/5 md:grid-cols-2 xl:grid-cols-[1.45fr_1fr_1fr]">
           {groups.map((group, index) => (
-            <li key={group.label} className={`bg-cream-50 p-6 sm:p-8 ${index === 0 ? "md:col-span-2 xl:col-span-1" : ""}`}>
+            <li
+              key={group.label}
+              className={`bg-cream-50 p-6 sm:p-8 ${index === 0 ? "md:col-span-2 xl:col-span-1" : ""}`}
+            >
               <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
                 <h3 className="font-display text-xl font-bold">{group.label}</h3>
                 <p className="text-sm text-navy-700">{formatJakartaDate(group.next)}</p>

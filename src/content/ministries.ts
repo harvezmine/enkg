@@ -18,8 +18,7 @@ export const ministries: Ministry[] = [
     id: "sunday-service",
     name: "Sunday Service",
     meta: "Minggu · 10.00 WIB",
-    summary:
-      "Ibadah raya setiap Minggu di Stream Hall, Mahaka Square. Sebelumnya kami berdoa bersama pukul 09.15 WIB.",
+    summary: "Ibadah raya setiap Minggu di Stream Hall, Mahaka Square. Sebelumnya kami berdoa bersama pukul 09.15 WIB.",
     cta: { label: "Petunjuk arah", href: site.maps.link },
   },
   {
@@ -33,14 +32,17 @@ export const ministries: Ministry[] = [
       width: 1080,
       height: 510,
     },
-    cta: { label: "Tanya lewat WhatsApp", href: whatsappUrl(whatsappMessages.kids) },
+    cta: {
+      label: "Tanya lewat WhatsApp",
+      href: whatsappUrl(whatsappMessages.kids),
+    },
   },
   {
     id: "life-group",
     name: "Life Group",
     meta: "Family · Young Professional · Youth",
     summary:
-      "Wadah untuk terlibat dan bertumbuh bersama dalam pemuridan di kelompok kecil. Pilih kelompok yang paling sesuai dengan tahap hidupmu.",
+      "Kenali firman, berbagi cerita, dan saling menguatkan dalam kelompok kecil yang sesuai dengan tahap hidupmu.",
     image: {
       src: "/images/ministries/life-group.png",
       alt: "Jemaat Life Group makan bersama, tempat untuk bertumbuh, terhubung, dan berjalan bersama dalam iman",
@@ -54,7 +56,7 @@ export const ministries: Ministry[] = [
     name: "Prayer Meeting",
     meta: "Rabu 20.00 via Zoom · Jumat ke-4 onsite",
     summary:
-      "Berdoa bersama setiap Rabu malam lewat Zoom dan setiap Jumat ke-4 di Stream Hall. Tim pastoral setia mendoakan setiap permohonan doa yang masuk.",
+      "Mari berdoa bersama secara online dan di Stream Hall. Tim pastoral kami juga siap mendoakan permohonanmu.",
     image: {
       src: "/images/ministries/prayer-request.png",
       alt: "Kirim jawaban doa dan permohonan doa. Tim pastoral kami akan setia mendoakan",

@@ -7,8 +7,8 @@
 export const story = {
   title: "Keluarga yang bertumbuh bersama sejak 2019.",
   body: [
-    "Every Nation Kelapa Gading adalah gereja lokal yang beribadah di Mahaka Square, Kelapa Gading, Jakarta Utara. Kami bagian dari Every Nation, keluarga gereja dan pelayanan kampus di lebih dari 80 bangsa.",
-    "Tujuh tahun berjalan, kami terus beribadah, berdoa, dan bertumbuh bersama lewat Life Group, dari keluarga dan profesional muda sampai anak-anak dan remaja.",
+    "Sejak 2019, Every Nation Kelapa Gading menjadi tempat untuk mengenal Kristus dan bertumbuh bersama. Kami beribadah di Mahaka Square, Jakarta Utara, sebagai bagian dari keluarga gereja Every Nation.",
+    "Dari anak-anak hingga keluarga, setiap generasi punya tempat. Melalui ibadah, doa, dan Life Group, kami belajar menghidupi iman dalam keseharian.",
   ],
 } as const;
 
@@ -31,9 +31,18 @@ export const vision = {
   tagline: "Honor God. Make Disciples.",
   taglineId: "Menghormati Tuhan dan menjadikan murid.",
   focus: [
-    { title: "Gereja lokal", body: "Membangun gereja yang menjangkau generasi berikutnya." },
-    { title: "Pelayanan kampus", body: "Menjangkau pelajar dan mahasiswa, masa ketika iman seseorang terbentuk." },
-    { title: "Bangsa-bangsa", body: "Bagian dari gerakan di lebih dari 80 bangsa." },
+    {
+      title: "Gereja lokal",
+      body: "Membangun gereja yang menjangkau generasi berikutnya.",
+    },
+    {
+      title: "Pelayanan kampus",
+      body: "Menjangkau pelajar dan mahasiswa, masa ketika iman seseorang terbentuk.",
+    },
+    {
+      title: "Bangsa-bangsa",
+      body: "Bagian dari gerakan di lebih dari 80 bangsa.",
+    },
   ],
 } as const;
 
@@ -77,18 +86,54 @@ export const values = [
 
 /** Ringkasan 12 pokok Statement of Faith Every Nation. */
 export const beliefs = [
-  { title: "Allah Tritunggal", body: "Satu Allah, Pencipta dan Pemelihara segala sesuatu, yang kekal dalam tiga pribadi, yaitu Bapa, Anak, dan Roh Kudus, dalam satu hakikat dengan peran yang berbeda." },
-  { title: "Alkitab", body: "Keenam puluh enam kitab Perjanjian Lama dan Baru adalah satu-satunya firman Allah tertulis yang diilhamkan, berotoritas, dan tanpa salah." },
-  { title: "Penciptaan & kejatuhan", body: "Allah menciptakan segala sesuatu baik dan manusia menurut gambar-Nya. Dosa Adam memisahkan manusia dari Allah dan membawa maut." },
-  { title: "Yesus Kristus", body: "Anak Allah yang kekal menjadi manusia untuk menebus kita: hidup tanpa dosa, mati sebagai korban, bangkit secara tubuh, dan akan datang kembali." },
-  { title: "Injil", body: "Melalui hidup, kematian, dan kebangkitan Kristus, Allah memperdamaikan manusia dengan diri-Nya bagi setiap orang yang bertobat dan percaya." },
-  { title: "Keselamatan", body: "Oleh anugerah melalui iman kepada karya Kristus, Allah membenarkan kita dan mengangkat kita menjadi anak-anak-Nya." },
-  { title: "Roh Kudus", body: "Roh Kudus menginsafkan akan dosa, melahirbarukan, dan memperlengkapi orang percaya untuk bersaksi dan melayani melalui karunia dan buah Roh." },
-  { title: "Misi", body: "Allah menebus umat bagi diri-Nya dari setiap suku, bangsa, dan bahasa, dan mengutus Gereja memberitakan Injil serta menjadikan murid." },
-  { title: "Gereja", body: "Gereja adalah tubuh Kristus dengan Yesus sebagai kepala, berkumpul untuk beribadah, berdoa, menerima sakramen, dan bersekutu." },
-  { title: "Sakramen", body: "Baptisan air dan Perjamuan Kudus adalah tanda anugerah perjanjian Allah: masuk ke dalam Gereja dan mengingat pengorbanan Kristus." },
-  { title: "Pengudusan", body: "Sejak lahir baru, Allah membentuk kita serupa Kristus melalui firman dan Roh-Nya, sehingga kita bertumbuh dalam kekudusan." },
-  { title: "Kedatangan Kristus", body: "Kristus akan datang kembali secara tubuh dengan kuasa dan kemuliaan untuk membangkitkan orang mati dan menghakimi dunia." },
+  {
+    title: "Allah Tritunggal",
+    body: "Satu Allah, Pencipta dan Pemelihara segala sesuatu, yang kekal dalam tiga pribadi, yaitu Bapa, Anak, dan Roh Kudus, dalam satu hakikat dengan peran yang berbeda.",
+  },
+  {
+    title: "Alkitab",
+    body: "Keenam puluh enam kitab Perjanjian Lama dan Baru adalah satu-satunya firman Allah tertulis yang diilhamkan, berotoritas, dan tanpa salah.",
+  },
+  {
+    title: "Penciptaan & kejatuhan",
+    body: "Allah menciptakan segala sesuatu baik dan manusia menurut gambar-Nya. Dosa Adam memisahkan manusia dari Allah dan membawa maut.",
+  },
+  {
+    title: "Yesus Kristus",
+    body: "Anak Allah yang kekal menjadi manusia untuk menebus kita: hidup tanpa dosa, mati sebagai korban, bangkit secara tubuh, dan akan datang kembali.",
+  },
+  {
+    title: "Injil",
+    body: "Melalui hidup, kematian, dan kebangkitan Kristus, Allah memperdamaikan manusia dengan diri-Nya bagi setiap orang yang bertobat dan percaya.",
+  },
+  {
+    title: "Keselamatan",
+    body: "Oleh anugerah melalui iman kepada karya Kristus, Allah membenarkan kita dan mengangkat kita menjadi anak-anak-Nya.",
+  },
+  {
+    title: "Roh Kudus",
+    body: "Roh Kudus menginsafkan akan dosa, melahirbarukan, dan memperlengkapi orang percaya untuk bersaksi dan melayani melalui karunia dan buah Roh.",
+  },
+  {
+    title: "Misi",
+    body: "Allah menebus umat bagi diri-Nya dari setiap suku, bangsa, dan bahasa, dan mengutus Gereja memberitakan Injil serta menjadikan murid.",
+  },
+  {
+    title: "Gereja",
+    body: "Gereja adalah tubuh Kristus dengan Yesus sebagai kepala, berkumpul untuk beribadah, berdoa, menerima sakramen, dan bersekutu.",
+  },
+  {
+    title: "Sakramen",
+    body: "Baptisan air dan Perjamuan Kudus adalah tanda anugerah perjanjian Allah: masuk ke dalam Gereja dan mengingat pengorbanan Kristus.",
+  },
+  {
+    title: "Pengudusan",
+    body: "Sejak lahir baru, Allah membentuk kita serupa Kristus melalui firman dan Roh-Nya, sehingga kita bertumbuh dalam kekudusan.",
+  },
+  {
+    title: "Kedatangan Kristus",
+    body: "Kristus akan datang kembali secara tubuh dengan kuasa dan kemuliaan untuk membangkitkan orang mati dan menghakimi dunia.",
+  },
 ] as const;
 
 export const creeds = "Kami juga memegang Pengakuan Iman Rasuli, Pengakuan Iman Nicea, dan Pengakuan Iman Kalsedon.";

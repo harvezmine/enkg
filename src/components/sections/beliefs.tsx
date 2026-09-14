@@ -4,104 +4,124 @@ import { Icon } from "../icons";
 import { Reveal } from "../reveal";
 import { Eyebrow, Grain } from "../ui";
 
-type Belief = (typeof beliefs)[number];
-
-function BeliefGrid({ items, offset }: { items: readonly Belief[]; offset: number }) {
-  return (
-    <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {items.map((belief, index) => (
-        <Reveal
-          as="li"
-          key={belief.title}
-          delay={(index % 3) * 80}
-          className="rounded-3xl bg-white/4 p-6 ring-1 ring-white/10 transition duration-300 hover:bg-white/7 hover:ring-white/20 sm:p-7"
-        >
-          <span className="tabular text-sm text-sun-400">{String(offset + index + 1).padStart(2, "0")}</span>
-          <h3 className="font-display mt-3 text-xl font-semibold">{belief.title}</h3>
-          <p className="mt-2 text-[0.9375rem] leading-relaxed text-cream-100/70">{belief.body}</p>
-        </Reveal>
-      ))}
-    </ul>
-  );
-}
+const beliefGroups = [
+  {
+    title: "Allah & firman-Nya",
+    subtitle: "Dasar iman kita",
+    items: [0, 1, 2],
+  },
+  {
+    title: "Kristus & keselamatan",
+    subtitle: "Anugerah yang memulihkan",
+    items: [3, 4, 5],
+  },
+  {
+    title: "Hidup dalam Roh",
+    subtitle: "Bertumbuh dan diutus",
+    items: [6, 10, 7],
+  },
+  {
+    title: "Gereja & pengharapan",
+    subtitle: "Bersama sebagai tubuh Kristus",
+    items: [8, 9, 11],
+  },
+] as const;
 
 export function Beliefs() {
-  const shown = beliefs.slice(0, 6);
-  const more = beliefs.slice(6);
-
   return (
-    <section id="iman" className="bg-navy-deep relative isolate overflow-hidden px-5 pt-24 pb-28 text-cream-100 sm:px-8 lg:pt-32 lg:pb-36">
-      <Grain className="opacity-9" />
-
-      <div className="mx-auto max-w-7xl">
-        {/* Nilai */}
-        <div className="grid gap-10 lg:grid-cols-12 lg:gap-12 xl:gap-16">
-          <Reveal className="lg:sticky lg:top-28 lg:col-span-5 lg:self-start xl:col-span-4">
+    <section
+      id="iman"
+      className="relative isolate overflow-hidden bg-navy-950 px-5 py-20 text-cream-100 sm:px-8 lg:py-28"
+    >
+      <Grain className="opacity-5" />
+      <div className="relative mx-auto max-w-7xl">
+        <Reveal className="flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
+          <div>
             <Eyebrow tone="navy">Nilai kami</Eyebrow>
-            <h2 className="text-headline mt-5 font-bold">Lima nilai yang membentuk kami.</h2>
-            <p className="text-lead mt-5 max-w-md text-cream-100/70">
-              Dasar dari setiap pelayanan, dari kelompok kecil sampai Ibadah Minggu.
-            </p>
-          </Reveal>
-
-          <ol className="border-t border-white/10 lg:col-span-7 xl:col-span-8">
+            <h2 className="text-headline mt-5 font-semibold">Iman yang dihidupi.</h2>
+          </div>
+          <p className="max-w-sm leading-relaxed text-cream-100/65">
+            Lima nilai yang menuntun cara kami mengasihi, melayani, dan bertumbuh.
+          </p>
+        </Reveal>
+        <Reveal delay={100} className="mt-10">
+          <div className="grid gap-px overflow-hidden rounded-2xl border border-white/15 bg-white/15 sm:grid-cols-2 lg:grid-cols-5">
             {values.map((value, index) => (
-              <Reveal
-                as="li"
-                key={value.name}
-                delay={index * 50}
-                className="group grid grid-cols-[3.5rem_1fr] gap-x-4 gap-y-2 border-b border-white/10 py-7 sm:grid-cols-[5rem_1fr] sm:gap-x-6 xl:grid-cols-[5rem_1fr_11rem]"
-              >
-                <span className="font-display tabular row-span-2 text-4xl leading-none font-bold text-white/15 transition-colors duration-500 group-hover:text-sun-400 sm:text-5xl xl:row-span-1">
-                  0{index + 1}
-                </span>
-                <div>
-                  <h3 className="font-display text-2xl font-semibold sm:text-[1.75rem]">
-                    {value.title}
-                    <span lang="en" className="ml-3 align-middle text-sm font-normal text-cream-100/45">
-                      {value.name}
-                    </span>
-                  </h3>
-                  <p className="mt-2 max-w-xl leading-relaxed text-cream-100/70">{value.body}</p>
+              <details key={value.name} className="value-card group bg-navy-950 p-5 sm:p-6">
+                <summary className="cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                  <span className="flex items-center justify-between">
+                    <span className="tabular text-xs text-sun-300">0{index + 1}</span>
+                    <span className="disclosure-plus text-cream-100/60" aria-hidden="true" />
+                  </span>
+                  <h3 className="mt-8 text-xl font-medium">{value.title}</h3>
+                  <span lang="en" className="mt-1 block text-sm text-cream-100/55">
+                    {value.name}
+                  </span>
+                </summary>
+                <div className="disclosure-body">
+                  <p className="mt-5 text-sm leading-relaxed text-cream-100/75">{value.body}</p>
+                  <p className="mt-4 text-sm text-sun-300">{value.verse}</p>
                 </div>
-                <p className="font-serif col-start-2 text-lg text-sun-300 italic xl:col-start-auto xl:pt-1.5 xl:text-right">
-                  {value.verse}
-                </p>
-              </Reveal>
+              </details>
             ))}
-          </ol>
-        </div>
+          </div>
+        </Reveal>
 
-        {/* Statement of Faith */}
-        <div className="mt-24 lg:mt-36">
-          <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
-            <Reveal className="max-w-2xl">
-              <Eyebrow tone="navy">Statement of Faith</Eyebrow>
-              <h2 className="text-headline mt-5 font-bold">Apa yang kami percaya.</h2>
-              <p className="text-lead mt-5 text-cream-100/70">Ringkasan pernyataan iman Every Nation. {creeds}</p>
-            </Reveal>
+        <div className="mt-20 grid gap-10 border-t border-white/15 pt-16 lg:mt-24 lg:grid-cols-12 lg:gap-16 lg:pt-20">
+          <Reveal className="lg:col-span-5 lg:self-start">
+            <Eyebrow tone="navy">Statement of Faith</Eyebrow>
+            <h2 className="text-headline mt-5 font-semibold">
+              Berakar dalam
+              <br />
+              <span className="font-serif font-normal text-sun-300 italic">kebenaran.</span>
+            </h2>
+            <p className="mt-6 max-w-sm leading-relaxed text-cream-100/70">
+              Kenali pokok iman yang menjadi dasar kehidupan dan pelayanan kami.
+            </p>
             <a
               href={beliefsSource}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn btn-light shrink-0 self-start md:self-auto"
+              className="group mt-7 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-sun-300"
             >
-              Baca versi lengkap <Icon.arrowUpRight className="lift h-4 w-4" />
+              <span className="link-sweep">Baca pernyataan iman lengkap</span>
+              <Icon.arrowUpRight className="h-4 w-4" />
             </a>
-          </div>
-
-          <BeliefGrid items={shown} offset={0} />
-
-          {more.length > 0 && (
-            <details className="group/more">
-              <summary className="btn btn-light mx-auto mt-8 flex w-fit cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-                <span className="group-open/more:hidden">Tampilkan {more.length} pokok iman lainnya</span>
-                <span className="hidden group-open/more:inline">Sembunyikan</span>
-                <Icon.arrowRight className="h-4 w-4 rotate-90 transition-transform group-open/more:-rotate-90" />
-              </summary>
-              <BeliefGrid items={more} offset={shown.length} />
-            </details>
-          )}
+          </Reveal>
+          <Reveal delay={100} className="lg:col-span-7">
+            <p className="mb-5 text-xs text-cream-100/55">Pilih topik untuk membaca ringkasannya</p>
+            <div className="border-t border-white/20">
+              {beliefGroups.map((group, index) => (
+                <details
+                  key={group.title}
+                  name="statement-of-faith"
+                  className="faith-disclosure group border-b border-white/20"
+                >
+                  <summary className="flex cursor-pointer list-none items-center gap-4 py-6 sm:gap-6 [&::-webkit-details-marker]:hidden">
+                    <span className="tabular self-start pt-1 text-xs text-sun-300">0{index + 1}</span>
+                    <span className="flex-1">
+                      <h3 className="text-xl font-medium sm:text-2xl">{group.title}</h3>
+                      <span className="mt-1 block text-sm text-cream-100/55">{group.subtitle}</span>
+                    </span>
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-white/25 transition-colors group-hover:border-sun-300 group-hover:text-sun-300">
+                      <span className="disclosure-plus" aria-hidden="true" />
+                    </span>
+                  </summary>
+                  <div className="disclosure-body pb-7 pl-8 sm:pl-10">
+                    <ul className="space-y-6">
+                      {group.items.map((index) => (
+                        <li key={beliefs[index].title}>
+                          <h4 className="text-base font-semibold text-sun-300">{beliefs[index].title}</h4>
+                          <p className="mt-2 max-w-xl text-sm leading-7 text-cream-100/75">{beliefs[index].body}</p>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </details>
+              ))}
+            </div>
+            <p className="mt-6 max-w-xl text-xs leading-relaxed text-cream-100/55">{creeds}</p>
+          </Reveal>
         </div>
       </div>
     </section>

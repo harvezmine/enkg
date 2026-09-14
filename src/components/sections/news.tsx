@@ -106,7 +106,7 @@ export function News({ now, items }: { now: Date; items: NewsItem[] }) {
       <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
         <SectionHeading
           eyebrow="News"
-          title="Apa yang sedang terjadi di ENKG."
+          title="Kabar dari keluarga ENKG."
           intro="Rekaman khotbah setiap minggu, kabar jemaat, dan event terdekat."
         />
         <Reveal delay={100}>

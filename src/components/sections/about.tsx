@@ -1,144 +1,97 @@
 import Image from "next/image";
 
-import { mission, pastor, stats, story, vision } from "@/content/about";
+import { mission, pastor, story, vision } from "@/content/about";
 
 import { Icon } from "../icons";
-import { Parallax } from "../parallax";
 import { Reveal } from "../reveal";
-import { Eyebrow, Grain } from "../ui";
+import { Eyebrow } from "../ui";
 
 export function About() {
   return (
-    <section id="siapa-kita" className="bg-paper relative isolate overflow-hidden px-5 pt-24 pb-24 sm:px-8 lg:pt-32 lg:pb-32">
-      <Grain className="opacity-5" />
-
+    <section id="siapa-kita" className="relative overflow-hidden bg-cream-50 px-5 py-20 sm:px-8 lg:py-28">
       <div className="mx-auto max-w-7xl">
-        <div className="grid gap-14 lg:grid-cols-12 lg:gap-12">
-          {/* Cerita + angka */}
+        <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-20">
           <div className="lg:col-span-6">
             <Reveal>
-              <Eyebrow>Siapa Kita</Eyebrow>
-              <h2 className="text-headline mt-5 font-bold">{story.title}</h2>
+              <Eyebrow>Siapa kita</Eyebrow>
+              <h2 className="text-headline mt-5 font-semibold">
+                Sebuah gereja.
+                <br />
+                Sebuah <span className="font-serif font-normal text-navy-700 italic">keluarga.</span>
+              </h2>
             </Reveal>
-            <Reveal delay={100} className="mt-7 max-w-xl space-y-4">
+            <Reveal delay={100} className="mt-6 max-w-lg space-y-4">
               {story.body.map((paragraph) => (
-                <p key={paragraph} className="text-lead text-ink-soft">
+                <p key={paragraph} className="text-base leading-7 text-ink-soft">
                   {paragraph}
                 </p>
               ))}
             </Reveal>
-
-            <dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-3xl bg-ink/10 ring-1 ring-ink/10">
-              {stats.map((stat, index) => (
-                <Reveal key={stat.label} delay={index * 80} className="bg-cream-50 p-5 sm:p-7">
-                  <dt className="sr-only">{stat.label}</dt>
-                  <dd>
-                    <span className="font-display tabular block text-4xl font-bold tracking-tight text-navy-700 sm:text-5xl xl:text-6xl">
-                      {stat.value}
-                    </span>
-                    <span className="mt-2 block text-sm leading-snug text-ink-soft">{stat.label}</span>
-                  </dd>
-                </Reveal>
-              ))}
-            </dl>
-          </div>
-
-          {/* Komposisi foto: di layar ≥ xl kutipan & gembala menumpuk di kolase, di bawahnya tersusun di bawah kolase. */}
-          <div className="relative lg:col-span-6 lg:self-center">
-            <div className="relative xl:pt-12 xl:pb-16">
-              <Parallax speed={-3}>
-                <Reveal
-                  variant="curtain"
-                  className="relative ml-auto aspect-4/3 w-full overflow-hidden rounded-[2rem] shadow-lift xl:w-[92%]"
-                >
-                  <Image
-                    src="/images/photos/community-collage.jpg"
-                    alt="Kolase foto jemaat Every Nation Kelapa Gading dari tahun ke tahun"
-                    fill
-                    sizes="(min-width: 1024px) 36rem, 100vw"
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-linear-to-t from-navy-950/55 via-transparent to-transparent" />
-                </Reveal>
-              </Parallax>
-
-              <Parallax
-                speed={6}
-                className="relative z-10 mx-4 -mt-12 sm:mr-6 sm:ml-auto sm:max-w-sm xl:absolute xl:top-0 xl:-right-3 xl:mx-0 xl:mt-0 xl:w-72"
+            <Reveal delay={150} className="mt-7">
+              <a
+                href="#gabung-life-group"
+                className="group inline-flex min-h-11 items-center gap-3 text-sm font-semibold text-navy-700"
               >
-                <Reveal variant="scale" delay={250} className="rounded-3xl bg-sun-500 p-6 text-ink shadow-lift">
-                  <p className="font-serif text-2xl leading-snug italic">
-                    “Iman tidak bisa dijalani sendirian. Kita butuh komunitas gereja untuk menghidupkan dan
-                    mempertajam iman kita.”
+                <span className="link-sweep">Temukan Life Group-mu</span>
+                <Icon.arrowRight className="h-4 w-4" />
+              </a>
+            </Reveal>
+          </div>
+          <Reveal variant="curtain" className="lg:col-span-6">
+            <figure>
+              <div className="relative aspect-[26/15] overflow-hidden rounded-2xl bg-navy-100">
+                <Image
+                  src="/images/photos/gathering.jpg"
+                  alt="Ps. Raswan Gautama menyampaikan firman dalam ibadah Every Nation Kelapa Gading"
+                  fill
+                  sizes="(min-width: 1280px) 550px, (min-width: 1024px) 45vw, 90vw"
+                  className="object-cover"
+                />
+              </div>
+              <figcaption className="mt-5 flex items-center gap-4 border-b border-ink/10 pb-5">
+                <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full bg-navy-100">
+                  <Image src={pastor.photo.src} alt="" fill sizes="48px" className="object-cover object-top" />
+                </div>
+                <div>
+                  <p className="text-xs text-navy-700">Gembala ENKG</p>
+                  <p className="mt-1 text-sm font-semibold">
+                    {pastor.name} &amp; {pastor.partner}
                   </p>
-                  <p className="mt-3 text-sm text-ink/70">Dari khotbah “Bersama Menjaga Api Iman”</p>
-                </Reveal>
-              </Parallax>
-
-              <Parallax
-                speed={3}
-                className="relative z-10 mx-4 mt-4 sm:mx-6 xl:absolute xl:bottom-0 xl:left-0 xl:mx-0 xl:mt-0 xl:w-92"
-              >
-                <Reveal delay={150} className="flex items-center gap-5 rounded-3xl bg-navy-800 p-4 pr-6 text-cream-100 shadow-deep">
-                  <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl ring-2 ring-sun-400 sm:h-28 sm:w-28">
-                    <Image
-                      src={pastor.photo.src}
-                      alt={`${pastor.name} berkhotbah dalam Ibadah Minggu`}
-                      fill
-                      sizes="7rem"
-                      className="object-cover object-top"
-                    />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm text-sun-400">{pastor.role}</p>
-                    <p className="font-display mt-1 text-xl leading-tight font-bold">{pastor.name}</p>
-                    <p className="text-sm text-cream-100/70">& {pastor.partner}</p>
-                  </div>
-                </Reveal>
-              </Parallax>
-            </div>
-          </div>
+                </div>
+              </figcaption>
+            </figure>
+          </Reveal>
         </div>
-
-        {/* Visi & misi: bertumpuk sampai layar lebar supaya kolom fokus tidak sempit. */}
-        <div className="mt-20 grid gap-5 lg:mt-28 xl:grid-cols-12">
-          <Reveal className="bg-navy-deep relative isolate overflow-hidden rounded-[2rem] p-7 text-cream-100 sm:p-10 xl:col-span-7">
-            <Grain className="opacity-10" />
-            <p className="text-sm font-semibold text-sun-400">Visi</p>
-            <p className="text-headline mt-4 font-bold">{vision.tagline}</p>
-            <p className="font-serif mt-3 text-2xl text-cream-100/80 italic">{vision.taglineId}</p>
-            <ul className="mt-10 grid gap-6 border-t border-white/10 pt-8 sm:grid-cols-3">
-              {vision.focus.map((item, index) => (
-                <li key={item.title}>
-                  <span className="tabular text-sm text-sun-400">0{index + 1}</span>
-                  <p className="font-display mt-2 text-lg font-semibold">{item.title}</p>
-                  <p className="mt-1.5 text-sm leading-relaxed text-cream-100/65">{item.body}</p>
+        <Reveal className="mt-16 grid gap-7 border-t border-ink/15 pt-10 lg:mt-20 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-navy-700">Tujuan kami</p>
+            <h3 className="mt-4 text-3xl leading-tight font-semibold sm:text-4xl">
+              Honor God.
+              <br />
+              <span className="font-serif font-normal text-navy-700 italic">Make Disciples.</span>
+            </h3>
+            <p className="mt-3 text-sm text-ink-soft">{vision.taglineId}</p>
+          </div>
+          <div className="lg:col-span-7">
+            <p className="max-w-xl text-base leading-7 text-ink-soft">{mission.id}</p>
+            <ul className="mt-6 flex flex-wrap gap-2">
+              {vision.focus.map((item) => (
+                <li
+                  key={item.title}
+                  className="rounded-full border border-navy-700/20 px-4 py-2 text-xs font-medium text-navy-700"
+                >
+                  {item.title}
                 </li>
               ))}
             </ul>
-          </Reveal>
-
-          <Reveal
-            delay={120}
-            className="flex flex-col justify-between rounded-[2rem] bg-cream-50 p-7 shadow-soft ring-1 ring-ink/5 sm:p-10 xl:col-span-5"
-          >
-            <div>
-              <p className="text-sm font-semibold text-navy-700">Misi</p>
-              <p className="font-display mt-4 text-2xl leading-snug font-semibold text-pretty sm:text-[1.75rem]">
-                {mission.id}
-              </p>
-            </div>
-            <p lang="en" className="font-serif mt-8 border-t border-ink/10 pt-6 text-lg leading-relaxed text-ink-soft italic">
-              {mission.en}
-            </p>
-          </Reveal>
-        </div>
-
-        <Reveal className="mt-8 flex justify-end">
-          <a href="#iman" className="group inline-flex items-center gap-2 font-semibold text-navy-700">
-            <span className="link-sweep">Nilai & pernyataan iman kami</span>
-            <Icon.arrowRight className="h-4 w-4 rotate-90 transition-transform group-hover:translate-y-0.5" />
-          </a>
+            <a
+              href="#iman"
+              className="group mt-5 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-navy-700"
+            >
+              <span className="link-sweep">Nilai & iman kami</span>
+              <Icon.arrowRight className="h-4 w-4 rotate-90" />
+            </a>
+          </div>
         </Reveal>
       </div>
     </section>

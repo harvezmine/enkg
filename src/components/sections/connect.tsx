@@ -23,9 +23,9 @@ export function Connect() {
       ))}
 
       <SectionHeading
-        eyebrow="Contact Us"
+        eyebrow="Terhubung"
         title="Hubungi kami."
-        intro="Gabung Life Group, kirim permohonan doa, atau tanya apa saja lewat WhatsApp."
+        intro="Ingin bergabung, didoakan, atau mengenal ENKG lebih dekat? Kami siap mendengar."
       />
 
       <Reveal className="mt-12 sm:mt-14">
@@ -56,14 +56,22 @@ export function Connect() {
               <br />
               {site.address.street}, {site.address.city}
             </address>
-            <a href={site.maps.link} target="_blank" rel="noopener noreferrer" className="btn btn-navy mt-4 px-5 py-2.5 text-sm">
+            <a
+              href={site.maps.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-navy mt-4 px-5 py-2.5 text-sm"
+            >
               Petunjuk arah <Icon.arrowUpRight className="lift h-4 w-4" />
             </a>
           </div>
         </Reveal>
 
         <div className="grid gap-5 md:grid-cols-2 lg:col-span-5 lg:grid-cols-1 xl:col-span-4">
-          <Reveal delay={100} className="bg-navy-deep relative isolate flex flex-col overflow-hidden rounded-[2rem] p-7 text-cream-100 shadow-lift">
+          <Reveal
+            delay={100}
+            className="bg-navy-deep relative isolate flex flex-col overflow-hidden rounded-[2rem] p-7 text-cream-100 shadow-lift"
+          >
             <Grain className="opacity-10" />
             <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#25d366] text-ink">
               <Icon.whatsapp className="h-6 w-6" />

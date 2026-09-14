@@ -388,3 +388,86 @@
     clip-path: none !important;
   }
 }
+
+/* A quiet, architectural hero; vector light replaces an enlarged video crop. */
+.hero-surface {
+  background: radial-gradient(ellipse at 85% 35%, #244568 0%, transparent 55%), #142f50;
+}
+.hero-heading {
+  font-size: clamp(3.6rem, 1.6rem + 6.3vw, 7.5rem);
+  line-height: 0.99;
+  letter-spacing: -0.045em;
+}
+.hero-window {
+  filter: drop-shadow(0 0 55px rgb(239 194 116 / 0.08));
+}
+.disclosure-plus {
+  position: relative;
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+.disclosure-plus::before,
+.disclosure-plus::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: 1px;
+  width: 12px;
+  height: 1px;
+  background: currentColor;
+  transition: transform 250ms ease;
+}
+.disclosure-plus::after {
+  transform: rotate(90deg);
+}
+details[open] > summary .disclosure-plus::after {
+  transform: rotate(0);
+}
+details[open] > .disclosure-body {
+  animation: rise-in 300ms var(--ease-out-soft) both;
+}
+.value-card {
+  transition: background-color 250ms ease;
+}
+.value-card:hover,
+.value-card[open] {
+  background-color: #142f50;
+}
+.faith-disclosure[open] > summary h3 {
+  color: var(--color-sun-300);
+}
+@media (max-width: 767px) {
+  .hero-heading {
+    font-size: clamp(3.1rem, 11.8vw, 5.5rem);
+  }
+}
+/* Content remains readable while AOS loads or if its import fails. */
+html:not(.motion-ready) [data-aos] {
+  opacity: 1 !important;
+  transform: none !important;
+  clip-path: none !important;
+}
+
+@media (max-width: 639px) {
+  .value-card summary {
+    position: relative;
+    padding-left: 2rem;
+  }
+  .value-card summary > span:first-child > span:first-child {
+    position: absolute;
+    top: 0.3rem;
+    left: 0;
+  }
+  .value-card summary .disclosure-plus {
+    position: absolute;
+    top: 0.3rem;
+    right: 0;
+  }
+  .value-card summary h3 {
+    margin-top: 0;
+    padding-right: 1.5rem;
+    font-size: 1.125rem;
+  }
+}

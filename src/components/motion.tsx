@@ -5,36 +5,55 @@ import "aos/dist/aos.css";
 import { useEffect, useState, type ReactNode } from "react";
 import { ParallaxProvider } from "react-scroll-parallax";
 
-/**
- * Menjalankan AOS (animasi saat scroll) dan menyediakan konteks parallax,
- * sama seperti situs Janji Pengharapan (jp/src/components/motion.tsx).
- * Keduanya mati bila perangkat pengguna meminta "kurangi gerakan".
- */
+/** AOS reveals with a readable fallback and live reduced-motion support. */
 export function MotionProvider({ children }: { children: ReactNode }) {
-  const [reduceMotion, setReduceMotion] = useState(false);
+  const [reduceMotion, setReduceMotion] = useState(true);
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReduceMotion(media.matches);
+    const updatePreference = () => setReduceMotion(media.matches);
+    updatePreference();
+    media.addEventListener("change", updatePreference);
 
     let cancelled = false;
-    // AOS menyentuh `window`, jadi di-import dinamis agar tidak ikut dievaluasi di server.
-    import("aos").then(({ default: aos }) => {
-      if (cancelled) return;
-      aos.init({
-        duration: 900,
-        easing: "ease-out-cubic",
-        once: true,
-        offset: 60,
-        disable: () => media.matches,
-      });
-      // Posisi elemen bergeser setelah font & gambar selesai dimuat.
-      document.fonts?.ready.then(() => aos.refresh());
-      window.addEventListener("load", () => aos.refresh(), { once: true });
-    });
+    let refresh = () => {};
+    let frame = 0;
+    const scheduleRefresh = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => refresh());
+    };
 
+    import("aos")
+      .then(({ default: aos }) => {
+        if (cancelled) return;
+        aos.init({
+          duration: 650,
+          easing: "ease-out-cubic",
+          once: true,
+          offset: 40,
+        });
+        refresh = () => aos.refresh();
+        document.documentElement.classList.add("motion-ready");
+        document.fonts?.ready.then(() => {
+          if (!cancelled) scheduleRefresh();
+        });
+        scheduleRefresh();
+      })
+      .catch(() => {
+        // Without motion-ready, all content stays visible if AOS cannot load.
+        document.documentElement.classList.remove("motion-ready");
+      });
+
+    // Accordions and lazy-loaded images change the positions of later sections.
+    document.addEventListener("toggle", scheduleRefresh, true);
+    document.addEventListener("load", scheduleRefresh, true);
     return () => {
       cancelled = true;
+      cancelAnimationFrame(frame);
+      media.removeEventListener("change", updatePreference);
+      document.removeEventListener("toggle", scheduleRefresh, true);
+      document.removeEventListener("load", scheduleRefresh, true);
+      document.documentElement.classList.remove("motion-ready");
     };
   }, []);
 
