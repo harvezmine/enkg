@@ -389,7 +389,7 @@
   }
 }
 
-/* A quiet, architectural hero; vector light replaces an enlarged video crop. */
+/* Navy washes let community photographs merge into the hero background. */
 .hero-surface {
   background: radial-gradient(ellipse at 85% 35%, #244568 0%, transparent 55%), #142f50;
 }
@@ -398,8 +398,91 @@
   line-height: 0.99;
   letter-spacing: -0.045em;
 }
-.hero-window {
-  filter: drop-shadow(0 0 55px rgb(239 194 116 / 0.08));
+.hero-community {
+  position: relative;
+  height: 460px;
+  margin-left: -18%;
+  margin-right: -24%;
+  pointer-events: none;
+}
+.hero-community-motion {
+  height: 100%;
+  mask-image: linear-gradient(90deg, transparent, #000 16%, #000 85%, transparent);
+}
+.hero-community-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: 170px 170px;
+  grid-auto-flow: column;
+  align-content: center;
+  gap: 16px;
+  height: 100%;
+  padding: 20px 0 40px;
+  opacity: 0.5;
+  mask-image: linear-gradient(0deg, transparent 2%, #000 24%, #000 83%, transparent 100%);
+}
+.hero-community-photo {
+  overflow: hidden;
+  border-radius: 18px;
+  background: #142f50;
+  box-shadow: 0 20px 40px -16px rgb(4 15 30 / 0.65);
+  transform: translateY(22px) rotate(-5deg);
+}
+.hero-community-photo svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: saturate(0.6) sepia(0.16);
+}
+.hero-community-friends,
+.hero-community-life-group {
+  transform: translateY(-28px) rotate(3deg);
+}
+.hero-community-community,
+.hero-community-celebration {
+  transform: translateY(12px) rotate(-3deg);
+}
+.hero-community-caption {
+  position: absolute;
+  bottom: 12px;
+  inset-inline: 0;
+  text-align: center;
+  font-size: clamp(1.2rem, 1.65vw, 1.6rem);
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hero-community {
+    margin-left: -30%;
+    margin-right: -40%;
+  }
+  .hero-community-grid {
+    grid-template-rows: 145px 145px;
+    gap: 12px;
+    opacity: 0.42;
+  }
+}
+@media (max-width: 767px) {
+  .hero-community {
+    height: 240px;
+    max-width: 560px;
+    margin: 18px auto 0;
+  }
+  .hero-community-grid {
+    grid-template-rows: 102px 102px;
+    gap: 10px;
+    padding: 12px 0 30px;
+    opacity: 0.48;
+  }
+  .hero-community-photo {
+    border-radius: 12px;
+    transform: translateY(12px) rotate(-4deg);
+  }
+  .hero-community-friends,
+  .hero-community-life-group {
+    transform: translateY(-10px) rotate(3deg);
+  }
+  .hero-community-caption {
+    bottom: 0;
+  }
 }
 .disclosure-plus {
   position: relative;

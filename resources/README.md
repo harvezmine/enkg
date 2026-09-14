@@ -80,6 +80,19 @@ youtube/
 google-forms.json            struktur kedua Google Form + entry ID
 ```
 
+## Kolase hero
+
+`src/components/sections/hero-community.tsx` memakai enam area foto dari
+`public/images/photos/community-collage.jpg`, aset yang sebelumnya belum dipakai di halaman.
+Sumbernya adalah frame ketiga video [7 Years of Caleidoscope](https://www.youtube.com/watch?v=RpeQN5sbQJ4)
+dari channel YouTube ENKG yang ditautkan di [Linktree](https://linktr.ee/enkg).
+
+Potongan ditampilkan lewat viewport SVG (berkas foto asli tetap utuh): persekutuan,
+anak-anak, kebersamaan di meja, Life Group, dan foto kelompok jemaat. Area teks video
+tidak ikut ditampilkan. Enam viewport berbagi satu URL gambar sekitar 216 KiB,
+dengan opacity rendah, tepi memudar, dan parallax ringan yang mengikuti preferensi
+pengurangan gerakan pengguna. Tidak memakai footage musik Every Nation global.
+
 ## Tidak bisa diambil
 
 - **Instagram:** konten dilindungi login, tidak bisa di-scrape tanpa akun. Foto kegiatan perlu diekspor manual oleh admin IG.
