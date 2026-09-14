@@ -10,6 +10,7 @@ import { Icon } from "./icons";
 
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("");
 
@@ -17,6 +18,9 @@ export function SiteHeader() {
     const onScroll = () => {
       setScrolled(window.scrollY > 24);
       if (window.scrollY < 200) setActive("");
+      // Halaman ini panjang, jadi pembaca perlu tahu posisinya.
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(max > 0 ? Math.min(1, window.scrollY / max) : 0);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -54,6 +58,11 @@ export function SiteHeader() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-5">
+      <span
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-x-0 top-0 h-0.5 origin-left bg-sun-400 transition-opacity duration-300"
+        style={{ transform: `scaleX(${progress})`, opacity: floating ? 1 : 0 }}
+      />
       <div
         className={`mx-auto flex max-w-7xl items-center justify-between rounded-full py-2 pr-2 pl-5 transition-all duration-500 ease-out-soft sm:pl-6 ${
           floating

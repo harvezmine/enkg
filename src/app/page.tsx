@@ -3,6 +3,7 @@ import { Beliefs } from "@/components/sections/beliefs";
 import { Connect } from "@/components/sections/connect";
 import { Give } from "@/components/sections/give";
 import { Hero } from "@/components/sections/hero";
+import { LifeGroup } from "@/components/sections/life-group";
 import { News } from "@/components/sections/news";
 import { Procon } from "@/components/sections/procon";
 import { Services } from "@/components/sections/services";
@@ -32,8 +33,9 @@ export default async function HomePage() {
       <main id="konten">
         <Hero now={now} />
         <About />
-        <Beliefs />
+        <LifeGroup />
         <Services now={now} />
+        <Beliefs />
         <News now={now} items={newsItems} />
         <Procon events={proconEvents} />
         <Connect />

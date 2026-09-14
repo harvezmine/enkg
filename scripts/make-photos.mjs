@@ -21,6 +21,36 @@ const crops = [
   { src: "RpeQN5sbQJ4-3", out: "community-collage", left: 0, top: 0, width: 1280, height: 720 },
 ];
 
+/**
+ * Foto Instagram gereja sendiri (resources/instagram, ~1299px). Jauh lebih baik
+ * daripada potongan kolase YouTube: ini foto utuh, bukan crop dari crop, jadi
+ * tiap tile mosaik dapat tiga kali lebih banyak piksel asli.
+ * Rasio target disetel mendekati rasio slotnya di globals.css.
+ */
+const igCrops = [
+  // Slot mosaik terbesar (rasio 2.12): jemaat lengkap, segala usia, di Stream Hall.
+  { src: "fellowship-group", out: "jemaat-lengkap", left: 0, top: 150, width: 1440, height: 679 },
+  // Slot mosaik 1.70: jemaat Paskah dengan Ps. Raswan di depan.
+  { src: "easter-pastor", out: "jemaat-gembala", left: 0, top: 177, width: 1080, height: 635 },
+  // Slot mosaik 2.34: kelompok di panggung.
+  { src: "enfast-stage", out: "jemaat-panggung", left: 0, top: 620, width: 1440, height: 615 },
+  // Slot mosaik 1.89: persekutuan di meja, momen paling hangat dan paling dekat.
+  { src: "fellowship-table", out: "jemaat-meja", left: 0, top: 120, width: 1080, height: 571 },
+  // Life Group, rasio 3/2. Post asalnya memang bicara soal persekutuan dan Life
+  // Group, jadi foto ini jujur dipakai di section itu, bukan foto acara lain.
+  { src: "fellowship-table", out: "lifegroup-meja", left: 0, top: 45, width: 1080, height: 720 },
+  // Siapa Kita, rasio 26/15: jemaat Paskah berpakaian putih, anak-anak di depan.
+  { src: "easter-group", out: "jemaat-paskah", left: 0, top: 120, width: 1440, height: 831 },
+];
+
+for (const c of igCrops) {
+  const info = await sharp(`resources/instagram/${c.src}.jpg`)
+    .extract({ left: c.left, top: c.top, width: c.width, height: c.height })
+    .jpeg({ quality: 86, mozjpeg: true })
+    .toFile(`${OUT}/${c.out}.jpg`);
+  console.log(`\u2713 ${c.out}.jpg ${info.width}\u00d7${info.height}`);
+}
+
 for (const c of crops) {
   const info = await sharp(`${FRAMES}/${c.src}.jpg`)
     .extract({ left: c.left, top: c.top, width: c.width, height: c.height })

@@ -27,6 +27,8 @@ const TABS: { id: Tab; label: string; hint: string; icon: "users" | "heart" | "m
 /** Anchor dari kartu pelayanan → tab yang dibuka (dan pilihan yang diisi otomatis). */
 const HASHES: Record<string, { tab: Tab; group?: string }> = {
   "gabung-life-group": { tab: "lifeGroup" },
+  "gabung-family": { tab: "lifeGroup", group: "Family" },
+  "gabung-young-professional": { tab: "lifeGroup", group: "Young Professional" },
   "gabung-youth": { tab: "lifeGroup", group: "Youth" },
   "permohonan-doa": { tab: "prayer" },
   "kirim-pesan": { tab: "message" },

@@ -7,7 +7,14 @@ import { Section, SectionHeading } from "../section";
 import { Grain } from "../ui";
 
 /** Target anchor dari kartu pelayanan (#gabung-life-group, #permohonan-doa, …). */
-const ANCHORS = ["gabung-life-group", "gabung-youth", "permohonan-doa", "kirim-pesan"];
+const ANCHORS = [
+  "gabung-life-group",
+  "gabung-family",
+  "gabung-young-professional",
+  "gabung-youth",
+  "permohonan-doa",
+  "kirim-pesan",
+];
 
 const socials = [
   { href: site.socials.instagram, label: "Instagram", icon: Icon.instagram },
@@ -24,8 +31,8 @@ export function Connect() {
 
       <SectionHeading
         eyebrow="Terhubung"
-        title="Hubungi kami."
-        intro="Ingin bergabung, didoakan, atau mengenal ENKG lebih dekat? Kami siap mendengar."
+        title="Mari berkenalan."
+        intro="Mau datang, mau didoakan, atau mau tanya-tanya dulu? Semuanya boleh."
       />
 
       <Reveal className="mt-12 sm:mt-14">
@@ -34,7 +41,7 @@ export function Connect() {
 
       <div className="mt-5 grid gap-5 lg:grid-cols-12">
         {/* Peta dengan kartu alamat yang menumpuk di atasnya */}
-        <Reveal className="relative overflow-hidden rounded-[2rem] bg-cream-200 shadow-soft ring-1 ring-ink/5 lg:col-span-7 xl:col-span-8">
+        <Reveal className="relative overflow-hidden rounded-[2rem] bg-cream-200 shadow-lit-soft ring-1 ring-ink/5 lg:col-span-7 xl:col-span-8">
           <div className="h-72 sm:h-96 lg:h-full lg:min-h-112">
             <iframe
               src={site.maps.embed}
@@ -70,7 +77,7 @@ export function Connect() {
         <div className="grid gap-5 md:grid-cols-2 lg:col-span-5 lg:grid-cols-1 xl:col-span-4">
           <Reveal
             delay={100}
-            className="bg-navy-deep relative isolate flex flex-col overflow-hidden rounded-[2rem] p-7 text-cream-100 shadow-lift"
+            className="bg-navy-deep relative isolate flex flex-col overflow-hidden rounded-[2rem] p-7 text-cream-100 shadow-lit"
           >
             <Grain className="opacity-10" />
             <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#25d366] text-ink">
@@ -89,7 +96,7 @@ export function Connect() {
             </a>
           </Reveal>
 
-          <Reveal delay={180} className="rounded-[2rem] bg-cream-50 p-7 shadow-soft ring-1 ring-ink/5">
+          <Reveal delay={180} className="rounded-[2rem] bg-cream-50 p-7 shadow-lit-soft ring-1 ring-ink/5">
             <p className="text-sm font-semibold text-navy-700">Ikuti kami</p>
             <ul className="mt-4 space-y-1">
               {socials.map(({ href, label, icon: SocialIcon }) => (

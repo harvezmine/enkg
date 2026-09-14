@@ -85,6 +85,36 @@ export const Icon = {
       <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
     </Svg>
   ),
+  home: (props: IconProps) => (
+    <Svg {...props}>
+      <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
+      <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+      <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+    </Svg>
+  ),
+  briefcase: (props: IconProps) => (
+    <Svg {...props}>
+      <path d="M3 9a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+      <path d="M8 7v-2a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v2" />
+      <path d="M12 12l0 .01" />
+      <path d="M3 13a20 20 0 0 0 18 0" />
+    </Svg>
+  ),
+  school: (props: IconProps) => (
+    <Svg {...props}>
+      <path d="M22 9l-10 -4l-10 4l10 4l10 -4v6" />
+      <path d="M6 10.6v5.4a6 3 0 0 0 12 0v-5.4" />
+    </Svg>
+  ),
+  globe: (props: IconProps) => (
+    <Svg {...props}>
+      <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+      <path d="M3.6 9h16.8" />
+      <path d="M3.6 15h16.8" />
+      <path d="M11.5 3a17 17 0 0 0 0 18" />
+      <path d="M12.5 3a17 17 0 0 1 0 18" />
+    </Svg>
+  ),
   arrowRight: (props: IconProps) => (
     <Svg {...props}>
       <path d="M5 12l14 0" />

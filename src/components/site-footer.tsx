@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import logo from "@/assets/brand/logo-light.png";
+import { vision } from "@/content/about";
 import { schedule } from "@/content/schedule";
 import { navigation, site, whatsappMessages, whatsappUrl } from "@/content/site";
 import { formatJakartaDate, formatJakartaTime, nextOccurrence } from "@/lib/schedule";
@@ -20,7 +21,7 @@ export function SiteFooter({ now }: { now: Date }) {
   const next = nextOccurrence(service.recurrence, service.start, now);
 
   return (
-    <footer className="relative isolate overflow-hidden bg-navy-950 text-cream-100">
+    <footer className="edge-top relative isolate overflow-hidden bg-navy-950 text-cream-100">
       <Grain className="opacity-8" />
       <div
         aria-hidden="true"
@@ -58,6 +59,9 @@ export function SiteFooter({ now }: { now: Date }) {
           <div className="sm:col-span-2 lg:col-span-1">
             <Image src={logo} alt={site.name} className="h-11 w-auto" />
             <p className="font-serif mt-5 text-2xl text-cream-100/85 italic">{site.tagline}</p>
+            <p className="mt-3 max-w-xs text-sm leading-relaxed text-cream-100/60">
+              {vision.taglineId} Bersama Every Nation di lebih dari 80 bangsa.
+            </p>
             <ul className="mt-6 flex gap-2.5">
               {socials.map(({ href, label, icon: SocialIcon }) => (
                 <li key={label}>

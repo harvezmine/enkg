@@ -1,4 +1,4 @@
-import { beliefs, beliefsSource, creeds, values } from "@/content/about";
+import { beliefs, beliefsSource, creeds, oneBody, values } from "@/content/about";
 
 import { Icon } from "../icons";
 import { Reveal } from "../reveal";
@@ -31,17 +31,21 @@ export function Beliefs() {
   return (
     <section
       id="iman"
-      className="relative isolate overflow-hidden bg-navy-950 px-5 py-20 text-cream-100 sm:px-8 lg:py-28"
+      className="edge-top relative isolate overflow-hidden bg-navy-950 px-5 py-20 text-cream-100 sm:px-8 lg:py-28"
     >
       <Grain className="opacity-5" />
       <div className="relative mx-auto max-w-7xl">
-        <Reveal className="flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
-          <div>
-            <Eyebrow tone="navy">Nilai kami</Eyebrow>
-            <h2 className="text-headline mt-5 font-semibold">Iman yang dihidupi.</h2>
-          </div>
-          <p className="max-w-sm leading-relaxed text-cream-100/65">
-            Lima nilai yang menuntun cara kami mengasihi, melayani, dan bertumbuh.
+        <Reveal>
+          <Eyebrow tone="navy">Nilai kami</Eyebrow>
+          <h2 className="text-headline mt-5 max-w-2xl font-semibold">Iman yang dihidupi.</h2>
+        </Reveal>
+        {/* Kalimat yang menjadi dasar seluruh nada situs, dulu terkubur di accordion. */}
+        <Reveal delay={100} className="mt-10 grid gap-8 border-t border-white/15 pt-10 lg:grid-cols-12 lg:gap-16">
+          <p className="font-serif text-2xl leading-snug text-cream-100/90 italic sm:text-3xl lg:col-span-7">
+            {oneBody}
+          </p>
+          <p className="leading-relaxed text-cream-100/65 lg:col-span-5 lg:pt-2">
+            Lima nilai di bawah menuntun cara kami mengasihi, melayani, dan bertumbuh.
           </p>
         </Reveal>
         <Reveal delay={100} className="mt-10">
@@ -57,17 +61,17 @@ export function Beliefs() {
                   <span lang="en" className="mt-1 block text-sm text-cream-100/55">
                     {value.name}
                   </span>
+                  <span className="mt-4 block text-sm text-sun-300">{value.verse}</span>
                 </summary>
                 <div className="disclosure-body">
-                  <p className="mt-5 text-sm leading-relaxed text-cream-100/75">{value.body}</p>
-                  <p className="mt-4 text-sm text-sun-300">{value.verse}</p>
+                  <p className="mt-4 text-sm leading-relaxed text-cream-100/75">{value.body}</p>
                 </div>
               </details>
             ))}
           </div>
         </Reveal>
 
-        <div className="mt-20 grid gap-10 border-t border-white/15 pt-16 lg:mt-24 lg:grid-cols-12 lg:gap-16 lg:pt-20">
+        <div className="mt-16 grid gap-10 border-t border-white/15 pt-14 lg:mt-20 lg:grid-cols-12 lg:gap-16 lg:pt-16">
           <Reveal className="lg:col-span-5 lg:self-start">
             <Eyebrow tone="navy">Statement of Faith</Eyebrow>
             <h2 className="text-headline mt-5 font-semibold">

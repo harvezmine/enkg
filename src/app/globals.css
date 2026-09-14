@@ -42,6 +42,15 @@
   --shadow-soft: 0 1px 2px rgb(16 40 76 / 0.05), 0 10px 30px -14px rgb(16 40 76 / 0.2);
   --shadow-lift: 0 2px 6px rgb(16 40 76 / 0.06), 0 28px 60px -24px rgb(16 40 76 / 0.35);
   --shadow-deep: 0 40px 90px -30px rgb(10 24 48 / 0.6);
+  /* Sorot tipis di tepi atas + bayangan: permukaan jadi terbaca punya bidang,
+     bukan warna yang ditempel datar. Gelap pakai sorot putih transparan,
+     terang pakai sorot putih pekat. */
+  --shadow-lit:
+    inset 0 1px 0 rgb(255 255 255 / 0.1), 0 2px 6px rgb(16 40 76 / 0.06),
+    0 28px 60px -24px rgb(16 40 76 / 0.35);
+  --shadow-lit-soft:
+    inset 0 1px 0 rgb(255 255 255 / 0.8), 0 1px 2px rgb(16 40 76 / 0.05),
+    0 10px 30px -14px rgb(16 40 76 / 0.2);
 
   --animate-rise: rise-in 0.9s var(--ease-out-soft) both;
   --animate-marquee: marquee 42s linear infinite;
@@ -389,101 +398,145 @@
   }
 }
 
-/* Navy washes let community photographs merge into the hero background. */
-.hero-surface {
-  background: radial-gradient(ellipse at 85% 35%, #244568 0%, transparent 55%), #142f50;
-}
-.hero-heading {
-  font-size: clamp(3.6rem, 1.6rem + 6.3vw, 7.5rem);
-  line-height: 0.99;
-  letter-spacing: -0.045em;
-}
-.hero-community {
-  position: relative;
-  height: 460px;
-  margin-left: -18%;
-  margin-right: -24%;
+/* ── Kedalaman antar section ─────────────────────────────────────────────────
+   Pasangkan di section ber-`relative`. Section gelap mendapat bayangan jatuh di
+   tepi atasnya, section terang mendapat versi yang jauh lebih tipis, sehingga
+   perpindahan terang ke gelap terbaca sebagai dua bidang bertumpuk.
+   ─────────────────────────────────────────────────────────────────────────── */
+.edge-top::before,
+.edge-top-soft::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
   pointer-events: none;
 }
-.hero-community-motion {
-  height: 100%;
-  mask-image: linear-gradient(90deg, transparent, #000 16%, #000 85%, transparent);
+.edge-top::before {
+  height: 7rem;
+  background: linear-gradient(to bottom, rgb(4 12 26 / 0.32), transparent);
 }
-.hero-community-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  grid-template-rows: 170px 170px;
-  grid-auto-flow: column;
-  align-content: center;
-  gap: 16px;
-  height: 100%;
-  padding: 20px 0 40px;
-  opacity: 0.5;
-  mask-image: linear-gradient(0deg, transparent 2%, #000 24%, #000 83%, transparent 100%);
+.edge-top-soft::before {
+  height: 4.5rem;
+  background: linear-gradient(to bottom, rgb(16 40 76 / 0.07), transparent);
 }
-.hero-community-photo {
-  overflow: hidden;
-  border-radius: 18px;
-  background: #142f50;
-  box-shadow: 0 20px 40px -16px rgb(4 15 30 / 0.65);
-  transform: translateY(22px) rotate(-5deg);
+
+/* ── Hero ────────────────────────────────────────────────────────────────────
+   Judul memimpin, latarnya dua lapis dekoratif: seperempat globe di belakang
+   tulisan, dan foto jemaat besar beropasitas rendah yang menutupi sisi kanan
+   lalu memudar ke arah teks. Lihat components/sections/hero-backdrop.tsx.
+   ─────────────────────────────────────────────────────────────────────────── */
+.hero-surface {
+  background: radial-gradient(ellipse at 72% 30%, #27496e 0%, transparent 60%), #142f50;
 }
-.hero-community-photo svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-  filter: saturate(0.6) sepia(0.16);
+.hero-heading {
+  font-size: clamp(3rem, 1.3rem + 5.6vw, 6.75rem);
+  line-height: 0.97;
+  letter-spacing: -0.045em;
 }
-.hero-community-friends,
-.hero-community-life-group {
-  transform: translateY(-28px) rotate(3deg);
-}
-.hero-community-community,
-.hero-community-celebration {
-  transform: translateY(12px) rotate(-3deg);
-}
-.hero-community-caption {
+
+.hero-backdrop {
   position: absolute;
-  bottom: 12px;
-  inset-inline: 0;
-  text-align: center;
-  font-size: clamp(1.2rem, 1.65vw, 1.6rem);
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
 }
+
+/* Pusat globe di luar tepi kiri atas, jadi yang terlihat hanya kuadran kanan
+   bawahnya: satu lengkung bola yang duduk di belakang judul. */
+.hero-backdrop-globe {
+  position: absolute;
+  left: -22%;
+  top: -18%;
+  width: 62%;
+  min-width: 34rem;
+  color: var(--color-sun-300);
+  opacity: 0.55;
+}
+
+/* Foto disusun sebagai kaskade: lebar sama, rasio sama, dan langkah turun serta
+   ke kanan sama besar. Keseragaman itulah yang membuatnya terbaca tertata, bukan
+   ditempel sembarangan. Ditahan jauh dari tepi atas supaya tidak menabrak nav. */
+.hero-backdrop-photos {
+  position: absolute;
+  inset: 12% 0 18% 37%;
+  opacity: 0.2;
+  mask-image: linear-gradient(to right, transparent 0%, #000 26%, #000 88%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 26%, #000 88%, transparent 100%);
+}
+.hero-backdrop-photo {
+  position: absolute;
+  overflow: hidden;
+  border-radius: 1.5rem;
+}
+.hero-backdrop-photo img {
+  object-fit: cover;
+  filter: saturate(0.5) contrast(1.05);
+}
+/* Satu foto memimpin, dua lainnya menopang dan saling menimpa sedikit. */
+.hero-backdrop-a {
+  left: 0;
+  top: 0;
+  width: 74%;
+  aspect-ratio: 2.12 / 1;
+}
+.hero-backdrop-b {
+  right: -9%;
+  top: 31%;
+  width: 57%;
+  aspect-ratio: 1.73 / 1;
+}
+.hero-backdrop-c {
+  left: 4%;
+  top: 60%;
+  width: 49%;
+  aspect-ratio: 1.89 / 1;
+}
+
 @media (min-width: 768px) and (max-width: 1023px) {
-  .hero-community {
-    margin-left: -30%;
-    margin-right: -40%;
+  .hero-heading {
+    font-size: clamp(2.7rem, 5.6vw, 3.9rem);
   }
-  .hero-community-grid {
-    grid-template-rows: 145px 145px;
-    gap: 12px;
-    opacity: 0.42;
+  .hero-backdrop-photos {
+    inset: 14% 0 11% 26%;
+    opacity: 0.15;
   }
+
 }
 @media (max-width: 767px) {
-  .hero-community {
-    height: 240px;
-    max-width: 560px;
-    margin: 18px auto 0;
+  .hero-heading {
+    font-size: clamp(2.5rem, 9.2vw, 3.6rem);
   }
-  .hero-community-grid {
-    grid-template-rows: 102px 102px;
-    gap: 10px;
-    padding: 12px 0 30px;
-    opacity: 0.48;
+  .hero-backdrop-globe {
+    left: -40%;
+    top: -14%;
+    width: 112%;
+    min-width: 0;
   }
-  .hero-community-photo {
-    border-radius: 12px;
-    transform: translateY(12px) rotate(-4deg);
+  /* Di ponsel kaskade jadi latar seluruh hero, langkahnya tetap seragam. */
+  .hero-backdrop-photos {
+    inset: 26% 0 8% 0;
+    opacity: 0.13;
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 84%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 84%, transparent 100%);
   }
-  .hero-community-friends,
-  .hero-community-life-group {
-    transform: translateY(-10px) rotate(3deg);
+  .hero-backdrop-a {
+    left: -6%;
+    top: 0;
+    width: 92%;
   }
-  .hero-community-caption {
-    bottom: 0;
+  .hero-backdrop-b {
+    left: auto;
+    right: -12%;
+    top: 32%;
+    width: 78%;
+  }
+  .hero-backdrop-c {
+    left: 4%;
+    top: 62%;
+    width: 68%;
   }
 }
+
 .disclosure-plus {
   position: relative;
   display: inline-block;
@@ -523,7 +576,7 @@ details[open] > .disclosure-body {
 }
 @media (max-width: 767px) {
   .hero-heading {
-    font-size: clamp(3.1rem, 11.8vw, 5.5rem);
+    font-size: clamp(2.5rem, 9vw, 4rem);
   }
 }
 /* Content remains readable while AOS loads or if its import fails. */

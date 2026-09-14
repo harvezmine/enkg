@@ -6,9 +6,9 @@ import { Eyebrow, Grain } from "./ui";
 type Tone = "cream" | "navy";
 
 const BACKGROUND = {
-  cream: "bg-paper text-ink",
-  light: "bg-cream-50 text-ink",
-  navy: "bg-navy-deep text-cream-100",
+  cream: "bg-paper text-ink edge-top-soft",
+  light: "bg-cream-50 text-ink edge-top-soft",
+  navy: "bg-navy-deep text-cream-100 edge-top",
 } as const;
 
 export function Section({
@@ -48,13 +48,20 @@ export function SectionHeading({
   tone?: Tone;
   align?: "left" | "center";
 }) {
+  // Bertahap: label, judul, lalu intro. Jeda pendek supaya terasa satu gerakan.
   return (
-    <Reveal className={`max-w-2xl ${align === "center" ? "mx-auto text-center" : ""}`}>
-      <Eyebrow tone={tone}>{eyebrow}</Eyebrow>
-      <h2 className="text-headline mt-5 font-bold">{title}</h2>
+    <div className={`max-w-2xl ${align === "center" ? "mx-auto text-center" : ""}`}>
+      <Reveal>
+        <Eyebrow tone={tone}>{eyebrow}</Eyebrow>
+      </Reveal>
+      <Reveal delay={50}>
+        <h2 className="text-headline mt-5 font-bold">{title}</h2>
+      </Reveal>
       {intro && (
-        <p className={`text-lead mt-5 ${tone === "navy" ? "text-cream-100/70" : "text-ink-soft"}`}>{intro}</p>
+        <Reveal delay={100}>
+          <p className={`text-lead mt-5 ${tone === "navy" ? "text-cream-100/70" : "text-ink-soft"}`}>{intro}</p>
+        </Reveal>
       )}
-    </Reveal>
+    </div>
   );
 }

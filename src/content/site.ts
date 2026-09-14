@@ -10,8 +10,8 @@ export const site = {
   foundedYear: 2019,
   tagline: "Honor God. Make Disciples.",
   taglineId: "Menghormati Tuhan. Menjadikan murid.",
-  /** Dari banner "Join Life Group" milik gereja. */
-  headline: "Bertumbuh bersama dalam iman.",
+  /** Judul hero. Dirender tiga baris di sections/hero.tsx, baris terakhir serif italic. */
+  headline: "Satu gereja, satu keluarga dari setiap bangsa.",
   description:
     "Gereja Every Nation di Mahaka Square, Kelapa Gading, Jakarta Utara. Ibadah Minggu pukul 10.00 WIB, Kids Church, Life Group, dan persekutuan doa.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
@@ -59,6 +59,7 @@ export const site = {
 
 export const navigation = [
   { href: "#siapa-kita", label: "Siapa Kita" },
+  { href: "#life-group", label: "Life Group" },
   { href: "#pelayanan", label: "Pelayanan" },
   { href: "#news", label: "News" },
   { href: "#procon", label: "ProCon" },

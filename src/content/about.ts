@@ -5,10 +5,12 @@
  */
 
 export const story = {
-  title: "Keluarga yang bertumbuh bersama sejak 2019.",
+  /** ⚠️ Judul ini pernyataan teologis (pokok iman no. 9). Perlu persetujuan pastor. */
+  title: { lead: "Satu tubuh.", accent: "Yesus kepalanya." },
   body: [
-    "Sejak 2019, Every Nation Kelapa Gading menjadi tempat untuk mengenal Kristus dan bertumbuh bersama. Kami beribadah di Mahaka Square, Jakarta Utara, sebagai bagian dari keluarga gereja Every Nation.",
-    "Dari anak-anak hingga keluarga, setiap generasi punya tempat. Melalui ibadah, doa, dan Life Group, kami belajar menghidupi iman dalam keseharian.",
+    "Every Nation Kelapa Gading berdiri sejak 2019 di Mahaka Square, Jakarta Utara, sebagai bagian dari keluarga gereja Every Nation.",
+    "Kami satu gereja dari banyak latar: keluarga muda, pekerja, mahasiswa, dan anak-anak. Melalui ibadah, doa, dan Life Group, kami belajar menghidupi iman dalam keseharian.",
+    "Kami tidak memandang dari mana kamu datang. Di hadapan Tuhan kita semua sama, dan pintu kami terbuka untuk siapa saja yang mau masuk.",
   ],
 } as const;
 
@@ -83,6 +85,14 @@ export const values = [
     verse: "Mazmur 127:1-3",
   },
 ] as const;
+
+/**
+ * Pembuka section Iman, dirangkum dari pokok iman no. 9 di bawah. Kalimat inilah
+ * dasar teologis dari keseluruhan nada situs: berbeda-beda, tetap satu.
+ * ⚠️ Perlu persetujuan pastor, sama seperti story.title.
+ */
+export const oneBody =
+  "Gereja adalah tubuh Kristus, dan Yesus kepalanya. Kami berbeda dalam banyak hal, dan kami satu di dalam Dia.";
 
 /** Ringkasan 12 pokok Statement of Faith Every Nation. */
 export const beliefs = [

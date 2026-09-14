@@ -8,125 +8,180 @@ import { Reveal } from "../reveal";
 import { Section, SectionHeading } from "../section";
 import { Grain } from "../ui";
 
-/** Two balanced columns keep ministry information easy to scan. */
-const SPAN: Record<string, string> = {
-  "sunday-service": "md:col-span-3",
-  "kids-church": "md:col-span-3",
-  "life-group": "md:col-span-3",
-  prayer: "md:col-span-3",
-  youth: "md:col-span-6",
-};
+/**
+ * Tiga pelayanan utama (Ibadah Minggu, Kids Church, Youth) mendapat blok besar
+ * dengan perlakuan sendiri-sendiri, bukan satu cangkang kartu yang diulang lima
+ * kali. Doa dan Life Group jadi pasangan kartu yang lebih tenang di bawahnya,
+ * karena Life Group sudah punya section sendiri di atas.
+ */
 
-function CtaLink({ href, label, className }: { href: string; label: string; className: string }) {
-  const external = href.startsWith("http");
+function Cta({ ministry, className }: { ministry: Ministry; className: string }) {
+  const external = ministry.cta.href.startsWith("http");
   return (
-    <a href={href} {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})} className={className}>
-      {label}
+    <a
+      href={ministry.cta.href}
+      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      className={className}
+    >
+      {ministry.cta.label}
       {external ? <Icon.arrowUpRight className="lift h-4 w-4" /> : <Icon.arrowRight className="shift h-4 w-4" />}
     </a>
   );
 }
 
-/** Kartu Ibadah Minggu: tanpa gambar, jadi jamnya yang dijadikan visual. */
-function SundayServiceCard({ ministry }: { ministry: Ministry }) {
+/** Ibadah Minggu: jangkar gelap, jamnya jadi elemen terbesar di seluruh section. */
+function SundayService({ ministry }: { ministry: Ministry }) {
   const service = schedule.find((item) => item.id === "sunday-service")!;
+  const panel = ministry.panel;
   return (
-    <article className="bg-navy-deep relative isolate flex h-full flex-col justify-between gap-10 overflow-hidden rounded-[1.75rem] p-7 text-cream-100 shadow-lift">
+    <article className="bg-navy-deep relative isolate flex flex-col justify-between gap-10 overflow-hidden rounded-[2rem] p-8 text-cream-100 shadow-lit sm:p-10 lg:flex-row lg:items-end lg:p-12">
       <Grain className="opacity-10" />
-      <div>
-        <p className="text-sm font-semibold text-sun-400">{recurrenceLabel(service.recurrence)}</p>
-        <h3 className="font-display mt-2 text-2xl font-bold">{ministry.name}</h3>
-        <p className="mt-3 leading-relaxed text-cream-100/75">{ministry.summary}</p>
-      </div>
-      <div>
-        <p className="font-display tabular text-6xl leading-none font-bold tracking-tight xl:text-7xl">
-          {service.start.replace(":", ".")}
-          <span className="ml-2 text-xl text-sun-400 xl:text-2xl">WIB</span>
-        </p>
-        <p className="mt-3 flex items-center gap-2 text-sm text-cream-100/75">
-          <Icon.mapPin className="h-4 w-4 shrink-0 text-sun-400" />
-          {site.address.venue} · Mahaka Square Lt. 2
-        </p>
-        <CtaLink href={ministry.cta.href} label={ministry.cta.label} className="btn btn-sun mt-6 px-5 py-3 text-sm" />
-      </div>
-    </article>
-  );
-}
-
-function YouthCard({ ministry }: { ministry: Ministry }) {
-  return (
-    <article className="relative flex h-full flex-col gap-6 overflow-hidden rounded-[1.75rem] bg-sun-500 p-7 text-ink shadow-soft sm:flex-row sm:items-center sm:justify-between sm:p-8">
       <span
         aria-hidden="true"
-        className="font-display pointer-events-none absolute -right-4 -bottom-10 text-[9rem] leading-none font-bold text-ink/6"
-      >
-        Youth
-      </span>
-      <div className="relative flex items-start gap-5">
-        <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-ink text-sun-400">
-          <Icon.users className="h-7 w-7" />
-        </span>
-        <div>
-          <p className="text-sm font-semibold text-ink/65">{ministry.meta}</p>
-          <h3 className="font-display text-2xl font-bold">{ministry.name}</h3>
-          <p className="mt-1.5 max-w-xl leading-relaxed text-ink/75">{ministry.summary}</p>
-        </div>
-      </div>
-      <CtaLink
-        href={ministry.cta.href}
-        label={ministry.cta.label}
-        className="btn relative shrink-0 self-start bg-ink text-cream-100 hover:bg-navy-950 sm:self-auto"
+        className="animate-breathe pointer-events-none absolute -top-32 -right-24 h-96 w-96 rounded-full bg-navy-500/30 blur-3xl"
       />
+      <div className="relative max-w-xl">
+        <p className="text-sm font-semibold text-sun-400">{recurrenceLabel(service.recurrence)}</p>
+        <h3 className="font-display mt-3 text-3xl font-bold sm:text-4xl">{ministry.name}</h3>
+        <p className="mt-4 leading-relaxed text-cream-100/75">{ministry.summary}</p>
+        <p className="mt-6 flex items-center gap-2 text-sm text-cream-100/75">
+          <Icon.mapPin className="h-4 w-4 shrink-0 text-sun-400" />
+          {site.address.venue} · {site.address.building}
+        </p>
+        <Cta ministry={ministry} className="btn btn-sun mt-8" />
+      </div>
+      {panel.kind === "time" && (
+        <p className="font-display tabular relative text-[5.5rem] leading-[0.85] font-bold tracking-tighter sm:text-[7rem] lg:text-right lg:text-[8.5rem]">
+          {panel.figure}
+          <span className="mt-2 block text-base font-semibold tracking-normal text-sun-400 sm:text-lg">
+            {panel.unit} · {panel.note}
+          </span>
+        </p>
+      )}
     </article>
   );
 }
 
-function MinistryCard({ ministry }: { ministry: Ministry }) {
-  if (ministry.id === "sunday-service") return <SundayServiceCard ministry={ministry} />;
-  if (ministry.id === "youth") return <YouthCard ministry={ministry} />;
-
+/** Kids Church: bentuk-bentuk lengkung bertumpuk, satu-satunya grafis bermain di situs. */
+function KidsChurch({ ministry }: { ministry: Ministry }) {
+  const panel = ministry.panel;
+  const shapes = [
+    { h: "h-16", c: "bg-[#c9825c]" },
+    { h: "h-28", c: "bg-[#e0a94f]" },
+    { h: "h-20", c: "bg-[#7f9877]" },
+    { h: "h-32", c: "bg-[#b4643f]" },
+    { h: "h-14", c: "bg-[#d9b06b]" },
+  ];
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] bg-cream-50 shadow-soft ring-1 ring-ink/5 transition duration-500 ease-out-soft hover:-translate-y-1 hover:shadow-lift">
-      <div
-        aria-hidden="true"
-        className={`relative flex h-44 items-center justify-center overflow-hidden border-b border-ink/5 ${ministry.id === "kids-church" ? "bg-[#efe5d6] text-[#946646]" : ministry.id === "life-group" ? "bg-[#e4e9df] text-[#53705e]" : "bg-[#e1e7ef] text-navy-700"}`}
-      >
-        <div className="absolute h-64 w-64 rounded-full border border-current opacity-10" />
-        <div className="absolute h-44 w-44 rounded-full border border-current opacity-15" />
-        {ministry.id === "kids-church" ? (
-          <div className="relative flex items-end gap-3 transition-transform duration-500 group-hover:-translate-y-2">
-            <span className="block h-16 w-14 rounded-t-full bg-[#ba7b57]" />
-            <span className="block h-24 w-14 rounded-t-full bg-[#d6aa58]" />
-            <span className="block h-12 w-14 rounded-t-full bg-[#738572]" />
-          </div>
-        ) : ministry.id === "life-group" ? (
-          <Icon.users
-            className="relative h-16 w-16 transition-transform duration-500 group-hover:scale-110"
-            strokeWidth={1}
-          />
-        ) : (
-          <div className="relative text-center transition-transform duration-500 group-hover:-translate-y-1">
-            <span className="font-serif text-4xl italic">Mari berdoa.</span>
-            <span className="mt-2 block text-xs tracking-[0.15em] uppercase">Bersama dalam iman</span>
-          </div>
+    <article className="group relative flex h-full flex-col justify-between overflow-hidden rounded-[2rem] bg-[#f0e5d5] p-8 text-[#5d3b26] shadow-lit-soft ring-1 ring-ink/5 sm:p-9">
+      <div className="relative">
+        <p className="text-sm font-semibold text-[#9a6340]">{ministry.meta}</p>
+        <h3 className="font-display mt-3 text-3xl font-bold sm:text-4xl">{ministry.name}</h3>
+        {panel.kind === "time" && (
+          <p className="font-display tabular mt-6 text-6xl leading-none font-bold tracking-tight sm:text-7xl">
+            {panel.figure}
+            <span className="ml-2 align-baseline text-xl font-semibold opacity-70">{panel.unit}</span>
+          </p>
         )}
+        <p className="mt-5 max-w-sm leading-relaxed text-[#5d3b26]/80">{ministry.summary}</p>
       </div>
-      <div className="flex flex-1 flex-col p-6 sm:p-7">
-        <p className="text-sm font-semibold text-navy-700">{ministry.meta}</p>
-        <h3 className="font-display mt-1.5 text-2xl font-bold">{ministry.name}</h3>
-        <p className="mt-3 flex-1 leading-relaxed text-ink-soft">{ministry.summary}</p>
-        <CtaLink
-          href={ministry.cta.href}
-          label={ministry.cta.label}
-          className="btn btn-outline mt-6 self-start px-5 py-2.5 text-sm"
-        />
+      <div className="relative mt-10">
+        <Cta ministry={ministry} className="btn border border-[#5d3b26]/20 text-sm hover:border-[#5d3b26]/60" />
+      </div>
+      {/* Deretan lengkung di dasar kartu, naik berurutan saat kartu disentuh. */}
+      <div aria-hidden="true" className="pointer-events-none absolute -right-4 -bottom-2 flex items-end gap-2">
+        {shapes.map((shape, index) => (
+          <span
+            key={index}
+            className={`block w-10 rounded-t-full transition-transform duration-500 ease-out-soft group-hover:-translate-y-3 sm:w-12 ${shape.h} ${shape.c}`}
+            style={{ transitionDelay: `${index * 60}ms`, opacity: 0.55 }}
+          />
+        ))}
       </div>
     </article>
   );
 }
+
+/** Youth: paling berenergi, memakai busur sun besar sebagai grafisnya. */
+function Youth({ ministry }: { ministry: Ministry }) {
+  const panel = ministry.panel;
+  return (
+    <article className="group relative flex h-full flex-col justify-between overflow-hidden rounded-[2rem] bg-navy-950 p-8 text-cream-100 shadow-lit sm:p-9">
+      <Grain className="opacity-8" />
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-28 -bottom-28 h-80 w-80 rounded-full border-[18px] border-sun-500/25 transition-transform duration-700 ease-out-soft group-hover:scale-110"
+      />
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-12 -bottom-12 h-44 w-44 rounded-full border-[10px] border-sun-400/20"
+      />
+      <div className="relative">
+        <p className="text-sm font-semibold text-sun-400">{ministry.meta}</p>
+        <h3 className="font-display mt-3 text-3xl font-bold sm:text-4xl">{ministry.name}</h3>
+        {panel.kind === "list" && (
+          <ul className="mt-6 space-y-1">
+            {panel.lines.map((line) => (
+              <li key={line} className="font-display text-3xl leading-tight font-bold tracking-tight text-sun-300 sm:text-4xl">
+                {line}
+              </li>
+            ))}
+          </ul>
+        )}
+        <p className="mt-5 max-w-sm leading-relaxed text-cream-100/75">{ministry.summary}</p>
+      </div>
+      <div className="relative mt-10">
+        <Cta ministry={ministry} className="btn btn-sun text-sm" />
+      </div>
+    </article>
+  );
+}
+
+/** Doa & Life Group: pasangan kartu tenang. */
+function QuietCard({ ministry, tone }: { ministry: Ministry; tone: "prayer" | "life-group" }) {
+  const panel = ministry.panel;
+  return (
+    <article
+      className={`group flex h-full flex-col justify-between gap-8 rounded-[2rem] p-7 shadow-lit-soft ring-1 ring-ink/5 transition duration-500 ease-out-soft hover:-translate-y-1 hover:shadow-lift sm:p-8 ${
+        tone === "prayer" ? "bg-[#e3e9f1] text-navy-900" : "bg-cream-50 text-ink"
+      }`}
+    >
+      <div>
+        <p className="text-sm font-semibold text-navy-700">{ministry.meta}</p>
+        <h3 className="font-display mt-2 text-2xl font-bold">{ministry.name}</h3>
+        {panel.kind === "verse" && (
+          <blockquote className="mt-5 border-l-2 border-navy-700/30 pl-4">
+            <p className="font-serif text-lg leading-snug italic">&ldquo;{panel.text}&rdquo;</p>
+            <footer className="mt-2 text-xs text-navy-700">{panel.source}</footer>
+          </blockquote>
+        )}
+        {panel.kind === "list" && (
+          <ul className="mt-5 space-y-0.5">
+            {panel.lines.map((line) => (
+              <li key={line} className="font-display text-xl leading-tight font-bold tracking-tight text-navy-700">
+                {line}
+              </li>
+            ))}
+          </ul>
+        )}
+        <p className="mt-5 leading-relaxed text-ink-soft">{ministry.summary}</p>
+      </div>
+      <Cta ministry={ministry} className="btn btn-outline self-start px-5 py-2.5 text-sm" />
+    </article>
+  );
+}
+
+/** Hal-hal yang paling sering ditanya tamu baru. Hanya fakta yang sudah pasti. */
+const firstVisit = [
+  { icon: Icon.clock, label: "Kapan", body: "Minggu 10.00 WIB. Doa bersama mulai 09.15." },
+  { icon: Icon.mapPin, label: "Di mana", body: `${site.address.venue}, ${site.address.building}.` },
+  { icon: Icon.check, label: "Pakai apa", body: "Pakai yang membuatmu nyaman. Tidak ada aturan." },
+  { icon: Icon.users, label: "Bawa anak", body: `Kids Church 10.30 di ${site.address.kidsRoom}.` },
+] as const;
 
 export function Services({ now }: { now: Date }) {
   const upcoming = upcomingSchedule(now);
+  const byId = (id: string) => ministries.find((m) => m.id === id)!;
   // Kelompokkan per pola hari, urut sesuai definisi di content/schedule.ts.
   const groups = [...new Set(schedule.map((item) => recurrenceLabel(item.recurrence)))].map((label) => {
     const items = upcoming
@@ -142,7 +197,7 @@ export function Services({ now }: { now: Date }) {
           <SectionHeading
             eyebrow="Pelayanan"
             title="Ada tempat untukmu di sini."
-            intro="Ibadah, doa, dan kelompok kecil setiap minggu."
+            intro="Ibadah Minggu, Kids Church, doa bersama, dan Life Group. Semuanya terbuka untuk tamu."
           />
         </div>
         <Reveal delay={100} className="lg:col-span-5 lg:pb-2">
@@ -155,9 +210,46 @@ export function Services({ now }: { now: Date }) {
         </Reveal>
       </div>
 
-      {/* Jadwal: 1 kolom di HP, 2 kolom di tablet (Minggu selebar penuh), 3 kolom di layar lebar. */}
+      {/* Pita untuk tamu baru, supaya pertanyaan pertama terjawab sebelum ditanya. */}
       <Reveal delay={100} className="mt-12 sm:mt-14">
-        <ol className="grid gap-px overflow-hidden rounded-[2rem] bg-ink/10 shadow-soft ring-1 ring-ink/5 md:grid-cols-2 xl:grid-cols-[1.45fr_1fr_1fr]">
+        <ul className="grid gap-x-8 gap-y-7 border-y border-ink/15 py-8 sm:grid-cols-2 lg:grid-cols-4">
+          {firstVisit.map(({ icon: ItemIcon, label, body }) => (
+            <li key={label} className="flex items-start gap-3.5">
+              <ItemIcon className="mt-0.5 h-5 w-5 shrink-0 text-navy-700" strokeWidth={1.5} />
+              <div>
+                <p className="text-sm font-semibold">{label}</p>
+                <p className="mt-1 text-sm leading-relaxed text-ink-soft">{body}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </Reveal>
+
+      {/* Tiga pelayanan utama. */}
+      <div className="mt-12 grid gap-5 sm:mt-14 md:grid-cols-2">
+        <Reveal className="md:col-span-2">
+          <SundayService ministry={byId("sunday-service")} />
+        </Reveal>
+        <Reveal delay={60}>
+          <KidsChurch ministry={byId("kids-church")} />
+        </Reveal>
+        <Reveal delay={120}>
+          <Youth ministry={byId("youth")} />
+        </Reveal>
+      </div>
+
+      {/* Doa & Life Group. */}
+      <div className="mt-5 grid gap-5 md:grid-cols-2">
+        <Reveal>
+          <QuietCard ministry={byId("prayer")} tone="prayer" />
+        </Reveal>
+        <Reveal delay={60}>
+          <QuietCard ministry={byId("life-group")} tone="life-group" />
+        </Reveal>
+      </div>
+      {/* Jadwal lengkap: kolom Minggu paling lebar karena isinya tiga kegiatan. */}
+      <Reveal delay={100} className="mt-5">
+        <ol className="grid gap-px overflow-hidden rounded-[2rem] bg-ink/10 shadow-lit-soft ring-1 ring-ink/5 md:grid-cols-2 xl:grid-cols-[1.75fr_1fr_1fr]">
           {groups.map((group, index) => (
             <li
               key={group.label}
@@ -167,10 +259,10 @@ export function Services({ now }: { now: Date }) {
                 <h3 className="font-display text-xl font-bold">{group.label}</h3>
                 <p className="text-sm text-navy-700">{formatJakartaDate(group.next)}</p>
               </div>
-              <ul className={`mt-6 grid gap-5 ${index === 0 ? "lg:grid-cols-3 xl:grid-cols-1" : ""}`}>
+              <ul className={`mt-6 grid gap-5 ${index === 0 ? "sm:grid-cols-3 xl:grid-cols-1" : ""}`}>
                 {group.items.map((item) => (
-                  <li key={item.id} className="grid grid-cols-[5rem_1fr] gap-3">
-                    <p className="font-display tabular text-3xl leading-none font-bold tracking-tight">
+                  <li key={item.id} className="grid grid-cols-[4.5rem_1fr] gap-3">
+                    <p className="font-display tabular text-2xl leading-none font-bold tracking-tight sm:text-3xl">
                       {item.start.replace(":", ".")}
                     </p>
                     <div className="min-w-0">
@@ -204,14 +296,6 @@ export function Services({ now }: { now: Date }) {
         </ol>
       </Reveal>
 
-      {/* Pelayanan */}
-      <ul className="mt-5 grid gap-5 md:grid-cols-6">
-        {ministries.map((ministry, index) => (
-          <Reveal as="li" key={ministry.id} delay={index * 60} className={SPAN[ministry.id] ?? "md:col-span-3"}>
-            <MinistryCard ministry={ministry} />
-          </Reveal>
-        ))}
-      </ul>
     </Section>
   );
 }

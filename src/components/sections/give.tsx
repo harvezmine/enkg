@@ -13,7 +13,7 @@ export function Give() {
   const ready = Boolean(give.bank && give.accountNumber);
 
   return (
-    <section id="give" className="bg-paper relative isolate overflow-hidden px-5 pt-24 pb-28 sm:px-8 lg:pt-32 lg:pb-36">
+    <section id="give" className="bg-paper edge-top-soft relative isolate overflow-hidden px-5 pt-24 pb-28 sm:px-8 lg:pt-32 lg:pb-36">
       <Grain className="opacity-5" />
 
       <div className="mx-auto grid max-w-7xl gap-20 lg:grid-cols-12 lg:items-center lg:gap-12">
@@ -33,7 +33,7 @@ export function Give() {
         </Reveal>
 
         <div className="relative mx-auto w-full max-w-xl lg:col-span-6 lg:max-w-none">
-          <Reveal className="relative overflow-hidden rounded-3xl border border-navy-700/15 bg-navy-950 p-7 text-cream-100 sm:p-10">
+          <Reveal className="relative overflow-hidden rounded-3xl border border-navy-700/15 bg-navy-950 p-7 text-cream-100 shadow-lit sm:p-10">
             <span
               aria-hidden="true"
               className="mb-8 grid h-14 w-14 place-items-center rounded-full border border-sun-300/40 text-sun-300"

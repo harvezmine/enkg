@@ -4,7 +4,7 @@ import { formatJakartaDate, formatJakartaTime, nextOccurrence } from "@/lib/sche
 
 import { Icon } from "../icons";
 import { Grain } from "../ui";
-import { HeroCommunity } from "./hero-community";
+import { HeroBackdrop } from "./hero-backdrop";
 
 export function Hero({ now }: { now: Date }) {
   const service = schedule.find((item) => item.id === "sunday-service")!;
@@ -13,34 +13,32 @@ export function Hero({ now }: { now: Date }) {
   return (
     <section id="beranda" className="hero-surface relative isolate overflow-hidden text-cream-100">
       <Grain className="opacity-5" />
-      <div className="relative mx-auto max-w-7xl px-5 pt-32 sm:px-8 sm:pt-40 lg:pt-44">
-        <div className="grid items-center gap-3 pb-10 md:grid-cols-12 md:gap-6 lg:pb-20">
-          <div className="relative z-10 md:col-span-7">
-            <h1 className="hero-heading animate-rise font-semibold">
-              Bertumbuh
-              <br />
-              bersama
-              <br />
-              <span className="font-serif font-normal tracking-normal text-sun-300 italic">dalam iman.</span>
-            </h1>
-            <p className="animate-rise mt-7 max-w-[27rem] text-base leading-relaxed text-cream-100/75 [animation-delay:100ms] sm:text-lg">
-              Di setiap musim kehidupan, ada keluarga untuk bertumbuh, saling mendoakan, dan berjalan bersama.
-            </p>
-            <div className="animate-rise mt-8 flex flex-wrap items-center gap-x-7 gap-y-4 [animation-delay:200ms]">
-              <a href="#pelayanan" className="btn btn-sun">
-                Jadwal ibadah <Icon.arrowRight className="shift h-4 w-4" />
-              </a>
-              <a href="#news" className="group inline-flex min-h-11 items-center gap-2 text-sm font-semibold">
-                <Icon.play className="h-4 w-4 text-sun-300" />
-                <span className="link-sweep">Tonton khotbah</span>
-              </a>
-            </div>
-          </div>
-          <div className="min-w-0 md:col-span-5">
-            <HeroCommunity />
-          </div>
+      <HeroBackdrop />
+
+      <div className="relative mx-auto max-w-7xl px-5 pt-36 pb-16 sm:px-8 sm:pt-44 lg:pt-52 lg:pb-24">
+        <h1 className="hero-heading animate-rise font-semibold">
+          Satu gereja,
+          <br />
+          satu keluarga
+          <br />
+          <span className="font-serif font-normal tracking-normal text-sun-300 italic">dari setiap bangsa.</span>
+        </h1>
+        <p className="animate-rise mt-8 max-w-xl text-lead text-cream-100/75 [animation-delay:100ms]">
+          Kami datang dari banyak latar dan cerita. Di sini tidak ada yang berjalan sendirian.
+        </p>
+        <div className="animate-rise mt-10 flex flex-wrap items-center gap-x-8 gap-y-4 [animation-delay:200ms]">
+          <a href="#pelayanan" className="btn btn-sun">
+            Datang hari Minggu <Icon.arrowRight className="shift h-4 w-4" />
+          </a>
+          <a href="#gabung-life-group" className="group inline-flex min-h-11 items-center gap-2 text-sm font-semibold">
+            <Icon.users className="h-4 w-4 text-sun-300" />
+            <span className="link-sweep">Gabung Life Group</span>
+          </a>
         </div>
-        <div className="relative grid gap-6 border-t border-cream-100/20 py-7 sm:grid-cols-2 lg:grid-cols-[1.15fr_1fr_auto] lg:items-center lg:gap-10">
+      </div>
+
+      <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="grid gap-6 border-t border-cream-100/20 py-7 sm:grid-cols-2 lg:grid-cols-[1.15fr_1fr_auto] lg:items-center lg:gap-10">
           <div className="flex items-start gap-4">
             <span className="mt-1 grid h-10 w-10 shrink-0 place-items-center rounded-full border border-white/20">
               <Icon.calendar className="h-4 w-4 text-sun-300" />
