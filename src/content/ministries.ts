@@ -7,10 +7,13 @@ export type Ministry = {
   summary: string;
   /**
    * Panel tipografi di kepala kartu: sepotong informasi nyata yang ditampilkan
-   * besar. `lines` untuk daftar, `figure` + `unit` untuk jam, `verse` untuk ayat.
+   * besar. `time` untuk jam, `age` untuk rentang umur, `list` untuk daftar,
+   * `verse` untuk ayat. Yang dibesarkan selalu fakta yang paling menentukan bagi
+   * pembacanya: untuk Kids Church itu jamnya, untuk Heritage justru umurnya.
    */
   panel:
     | { kind: "time"; figure: string; unit: string; note?: string }
+    | { kind: "age"; figure: string; unit: string }
     | { kind: "list"; lines: readonly string[] }
     | { kind: "verse"; text: string; source: string };
   /** Foto asli dari tim media nanti masuk di sini, menggantikan panel. */
@@ -46,6 +49,20 @@ export const ministries: Ministry[] = [
     cta: {
       label: "Tanya lewat WhatsApp",
       href: whatsappUrl(whatsappMessages.kids),
+    },
+  },
+  {
+    id: "heritage",
+    name: "Heritage",
+    meta: "Minggu · 10.30 WIB",
+    summary:
+      "Untuk yang sudah lewat Kids Church tapi belum masuk Youth. Belajar firman dan berteman bareng seumuran.",
+    // Jamnya sama persis dengan Kids Church, jadi yang dibesarkan umurnya: itu
+    // yang benar-benar dicari orang tua saat memilih di antara keduanya.
+    panel: { kind: "age", figure: "12–17", unit: "tahun" },
+    cta: {
+      label: "Tanya lewat WhatsApp",
+      href: whatsappUrl(whatsappMessages.heritage),
     },
   },
   {

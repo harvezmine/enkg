@@ -1,50 +1,91 @@
 import Image from "next/image";
 
 import { mission, oneBody, pastor, stats, story, vision } from "@/content/about";
+import { site } from "@/content/site";
 
+import { AboutClips } from "../about-clips";
 import { Icon } from "../icons";
 import { Reveal } from "../reveal";
 import { Eyebrow, Grain } from "../ui";
 
 /**
  * Siapa Kita disusun sebagai satu section yang padu, bukan tumpukan band bergaris.
- * Urutannya: identitas (Honor God. Make Disciples.), lalu misi dan angka di dalam
- * satu kartu navy yang jadi jangkar gelap di tengah section krem, lalu cerita dan
- * gembala, lalu fokus pelayanan. Pergantian terang, gelap, foto, terang itulah yang
- * membuat section ini punya kedalaman tanpa perlu garis pemisah di mana-mana.
+ *
+ * Pembukanya sengaja tidak dibagi dua kolom kiri-kanan dari atas: judulnya melebar
+ * penuh dulu supaya bisa sebesar-besarnya, baru di bawahnya satu baris berisi misi
+ * dan dua klip. Dibagi dua dari atas, judul cuma dapat separuh lebar dan kolom
+ * teksnya selalu kependekan dibanding video yang jangkung, dan sisanya jadi lubang
+ * kosong. Klip juga tidak diberi latar sendiri: begitu diberi bidang warna terpisah,
+ * halaman terbaca sebagai dua bagian yang ditempel, bukan satu komposisi.
+ *
+ * Urutannya: identitas dan misi, lalu angka di dalam satu band navy yang jadi
+ * jangkar gelap di tengah section krem, lalu cerita dan gembala, lalu fokus
+ * pelayanan. Pergantian terang, gelap, foto, terang itulah yang membuat section ini
+ * punya kedalaman tanpa perlu garis pemisah di mana-mana.
  */
 export function About() {
   return (
     <section
       id="siapa-kita"
-      className="edge-top-soft relative overflow-hidden bg-cream-50 px-5 py-20 sm:px-8 lg:py-28"
+      className="edge-top-soft relative overflow-hidden bg-cream-50 px-5 py-24 sm:px-8 lg:py-36"
     >
       <div className="mx-auto max-w-7xl">
-        <Reveal className="max-w-3xl">
+        {/* Judul selebar container, jadi ukurannya tidak lagi dibatasi kolom video. */}
+        <Reveal>
           <Eyebrow>Siapa kita</Eyebrow>
-          <h2 className="text-display mt-6 font-bold">
+          <h2 className="text-display-2xl mt-8 font-bold">
             Honor God.
             <br />
             <span className="font-serif font-normal tracking-normal text-navy-700 italic">Make Disciples.</span>
           </h2>
-          <p className="text-lead mt-6 text-ink-soft">{vision.taglineId}</p>
         </Reveal>
 
-        {/* Kartu navy: misi dan angka jadi satu, karena "setiap bangsa" di misi dan
-            "80+ bangsa" di angka itu pernyataan yang sama dari dua sisi. */}
-        <Reveal delay={100} className="mt-12 lg:mt-16">
+        {/* Misi di kiri, klip di kanan. Tinggi baris ini ditentukan videonya, dan
+            kolom kiri diisi sampai penuh oleh misi supaya tidak ada sisa kosong. */}
+        <div className="mt-14 grid gap-12 border-t border-ink/15 pt-12 lg:mt-20 lg:grid-cols-12 lg:items-center lg:gap-14 lg:pt-16">
+          <Reveal className="lg:col-span-6">
+            <p className="font-serif text-2xl leading-snug text-navy-700 italic sm:text-3xl lg:text-[2.125rem]">
+              {vision.taglineId}
+            </p>
+            <p className="text-lead mt-8 text-ink-soft">{mission.id}</p>
+            <p
+              lang="en"
+              className="mt-7 border-l-2 border-sun-500 pl-5 leading-relaxed text-ink-soft/80 italic"
+            >
+              {mission.en}
+            </p>
+            {/* Klip-klip ini memang diambil dari Instagram gereja, dan tanda airnya
+                ikut terbakar di gambar. Dijadikan kredit yang disengaja sekalian
+                jalan ke akunnya, tanda air itu berhenti terlihat seperti kelalaian. */}
+            <a
+              href={site.socials.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group mt-8 inline-flex min-h-11 items-center gap-2 border-t border-ink/15 pt-6 text-sm font-semibold text-navy-700"
+            >
+              <Icon.instagram className="h-4 w-4" />
+              <span className="link-sweep">Lihat lebih banyak di Instagram</span>
+              <Icon.arrowUpRight className="lift h-4 w-4" />
+            </a>
+          </Reveal>
+
+          {/* Sengaja tanpa <Reveal>: animasi masuk AOS memasang opacity:0 pada
+              pembungkusnya, dan Safari menolak memutar video yang elemennya belum
+              terlihat, jadi klipnya diam membeku di sana. Klip ini bergerak sendiri,
+              jadi tidak butuh animasi masuk untuk menarik perhatian. */}
+          <div className="lg:col-span-6">
+            <AboutClips className="mx-auto w-full max-w-sm sm:max-w-md lg:max-w-none" />
+          </div>
+        </div>
+
+        {/* Angka-angka sebagai band gelap: jangkar satu-satunya di tengah section krem. */}
+        <Reveal delay={100} className="mt-16 lg:mt-24">
           <div className="bg-navy-deep relative isolate overflow-hidden rounded-[2rem] p-7 text-cream-100 shadow-lit sm:p-10 lg:p-12">
             <Grain className="opacity-10" />
-            <div className="relative grid gap-8 lg:grid-cols-12 lg:gap-14">
-              <p className="text-lead lg:col-span-7">{mission.id}</p>
-              <p lang="en" className="border-l-2 border-sun-400 pl-5 leading-relaxed text-cream-100/60 italic lg:col-span-5">
-                {mission.en}
-              </p>
-            </div>
-            <dl className="relative mt-10 grid grid-cols-2 gap-x-6 gap-y-8 border-t border-white/15 pt-9 lg:mt-12 lg:grid-cols-4 lg:pt-10">
+            <dl className="relative grid grid-cols-2 gap-x-6 gap-y-9 lg:grid-cols-4 lg:gap-x-10">
               {stats.map((stat) => (
                 <div key={stat.label}>
-                  <dt className="font-display tabular text-4xl leading-none font-bold tracking-tight text-sun-400 sm:text-5xl">
+                  <dt className="font-display tabular text-4xl leading-none font-bold tracking-tight text-sun-400 sm:text-5xl lg:text-6xl">
                     {stat.value}
                   </dt>
                   <dd className="mt-3 max-w-52 text-sm leading-relaxed text-cream-100/65">{stat.label}</dd>
@@ -98,8 +139,12 @@ export function About() {
                 </div>
                 <div>
                   <p className="text-xs text-navy-700">{pastor.role}</p>
-                  <p className="mt-1 font-semibold">
-                    {pastor.name} &amp; {pastor.partner}
+                  {/* Dua nama, dua baris. Dibiarkan satu paragraf mengalir, nama kedua
+                      pecah di tengah dan kartunya jadi terbaca berantakan. */}
+                  <p className="mt-1 font-semibold leading-snug">
+                    {pastor.name} &amp;
+                    <br />
+                    {pastor.partner}
                   </p>
                 </div>
               </figcaption>

@@ -55,6 +55,8 @@ const jsonLd = {
   url: site.url,
   image: `${site.url}/opengraph-image.png`,
   telephone: `+${site.whatsapp.number}`,
+  email: site.email,
+  parentOrganization: { "@type": "Organization", name: site.synod },
   address: {
     "@type": "PostalAddress",
     streetAddress: `${site.address.building}, ${site.address.street}`,

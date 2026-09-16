@@ -133,6 +133,31 @@ export const Icon = {
       <path d="M7 4v16l13 -8z" />
     </Svg>
   ),
+  pause: (props: IconProps) => (
+    <Svg fill="currentColor" stroke="none" {...props}>
+      <path d="M6 4h3.5v16h-3.5zM14.5 4h3.5v16h-3.5z" />
+    </Svg>
+  ),
+  mail: (props: IconProps) => (
+    <Svg {...props}>
+      <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+      <path d="M3 7l9 6l9 -6" />
+    </Svg>
+  ),
+  qr: (props: IconProps) => (
+    <Svg {...props}>
+      <path d="M4 4m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+      <path d="M7 17l0 .01" />
+      <path d="M14 4m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+      <path d="M17 7l0 .01" />
+      <path d="M4 14m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+      <path d="M14 14l3 0" />
+      <path d="M20 14l0 .01" />
+      <path d="M14 14l0 3" />
+      <path d="M14 20l6 0" />
+      <path d="M20 17l0 3" />
+    </Svg>
+  ),
   menu: (props: IconProps) => (
     <Svg {...props}>
       <path d="M4 6l16 0" />

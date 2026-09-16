@@ -96,6 +96,13 @@ export function SiteFooter({ now }: { now: Date }) {
             >
               <span className="link-sweep">Petunjuk arah</span> <Icon.arrowUpRight className="h-4 w-4" />
             </a>
+            <a
+              href={`mailto:${site.email}`}
+              className="group mt-4 flex items-center gap-2 text-sm text-cream-100/70 transition-colors hover:text-cream-100"
+            >
+              <Icon.mail className="h-4 w-4 shrink-0 text-sun-400" />
+              <span className="link-sweep break-all">{site.email}</span>
+            </a>
           </div>
 
           <nav aria-label="Navigasi footer">
@@ -125,7 +132,8 @@ export function SiteFooter({ now }: { now: Date }) {
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 pt-6 pb-24 text-sm text-cream-100/50 sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:pb-6">
           <p>
-            © {now.getFullYear()} {site.name}. Bagian dari Every Nation Churches &amp; Ministries.
+            © {now.getFullYear()} {site.name}. Bagian dari Every Nation Churches &amp; Ministries,
+            bernaung di bawah Sinode {site.synod}.
           </p>
           <a href="#beranda" className="inline-flex items-center gap-1.5 transition-colors hover:text-cream-100">
             Kembali ke atas <Icon.arrowRight className="h-4 w-4 -rotate-90" />

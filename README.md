@@ -34,27 +34,34 @@ Semua teks dan data ada di `src/content/`. Untuk perubahan konten, komponen tida
 
 ### Rekening Give
 
-Isi `bank` dan `accountNumber` di `site.give` (`src/content/site.ts`). Selama keduanya masih kosong, section Give menampilkan ajakan menanyakan rekening lewat WhatsApp. Setelah diisi, nomor rekening tampil lengkap dengan tombol salin.
+Isi `bank` dan daftar `accounts` di `site.give` (`src/content/site.ts`). Tulis nomor rekening **tanpa spasi** (`"7660400189"`); `sections/give.tsx` yang merapikannya jadi `7660 400 189`. Tiap rekening butuh `id`, `label` (peruntukannya, mis. "Gedung"), dan `number`. Selama `accounts` masih kosong, section Give menampilkan ajakan menanyakan rekening lewat WhatsApp.
 
-### ProCon
+QRIS-nya ada di `public/qris.png` dan dibuka lewat popup dari tombol "Beri lewat QRIS". Kalau kodenya diganti, timpa file itu dan sesuaikan `width`/`height` di `site.give.qris`.
 
-Kelola ProCon di admin panel (**Event & ProCon → ProCon baru**). Selama belum ada ProCon yang terbit dari admin panel, section ProCon memakai placeholder di `src/content/procon.ts`. Isi `date` dengan format `yyyy-mm-dd`; kalau dibiarkan `null`, kartu menampilkan "Segera hadir". Isi `href` kalau pendaftarannya sudah punya link. Kalau kosong, tombolnya membuka WhatsApp.
+### Video Siapa Kita
 
-### Jadwal
+Dua klip yang berjalan berdampingan di samping "Honor God. Make Disciples." diatur di `aboutVideos` (`src/content/about.ts`). Kalau salah satu `src` dikosongkan, yang tampil foto posternya saja, jadi situs tetap utuh selama penggantinya belum siap.
 
-Tulis pola, bukan tanggal, misalnya `{ kind: "monthly-nth", weekday: 5, nth: 4 }` untuk Jumat ke-4. Tanggal "berikutnya" dihitung otomatis dalam WIB, dan halaman dibangun ulang tiap jam.
+Berkasnya (`public/media/siapa-kita-1.mp4` dan `-2.mp4`) dirakit dari klip mentah dengan ffmpeg: audionya dibuang karena diputar tanpa suara, bagian hitam di awal dan akhir dipotong, lalu dikompres. **Bagian hitam wajib dipotong**: videonya berulang terus, jadi kalau awalnya hitam, itu yang berulang kali dilihat pengunjung.
 
-### Khotbah
+```bash
+# 1. Cari bagian hitamnya dulu, catat detiknya:
+ffmpeg -i klip-mentah.mp4 -vf "blackdetect=d=0.3:pix_th=0.12" -an -f null -
 
-Pemutar di section News selalu memutar video terbaru dari channel YouTube, tanpa perlu diubah. Daftar "Khotbah terbaru" memakai snapshot:
+# 2. Potong, buang audio, kompres (ganti angka -ss/-to sesuai hasil langkah 1):
+ffmpeg -ss 4.0 -to 56.3 -i klip-mentah.mp4 \
+  -vf "scale=480:854,setsar=1,fps=30" -an \
+  -c:v libx264 -crf 31 -preset slow -pix_fmt yuv420p -movflags +faststart \
+  public/media/siapa-kita-1.mp4
 
-1. Perbarui `src/content/youtube-videos.json`, dengan kolom `id`, `date` (tanggal unggah), `title`, dan `url`.
-2. Simpan thumbnail di `public/images/sermons/<id>.jpg`, dari `https://i.ytimg.com/vi/<id>/maxresdefault.jpg`.
-3. Jalankan `npm test` dan sesuaikan jumlah khotbah di `sermons.test.ts`.
+# 3. Pastikan sudah bersih:
+ffmpeg -i public/media/siapa-kita-1.mp4 -vf "blackdetect=d=0.3:pix_th=0.12" -an -f null -
 
-### Foto
+# 4. Poster diambil dari frame pertama, supaya tidak ada lompatan gambar saat mulai:
+ffmpeg -i public/media/siapa-kita-1.mp4 -frames:v 1 -q:v 3 public/media/siapa-kita-1.jpg
+```
 
-Foto di situs adalah potongan frame asli dari rekaman ibadah ENKG di YouTube (`resources/youtube/frames/`). Ganti atau tambah potongan di `scripts/make-photos.mjs`, lalu jalankan `node scripts/make-photos.mjs`. Kalau nanti ada foto dokumentasi resmi, cukup timpa file di `public/images/photos/` dengan nama yang sama.
+Sesuaikan `width`/`height` di `aboutVideos` kalau rasio klipnya berubah; frame di situs mengikuti angka itu, jadi tidak ada sisi yang terpotong. Jaga tiap berkas di bawah ~2,5 MB: keduanya ikut terunduh di setiap kunjungan halaman depan.
 
 ### Animasi (AOS + parallax)
 

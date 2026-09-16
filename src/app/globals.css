@@ -56,11 +56,33 @@
   --animate-marquee: marquee 42s linear infinite;
   --animate-breathe: breathe 9s ease-in-out infinite;
   --animate-pop: pop 0.55s var(--ease-out-soft) both;
+  /* Dialog: latar meredup dulu, panelnya naik sedikit. Pantulan seperti `pop`
+     terlalu ramai untuk sesuatu yang menutup seluruh layar. */
+  --animate-fade: fade-in 0.25s var(--ease-out-soft) both;
+  --animate-sheet: sheet-in 0.35s var(--ease-out-soft) both;
 
   @keyframes rise-in {
     from {
       opacity: 0;
       transform: translate3d(0, 1.5rem, 0);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes sheet-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 1rem, 0) scale(0.97);
     }
     to {
       opacity: 1;
@@ -152,6 +174,14 @@
   font-size: clamp(2.5rem, 1.3rem + 5vw, 5.5rem);
   line-height: 0.98;
   letter-spacing: -0.035em;
+}
+/* Judul Siapa Kita. Dipakai selebar container tanpa kolom lain di sampingnya,
+   jadi boleh jauh lebih besar daripada text-display. Batas atasnya disetel agar
+   "Make Disciples." berhenti di sekitar 88% lebar container di layar besar. */
+@utility text-display-2xl {
+  font-size: clamp(3.25rem, 14.4vw, 13rem);
+  line-height: 0.92;
+  letter-spacing: -0.045em;
 }
 @utility text-headline {
   font-size: clamp(2.125rem, 1.3rem + 3.1vw, 3.75rem);

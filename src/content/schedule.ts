@@ -44,6 +44,14 @@ export const schedule: ScheduleItem[] = [
     mode: "onsite",
   },
   {
+    id: "heritage",
+    title: "Heritage",
+    recurrence: SUNDAY,
+    start: "10:30",
+    place: site.address.office,
+    mode: "onsite",
+  },
+  {
     id: "wednesday-prayer",
     title: "Weekly Prayer Meeting",
     recurrence: { kind: "weekly", weekday: 3 },

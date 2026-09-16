@@ -15,14 +15,19 @@ export const site = {
   description:
     "Gereja Every Nation di Mahaka Square, Kelapa Gading, Jakarta Utara. Ibadah Minggu pukul 10.00 WIB, Kids Church, Life Group, dan persekutuan doa.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  email: "en.kelapagading@gmail.com",
   whatsapp: { number: "6285175436935", display: "+62 851-7543-6935" },
+  /** Sinode yang menaungi ENKG. "MSI" pada nama rekening = Morning Star Indonesia. */
+  synod: "Gereja Morning Star Indonesia",
   address: {
     venue: "Stream Hall",
     building: "Mahaka Square Lt. 2, Unit A30-32",
     street: "Jl. Raya Kelapa Nias No. 6, Kelapa Gading Barat",
     city: "Jakarta Utara 14240",
     kidsRoom: "Lt. 2 Unit B6",
+    /** Ruang kantor, persis di samping Stream Hall. Dipakai juga untuk Heritage. */
     office: "Lt. 2 Room B5",
+    officeNote: "samping Stream Hall",
   },
   geo: { lat: -6.1501502, lng: 106.9032929 },
   maps: {
@@ -47,13 +52,18 @@ export const site = {
     passcode: "prayer",
   },
   /**
-   * Rekening persembahan. ⚠️ Isi `bank` dan `accountNumber` dengan data resmi.
-   * Selama kosong, section Give menampilkan ajakan menghubungi WhatsApp.
+   * Rekening persembahan. Nomor disimpan tanpa spasi; sections/give.tsx yang
+   * merapikannya jadi 7660 400 189. Selama `accounts` kosong, section Give
+   * menampilkan ajakan menghubungi WhatsApp.
    */
   give: {
     accountName: "Gereja MSI Kelapa Gading",
-    bank: "",
-    accountNumber: "",
+    bank: "BCA",
+    accounts: [
+      { id: "perpuluhan", label: "Perpuluhan & persembahan", number: "7660400189" },
+      { id: "gedung", label: "Gedung", number: "7660481189" },
+    ],
+    qris: { src: "/qris.png", width: 870, height: 1306 },
   },
 } as const;
 
@@ -70,6 +80,7 @@ export const navigation = [
 export const whatsappMessages = {
   contact: "Halo Every Nation Kelapa Gading, saya ingin bertanya.",
   kids: "Halo Every Nation Kelapa Gading, saya ingin bertanya tentang Kids Church.",
+  heritage: "Halo Every Nation Kelapa Gading, saya ingin bertanya tentang Heritage.",
   procon: "Halo Every Nation Kelapa Gading, saya tertarik dengan kelas ProCon. Boleh minta info jadwalnya?",
   give: "Halo Every Nation Kelapa Gading, saya ingin memberi persembahan. Boleh minta info rekening gereja?",
   general: "Halo Every Nation Kelapa Gading, ",

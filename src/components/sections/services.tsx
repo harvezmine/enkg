@@ -102,6 +102,60 @@ function KidsChurch({ ministry }: { ministry: Ministry }) {
   );
 }
 
+/**
+ * Heritage: umurnya persis di antara Kids dan Youth, dan kartunya pun berdiri di
+ * antara keduanya, satu-satunya berlatar sun penuh. Jamnya sama dengan Kids
+ * Church, jadi yang dibesarkan rentang umurnya, bukan jamnya lagi.
+ */
+function Heritage({ ministry }: { ministry: Ministry }) {
+  const panel = ministry.panel;
+  return (
+    <article className="group relative flex h-full flex-col justify-between overflow-hidden rounded-[2rem] bg-sun-500 p-8 text-ink shadow-lit-soft sm:p-9">
+      {/* Tiga anak panah naik di sudut, kepotong tepi kartu. Kids memakai lengkung
+          dan Youth memakai lingkaran, jadi Heritage sengaja bersudut: tiga bentuk
+          yang tidak mungkin tertukar meski ketiganya berjajar. */}
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 120 120"
+        className="pointer-events-none absolute -right-7 -bottom-7 h-40 w-40 text-ink/15 sm:h-44 sm:w-44"
+      >
+        {[0, 1, 2].map((step) => (
+          <polyline
+            key={step}
+            points={`14,${58 + step * 26} 60,${20 + step * 26} 106,${58 + step * 26}`}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="transition-transform duration-500 ease-out-soft group-hover:-translate-y-2"
+            style={{ transitionDelay: `${step * 70}ms` }}
+          />
+        ))}
+      </svg>
+
+      <div className="relative">
+        <p className="text-sm font-semibold text-ink/65">{ministry.meta}</p>
+        <h3 className="font-display mt-3 text-3xl font-bold sm:text-4xl">{ministry.name}</h3>
+        {panel.kind === "age" && (
+          <p className="font-display tabular mt-6 text-6xl leading-none font-bold tracking-tight sm:text-7xl">
+            {panel.figure}
+            <span className="ml-2 align-baseline text-xl font-semibold tracking-normal opacity-60">{panel.unit}</span>
+          </p>
+        )}
+        <p className="mt-5 max-w-sm leading-relaxed text-ink/75">{ministry.summary}</p>
+        <p className="mt-4 flex items-start gap-2 text-sm font-semibold text-ink/75">
+          <Icon.mapPin className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={1.75} />
+          {site.address.office}, {site.address.officeNote}
+        </p>
+      </div>
+      <div className="relative mt-8">
+        <Cta ministry={ministry} className="btn bg-ink text-sm text-sun-400 hover:bg-navy-950" />
+      </div>
+    </article>
+  );
+}
+
 /** Youth: paling berenergi, memakai busur sun besar sebagai grafisnya. */
 function Youth({ ministry }: { ministry: Ministry }) {
   const panel = ministry.panel;
@@ -176,7 +230,7 @@ const firstVisit = [
   { icon: Icon.clock, label: "Kapan", body: "Minggu 10.00 WIB. Doa bersama mulai 09.15." },
   { icon: Icon.mapPin, label: "Di mana", body: `${site.address.venue}, ${site.address.building}.` },
   { icon: Icon.check, label: "Pakai apa", body: "Pakai yang membuatmu nyaman. Tidak ada aturan." },
-  { icon: Icon.users, label: "Bawa anak", body: `Kids Church 10.30 di ${site.address.kidsRoom}.` },
+  { icon: Icon.users, label: "Bawa anak", body: `Kids Church 10.30 di ${site.address.kidsRoom}. Usia 12–17 ke Heritage.` },
 ] as const;
 
 export function Services({ now }: { now: Date }) {
@@ -197,7 +251,7 @@ export function Services({ now }: { now: Date }) {
           <SectionHeading
             eyebrow="Pelayanan"
             title="Ada tempat untukmu di sini."
-            intro="Ibadah Minggu, Kids Church, doa bersama, dan Life Group. Semuanya terbuka untuk tamu."
+            intro="Ibadah Minggu, Kids Church, Heritage, Youth, doa bersama, dan Life Group. Semuanya terbuka untuk tamu."
           />
         </div>
         <Reveal delay={100} className="lg:col-span-5 lg:pb-2">
@@ -226,14 +280,19 @@ export function Services({ now }: { now: Date }) {
       </Reveal>
 
       {/* Tiga pelayanan utama. */}
-      <div className="mt-12 grid gap-5 sm:mt-14 md:grid-cols-2">
-        <Reveal className="md:col-span-2">
+      {/* Kids, Heritage, Youth berdampingan dan urut umur, jadi orang tua langsung
+          tahu anaknya masuk yang mana tanpa harus membaca ketiganya. */}
+      <div className="mt-12 grid gap-5 sm:mt-14 md:grid-cols-2 lg:grid-cols-3">
+        <Reveal className="md:col-span-2 lg:col-span-3">
           <SundayService ministry={byId("sunday-service")} />
         </Reveal>
         <Reveal delay={60}>
           <KidsChurch ministry={byId("kids-church")} />
         </Reveal>
         <Reveal delay={120}>
+          <Heritage ministry={byId("heritage")} />
+        </Reveal>
+        <Reveal delay={180} className="md:col-span-2 lg:col-span-1">
           <Youth ministry={byId("youth")} />
         </Reveal>
       </div>
@@ -259,7 +318,7 @@ export function Services({ now }: { now: Date }) {
                 <h3 className="font-display text-xl font-bold">{group.label}</h3>
                 <p className="text-sm text-navy-700">{formatJakartaDate(group.next)}</p>
               </div>
-              <ul className={`mt-6 grid gap-5 ${index === 0 ? "sm:grid-cols-3 xl:grid-cols-1" : ""}`}>
+              <ul className={`mt-6 grid gap-5 ${index === 0 ? "sm:grid-cols-2 xl:grid-cols-1" : ""}`}>
                 {group.items.map((item) => (
                   <li key={item.id} className="grid grid-cols-[4.5rem_1fr] gap-3">
                     <p className="font-display tabular text-2xl leading-none font-bold tracking-tight sm:text-3xl">

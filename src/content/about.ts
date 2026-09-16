@@ -14,6 +14,34 @@ export const story = {
   ],
 } as const;
 
+/**
+ * Dua kompilasi klip Reels gereja di kepala section Siapa Kita, diputar otomatis
+ * berdampingan tanpa suara. Sumbernya public/compilation1.mp4 dan compilation2.mp4,
+ * masing-masing dipotong bagian hitamnya, dibuang audionya, lalu dikompres
+ * (lihat README bagian "Video Siapa Kita"). Potret 480×854, rasio asli klipnya.
+ *
+ * Kalau `src` salah satunya dikosongkan, yang tampil fotonya saja, jadi section
+ * tetap utuh selama video penggantinya belum siap.
+ */
+export type AboutClip = { src: string; poster: string; width: number; height: number; alt: string };
+
+export const aboutVideos: AboutClip[] = [
+  {
+    src: "/media/siapa-kita-1.mp4",
+    poster: "/media/siapa-kita-1.jpg",
+    width: 480,
+    height: 854,
+    alt: "Perayaan ulang tahun keenam Every Nation Kelapa Gading: jemaat menari, anak-anak bermain, dan ibadah bersama",
+  },
+  {
+    src: "/media/siapa-kita-2.mp4",
+    poster: "/media/siapa-kita-2.jpg",
+    width: 480,
+    height: 854,
+    alt: "Jemaat Every Nation Kelapa Gading menyambut tamu, makan bersama, dan berfoto seusai ibadah",
+  },
+];
+
 export const stats = [
   { value: "2019", label: "Awal perjalanan ENKG" },
   { value: "7", label: "Tahun berjalan bersama" },
@@ -49,7 +77,7 @@ export const vision = {
 } as const;
 
 export const mission = {
-  id: "Kami ada untuk menghormati Tuhan dengan mendirikan gereja dan pelayanan kampus yang berpusat pada Kristus, diberdayakan oleh Roh, dan bertanggung jawab secara sosial di setiap bangsa.",
+  id: "Kami ada untuk menghormati Tuhan dengan mendirikan gereja dan pelayanan kampus yang berpusat pada Kristus, diberdayakan oleh Roh Kudus, dan bertanggung jawab secara sosial di setiap bangsa.",
   en: "We exist to honor God by establishing Christ-centered, Spirit-empowered, socially responsible churches and campus ministries in every nation.",
 } as const;
 

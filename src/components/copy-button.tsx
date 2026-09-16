@@ -4,7 +4,8 @@ import { useState } from "react";
 
 import { Icon } from "./icons";
 
-export function CopyButton({ value, label = "Salin nomor" }: { value: string; label?: string }) {
+/** `name` membedakan tombol yang muncul lebih dari sekali, mis. dua nomor rekening. */
+export function CopyButton({ value, label = "Salin nomor", name }: { value: string; label?: string; name?: string }) {
   const [copied, setCopied] = useState(false);
 
   const copy = async () => {
@@ -26,6 +27,7 @@ export function CopyButton({ value, label = "Salin nomor" }: { value: string; la
       ) : (
         label
       )}
+      {name && <span className="sr-only"> {name}</span>}
     </button>
   );
 }

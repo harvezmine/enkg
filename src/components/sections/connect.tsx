@@ -94,6 +94,15 @@ export function Connect() {
             >
               Chat WhatsApp
             </a>
+            {/* Email ikut di kartu yang sama, bukan kartu sendiri: keduanya jawaban
+                untuk satu pertanyaan yang sama, "saya harus menghubungi ke mana". */}
+            <a
+              href={`mailto:${site.email}`}
+              className="group mt-5 flex items-center gap-2.5 border-t border-white/10 pt-5 text-sm"
+            >
+              <Icon.mail className="h-4 w-4 shrink-0 text-sun-400" />
+              <span className="link-sweep break-all">{site.email}</span>
+            </a>
           </Reveal>
 
           <Reveal delay={180} className="rounded-[2rem] bg-cream-50 p-7 shadow-lit-soft ring-1 ring-ink/5">

@@ -2,15 +2,16 @@ import { site, whatsappMessages, whatsappUrl } from "@/content/site";
 
 import { CopyButton } from "../copy-button";
 import { Icon } from "../icons";
+import { QrisDialog } from "../qris-dialog";
 import { Reveal } from "../reveal";
 import { Eyebrow, Grain } from "../ui";
 
-/** "0000000000" → "000 000 0000", supaya nomor rekening mudah dibaca. */
-const formatAccount = (value: string) => value.replace(/^(\d{3})(\d{3})(\d+)$/, "$1 $2 $3");
+/** "7660400189" → "7660 400 189", persis seperti yang tercetak di buku tabungan. */
+const formatAccount = (value: string) => value.replace(/^(\d{4})(\d{3})(\d+)$/, "$1 $2 $3");
 
 export function Give() {
   const { give } = site;
-  const ready = Boolean(give.bank && give.accountNumber);
+  const ready = Boolean(give.bank && give.accounts.length);
 
   return (
     <section id="give" className="bg-paper edge-top-soft relative isolate overflow-hidden px-5 pt-24 pb-28 sm:px-8 lg:pt-32 lg:pb-36">
@@ -33,42 +34,56 @@ export function Give() {
         </Reveal>
 
         <div className="relative mx-auto w-full max-w-xl lg:col-span-6 lg:max-w-none">
-          <Reveal className="relative overflow-hidden rounded-3xl border border-navy-700/15 bg-navy-950 p-7 text-cream-100 shadow-lit sm:p-10">
-            <span
-              aria-hidden="true"
-              className="mb-8 grid h-14 w-14 place-items-center rounded-full border border-sun-300/40 text-sun-300"
-            >
-              <Icon.heart className="h-6 w-6" strokeWidth={1.5} />
-            </span>
-            <p className="flex items-center gap-2 text-sm text-cream-100/65">
-              <Icon.check className="h-4 w-4 text-sun-400" /> Rekening persembahan
-            </p>
-            <p className="font-display mt-2 text-2xl font-bold sm:text-3xl">{give.accountName}</p>
+          <Reveal className="bg-navy-deep relative isolate overflow-hidden rounded-[2rem] p-7 text-cream-100 shadow-lit sm:p-9">
+            <Grain className="opacity-10" />
 
             {ready ? (
-              <div className="mt-6 flex flex-wrap items-end justify-between gap-4 border-t border-white/10 pt-6">
-                <div>
-                  <p className="text-sm text-cream-100/65">{give.bank}</p>
-                  <p className="font-display tabular mt-1 text-3xl font-semibold tracking-wide sm:text-4xl">
-                    {formatAccount(give.accountNumber)}
-                  </p>
+              <div className="relative">
+                {/* Nama penerima yang paling dulu dibesarkan: itu yang dicocokkan
+                    orang di layar m-banking sebelum menekan kirim. */}
+                <Eyebrow tone="navy">{give.bank}</Eyebrow>
+                <p className="font-display mt-4 text-2xl leading-tight font-bold sm:text-3xl">{give.accountName}</p>
+
+                {/* Dua rekening dengan peruntukan berbeda, jadi labelnya dibaca lebih
+                    dulu daripada nomornya. Salah pos merepotkan bendahara, bukan pemberi. */}
+                <ul className="mt-7 border-t border-white/10">
+                  {give.accounts.map((account) => (
+                    <li
+                      key={account.id}
+                      className="flex flex-wrap items-end justify-between gap-x-4 gap-y-3 border-b border-white/10 py-5"
+                    >
+                      <div>
+                        <p className="text-sm text-cream-100/60">{account.label}</p>
+                        <p className="font-display tabular mt-1 text-2xl font-semibold tracking-wide sm:text-3xl">
+                          {formatAccount(account.number)}
+                        </p>
+                      </div>
+                      <CopyButton value={account.number} label="Salin" name={account.label} />
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-7">
+                  <QrisDialog />
                 </div>
-                <CopyButton value={give.accountNumber} />
               </div>
             ) : (
-              <p className="mt-5 border-t border-white/10 pt-5 leading-relaxed text-cream-100/75">
-                Hubungi tim gereja melalui WhatsApp untuk informasi rekening persembahan.
-              </p>
+              <div className="relative">
+                <Eyebrow tone="navy">Rekening persembahan</Eyebrow>
+                <p className="font-display mt-4 text-2xl leading-tight font-bold sm:text-3xl">{give.accountName}</p>
+                <p className="mt-5 leading-relaxed text-cream-100/75">
+                  Hubungi tim gereja melalui WhatsApp untuk informasi rekening persembahan.
+                </p>
+                <a
+                  href={whatsappUrl(whatsappMessages.give)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-sun mt-7 w-full sm:w-auto"
+                >
+                  <Icon.whatsapp className="h-5 w-5" /> Tanya info rekening
+                </a>
+              </div>
             )}
-
-            <a
-              href={whatsappUrl(whatsappMessages.give)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-sun mt-6 w-full sm:w-auto"
-            >
-              <Icon.whatsapp className="h-5 w-5" /> {ready ? "Konfirmasi lewat WhatsApp" : "Tanya info rekening"}
-            </a>
           </Reveal>
         </div>
       </div>
