@@ -150,7 +150,7 @@ export default async function AdminDashboard() {
           <Link
             key={label}
             href={href}
-            className={`group flex flex-col gap-1.5 p-4 transition-colors sm:p-5 ${urgent ? "bg-sun-400/15 hover:bg-sun-400/25" : "bg-white hover:bg-cream-50"}`}
+            className={`group flex flex-col gap-1.5 p-4 transition-colors sm:p-5 ${urgent ? "bg-[#fff7e1] hover:bg-[#fef2ce]" : "bg-white hover:bg-cream-50"}`}
           >
             <span className="flex items-center gap-1.5 text-xs font-medium text-ink-soft">
               <CardIcon className={`h-4 w-4 shrink-0 ${urgent ? "text-[#8a6500]" : "text-navy-700/70"}`} />
@@ -161,14 +161,14 @@ export default async function AdminDashboard() {
         ))}
       </div>
 
-      <div className="mt-10 grid gap-10 xl:grid-cols-2 xl:gap-8">
+      <div className="mt-10 grid grid-cols-1 gap-10 xl:grid-cols-2 xl:gap-8">
       {celebrations.length > 0 && (
         <section id="ulang-tahun" className="scroll-mt-24">
           <SectionTitle>Ulang tahun & anniversary</SectionTitle>
           <Card>
             <ul className="divide-y divide-ink/[0.06]">
               {celebrations.slice(0, 12).map((item) => (
-                <li key={item.key} className={`flex items-center gap-3 px-4 py-3 ${item.daysUntil === 0 ? "bg-sun-400/15" : ""}`}>
+                <li key={item.key} className={`flex items-center gap-3 px-4 py-3 ${item.daysUntil === 0 ? "bg-[#fff7e1]" : ""}`}>
                   <span className="relative flex shrink-0">
                     {item.people.map((person, index) => (
                       <PersonAvatar
