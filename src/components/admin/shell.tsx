@@ -54,6 +54,7 @@ const NAV_GROUPS: { title?: string; items: NavItem[] }[] = [
   {
     title: "Lainnya",
     items: [
+      { href: "/admin/pengguna", label: "Pengguna & akses", short: "Pengguna", icon: Icon.lock },
       { href: "/admin/telegram", label: "Bot Telegram", short: "Telegram", icon: Icon.message },
       { href: "/admin/panduan", label: "Panduan", short: "Panduan", icon: HelpIcon },
     ],
@@ -64,7 +65,14 @@ const NAV = NAV_GROUPS.flatMap((group) => group.items);
 /** Tab bar HP hanya muat empat; sisanya ada di menu "Lainnya". */
 const MOBILE_TABS = ["/admin", "/admin/kontak", "/admin/jemaat", "/admin/life-group"];
 
-export function AdminShell({ newSubmissions, children }: { newSubmissions: number; children: ReactNode }) {
+export type ShellUser = {
+  name: string;
+  email: string;
+  /** Nama Life Group kalau admin ini juga leader: tampil jalan ke portal LG-nya. */
+  leaderOf: string | null;
+};
+
+export function AdminShell({ newSubmissions, user, children }: { newSubmissions: number; user: ShellUser; children: ReactNode }) {
   const pathname = usePathname();
   const isActive = (href: string) => (href === "/admin" ? pathname === "/admin" : pathname.startsWith(href));
   const badge = (href: string) => href === "/admin/kontak" && newSubmissions > 0;
@@ -131,15 +139,32 @@ export function AdminShell({ newSubmissions, children }: { newSubmissions: numbe
         </nav>
 
         <div className="border-t border-white/10 p-3">
-          <div className="flex items-center gap-3 px-3 py-2">
+          {user.leaderOf && (
+            <Link
+              href="/portal"
+              className="mb-2 flex items-center gap-3 rounded-xl bg-sun-500 px-3 py-2.5 text-sm font-semibold text-ink transition hover:bg-sun-400"
+            >
+              <Icon.home className="h-[18px] w-[18px] shrink-0" />
+              <span className="min-w-0 flex-1">
+                <span className="block">Portal Life Group</span>
+                <span className="block truncate text-xs font-medium text-ink/70">{user.leaderOf}</span>
+              </span>
+              <Icon.arrowRight className="h-4 w-4 shrink-0" />
+            </Link>
+          )}
+          <Link
+            href="/admin/akun"
+            className="flex items-center gap-3 rounded-xl px-3 py-2 transition-colors hover:bg-white/8"
+            title="Akun saya"
+          >
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white/10 text-sun-400">
               <Icon.user className="h-[18px] w-[18px]" />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block text-sm font-semibold text-cream-100">Pengurus</span>
-              <span className="block text-xs text-cream-100/55">Akses penuh panel ini</span>
+              <span className="block truncate text-sm font-semibold text-cream-100">{user.name}</span>
+              <span className="block truncate text-xs text-cream-100/55">{user.email}</span>
             </span>
-          </div>
+          </Link>
           <Link
             href="/"
             target="_blank"
@@ -190,7 +215,11 @@ export function AdminShell({ newSubmissions, children }: { newSubmissions: numbe
             <button type="button" aria-label="Tutup menu" onClick={() => setMoreOpen(false)} className="animate-fade absolute inset-0 bg-ink/40" />
             <div className="animate-sheet absolute inset-x-3 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] rounded-3xl bg-cream-50 p-2 shadow-deep">
               <div className="grid grid-cols-3 gap-1">
-                {NAV.filter((item) => !MOBILE_TABS.includes(item.href)).map(({ href, short, icon: NavIcon }) => (
+                {[
+                  ...(user.leaderOf ? [{ href: "/portal", short: "Portal LG", icon: Icon.home }] : []),
+                  ...NAV.filter((item) => !MOBILE_TABS.includes(item.href)),
+                  { href: "/admin/akun", short: "Akun saya", icon: Icon.user },
+                ].map(({ href, short, icon: NavIcon }) => (
                   <Link
                     key={href}
                     href={href}

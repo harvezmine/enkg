@@ -139,12 +139,17 @@ export type LifeGroup = {
   updated_at: string;
 };
 
-/** Akun portal leader. password_hash jangan pernah dikirim ke browser. */
+/**
+ * Akun login (email + password). Hak akses: is_admin untuk admin panel;
+ * portal Life Group terbuka bila orang yang ditautkan (person_id) adalah
+ * leader sebuah Life Group. password_hash jangan pernah dikirim ke browser.
+ */
 export type Account = {
   id: string;
-  person_id: string;
-  role: "leader";
-  login: string;
+  email: string;
+  name: string;
+  person_id: string | null;
+  is_admin: boolean;
   password_hash: string;
   is_active: boolean;
   must_change_password: boolean;

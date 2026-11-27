@@ -127,7 +127,7 @@ export function MemberEditor({
             <Field
               label="WhatsApp"
               htmlFor="phone"
-              hint={isSelf ? "Nomor untuk masuk portal tidak ikut berubah. Minta admin kalau mau ganti." : undefined}
+              hint={isSelf ? "Login tetap pakai email akunmu, nomor ini tidak berpengaruh." : undefined}
               optional
             >
               <Input id="phone" name="phone" type="tel" inputMode="tel" defaultValue={value("phone")} placeholder="0812 3456 7890" maxLength={40} />

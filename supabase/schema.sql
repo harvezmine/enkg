@@ -240,15 +240,19 @@ drop trigger if exists enkg_teams_touch on enkg_teams;
 create trigger enkg_teams_touch before update on enkg_teams
   for each row execute function enkg_touch_updated_at();
 
--- ── Akun portal leader Life Group ────────────────────────────────────────────
--- Admin tetap masuk dengan ADMIN_PASSWORD bersama. Leader punya akun sendiri.
--- Akses leader hanya sah selama orangnya masih tercatat sebagai leader sebuah
--- Life Group (enkg_people.life_group_role = 'leader'); dicek di setiap request.
+-- ── Akun login (email + password) ────────────────────────────────────────────
+-- Satu akun per orang, didaftarkan admin di panel. Aksesnya mengikuti peran:
+--  - is_admin = true          → admin panel;
+--  - orangnya leader sebuah LG → portal Life Group (dicek ulang tiap request
+--    dari enkg_people.life_group_role, bukan disimpan di sini);
+--  - keduanya                 → dua-duanya, tanpa login ulang.
+-- Admin pertama dibuat sekali dari halaman masuk dengan kode ADMIN_PASSWORD.
 create table if not exists enkg_accounts (
   id                   uuid primary key default gen_random_uuid(),
-  person_id            uuid not null unique references enkg_people (id) on delete cascade,
-  role                 text not null default 'leader' check (role in ('leader')),
-  login                text not null unique,  -- nomor WA sebagai digit, mis. "081234567890"
+  email                text not null,
+  name                 text not null,
+  person_id            uuid unique references enkg_people (id) on delete set null,
+  is_admin             boolean not null default false,
   password_hash        text not null,         -- scrypt, lihat src/lib/password.ts
   is_active            boolean not null default true,
   must_change_password boolean not null default true,
@@ -256,6 +260,32 @@ create table if not exists enkg_accounts (
   created_at           timestamptz not null default now(),
   updated_at           timestamptz not null default now()
 );
+
+-- Naik dari versi pertama (masuk pakai nomor WA, khusus leader). Akun lama
+-- tanpa email tidak bisa dipakai lagi; admin cukup membuatnya ulang.
+alter table enkg_accounts add column if not exists email text;
+alter table enkg_accounts add column if not exists name text;
+alter table enkg_accounts add column if not exists is_admin boolean not null default false;
+alter table enkg_accounts alter column person_id drop not null;
+delete from enkg_accounts where email is null;
+update enkg_accounts set name = email where name is null;
+alter table enkg_accounts alter column email set not null;
+alter table enkg_accounts alter column name set not null;
+alter table enkg_accounts drop column if exists login;
+alter table enkg_accounts drop column if exists role;
+create unique index if not exists enkg_accounts_email_idx on enkg_accounts (lower(email));
+do $$
+begin
+  -- Data jemaat dihapus → akunnya tetap ada (mis. admin), hanya lepas tautan.
+  if exists (
+    select 1 from pg_constraint
+    where conname = 'enkg_accounts_person_id_fkey' and confdeltype <> 'n'
+  ) then
+    alter table enkg_accounts drop constraint enkg_accounts_person_id_fkey;
+    alter table enkg_accounts
+      add constraint enkg_accounts_person_id_fkey foreign key (person_id) references enkg_people (id) on delete set null;
+  end if;
+end $$;
 
 -- ── Materi Life Group: tulisan dan/atau booklet (PDF) ────────────────────────
 create table if not exists enkg_lg_materials (

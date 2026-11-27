@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useId, useRef, useState, type SVGProps } from "react";
+import { useCallback, useEffect, useId, useRef, useState, type ReactNode, type SVGProps } from "react";
 
 import { Icon } from "@/components/icons";
 import { whatsappMessages, whatsappUrl } from "@/content/site";
@@ -19,7 +19,22 @@ const STORAGE_KEY = "enkg-chat:v1";
 const MAX_STORED = 30;
 
 const WELCOME =
-  "Halo! Aku asisten situs Every Nation Kelapa Gading. Mau tanya jadwal ibadah, Life Group, atau lokasi gereja? Tanya aja di sini.";
+  "Halo! Aku asisten situs Every Nation Kelapa Gading. Pilih salah satu pertanyaan di bawah, atau ketik pertanyaanmu sendiri.";
+
+/** Ikon tiap pertanyaan cepat, supaya mudah dikenali tanpa harus membaca semuanya. */
+const QUICK_ICON: Record<string, (props: { className?: string }) => ReactNode> = {
+  jadwal: Icon.calendar,
+  lifegroup: Icon.users,
+  doa: Icon.heart,
+  lokasi: Icon.mapPin,
+  anak: Icon.home,
+  pertama: Icon.arrowRight,
+};
+
+/** Sapaan kecil di samping tombol chat, sekali per kunjungan. */
+const NUDGE_KEY = "enkg-chat:sapa";
+const NUDGE_AFTER_MS = 6000;
+const NUDGE_FOR_MS = 14000;
 
 type Status = "idle" | "waiting" | "streaming";
 type Failure = { message: string } | null;
@@ -70,6 +85,7 @@ export function Chatbot() {
   const [failure, setFailure] = useState<Failure>(null);
   const [announce, setAnnounce] = useState("");
   const [modal, setModal] = useState(false);
+  const [nudge, setNudge] = useState(false);
 
   const titleId = useId();
   const launcherRef = useRef<HTMLButtonElement>(null);
@@ -92,6 +108,26 @@ export function Chatbot() {
       // Mode privat atau penyimpanan penuh: percakapan cukup hidup di memori.
     }
   }, [messages]);
+
+  // Sapa sekali per kunjungan, beberapa detik setelah halaman dibuka.
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem(NUDGE_KEY)) return;
+    } catch {
+      return;
+    }
+    const show = window.setTimeout(() => {
+      setNudge(true);
+      try {
+        sessionStorage.setItem(NUDGE_KEY, "1");
+      } catch {}
+    }, NUDGE_AFTER_MS);
+    const hide = window.setTimeout(() => setNudge(false), NUDGE_AFTER_MS + NUDGE_FOR_MS);
+    return () => {
+      window.clearTimeout(show);
+      window.clearTimeout(hide);
+    };
+  }, []);
 
   // Di HP jendela memenuhi layar (modal); di desktop jadi kartu di pojok.
   useEffect(() => {
@@ -215,15 +251,41 @@ export function Chatbot() {
   return (
     <>
       {/* ── Tombol pembuka ─────────────────────────────────────────────────── */}
+      {nudge && !open && (
+        <div className="animate-sheet fixed right-4 bottom-[5.25rem] z-40 max-w-[16rem] sm:right-6 sm:bottom-[6.25rem]">
+          <button
+            type="button"
+            onClick={() => {
+              setNudge(false);
+              setOpen(true);
+            }}
+            className="block rounded-2xl rounded-br-md bg-white px-4 py-3 pr-9 text-left text-[15px] leading-snug text-ink shadow-lift ring-1 ring-ink/8"
+          >
+            Halo! Mau tanya jadwal ibadah atau Life Group? <span className="font-semibold text-navy-700">Tanya di sini.</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setNudge(false)}
+            aria-label="Tutup sapaan"
+            className="absolute top-1.5 right-1.5 grid h-7 w-7 place-items-center rounded-full text-ink-soft hover:bg-cream-100"
+          >
+            <Icon.close className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      )}
+
       <button
         ref={launcherRef}
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          setNudge(false);
+          setOpen(true);
+        }}
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-label="Buka chat dengan Every Nation Kelapa Gading"
         className={cn(
-          "bg-navy-deep group fixed right-4 bottom-4 z-40 flex items-center gap-2.5 rounded-full p-1.5 text-cream-100 shadow-lift ring-1 ring-white/10 transition duration-300 hover:-translate-y-0.5 sm:right-6 sm:bottom-6 sm:pr-5",
+          "bg-navy-deep group fixed right-4 bottom-4 z-40 flex items-center gap-2.5 rounded-full p-1.5 pr-4 text-cream-100 shadow-lift ring-1 ring-white/10 transition duration-300 hover:-translate-y-0.5 sm:right-6 sm:bottom-6 sm:pr-5",
           open && "pointer-events-none scale-90 opacity-0",
         )}
       >
@@ -231,9 +293,9 @@ export function Chatbot() {
           <Icon.message className="h-5 w-5" />
           <span aria-hidden="true" className="absolute -top-0.5 -right-0.5 h-3 w-3 rounded-full bg-[#25d366] ring-2 ring-navy-800" />
         </span>
-        <span className="hidden text-left sm:block">
+        <span className="text-left">
           <span className="block text-sm leading-tight font-semibold">Tanya kami</span>
-          <span className="block text-[11px] leading-tight text-cream-100/60">Jadwal, Life Group, lokasi</span>
+          <span className="hidden text-[11px] leading-tight text-cream-100/60 sm:block">Jadwal, Life Group, lokasi</span>
         </span>
       </button>
 
@@ -250,16 +312,19 @@ export function Chatbot() {
             "sm:inset-auto sm:right-6 sm:bottom-6 sm:h-[min(38rem,calc(100dvh-3rem))] sm:w-[24rem] sm:rounded-[1.75rem] sm:pt-0 sm:shadow-deep sm:ring-1 sm:ring-ink/10",
           )}
         >
-          <header className="bg-navy-deep relative shrink-0 px-4 pt-4 pb-3.5 text-cream-100 sm:px-5">
-            <div className="flex items-start gap-3">
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-sun-500 text-navy-900">
-                <Icon.message className="h-5 w-5" />
+          <header className="bg-navy-deep relative shrink-0 text-cream-100">
+            <div className="flex items-center gap-3 px-4 py-3 sm:px-5">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-sun-500 text-navy-900">
+                <Icon.message className="h-[18px] w-[18px]" />
               </span>
               <div className="min-w-0 flex-1">
-                <h2 id={titleId} className="font-display text-lg leading-tight font-bold">
+                <h2 id={titleId} className="font-display text-base leading-tight font-bold">
                   Tanya ENKG
                 </h2>
-                <p className="mt-0.5 text-xs text-cream-100/65">Asisten situs Every Nation Kelapa Gading</p>
+                <p className="flex items-center gap-1.5 text-xs text-cream-100/65">
+                  <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[#25d366]" />
+                  Siap menjawab
+                </p>
               </div>
               {started && (
                 <button
@@ -281,41 +346,42 @@ export function Chatbot() {
                 <Icon.close className="h-5 w-5" />
               </button>
             </div>
-
-            <a
-              href={handoffUrl(messages)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-3.5 flex items-center gap-3 rounded-2xl bg-white/8 py-2 pr-2 pl-3 ring-1 ring-white/12 transition hover:bg-white/12"
-            >
-              <span className="min-w-0 flex-1 text-xs leading-snug text-cream-100/75">Lebih nyaman ngobrol dengan tim?</span>
-              <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[#25d366] px-3 py-1.5 text-xs font-semibold text-ink">
-                <Icon.whatsapp className="h-4 w-4" />
-                Chat WhatsApp
-              </span>
-            </a>
           </header>
 
-          <div ref={scrollRef} className="bg-paper min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-5 sm:px-5">
+          <div
+            ref={scrollRef}
+            className="bg-paper min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-5 sm:px-5"
+            onClick={(event) => {
+              // Tautan ke bagian halaman ini (mis. #kalender): di HP jendela chat
+              // menutupi layar, jadi tutup dulu supaya bagiannya langsung terlihat.
+              const link = (event.target as HTMLElement).closest("a");
+              if (modal && link?.getAttribute("href")?.startsWith("#")) setOpen(false);
+            }}
+          >
             <ol className="space-y-3" aria-label="Percakapan">
-              <li className="flex">
-                <div className="max-w-[88%] rounded-2xl rounded-tl-md bg-white px-4 py-3 text-[15px] leading-relaxed shadow-soft ring-1 ring-ink/6">
+              <li className="flex flex-col items-start">
+                <div className="max-w-[88%] rounded-2xl rounded-tl-md bg-white px-4 py-3 text-base leading-relaxed shadow-soft ring-1 ring-ink/6">
                   {WELCOME}
                 </div>
+                {!started && <HelpLink href={handoffUrl(messages)} />}
               </li>
 
               {messages.map((message, index) =>
                 message.role === "user" ? (
                   <li key={index} className="flex justify-end">
-                    <div className="max-w-[85%] rounded-2xl rounded-tr-md bg-navy-700 px-4 py-2.5 text-[15px] leading-relaxed whitespace-pre-wrap text-cream-50">
+                    <div className="max-w-[85%] rounded-2xl rounded-tr-md bg-navy-700 px-4 py-2.5 text-base leading-relaxed whitespace-pre-wrap text-cream-50">
                       {message.content}
                     </div>
                   </li>
                 ) : (
-                  <li key={index} className="flex">
-                    <div className="max-w-[88%] rounded-2xl rounded-tl-md bg-white px-4 py-3 text-[15px] leading-relaxed shadow-soft ring-1 ring-ink/6">
+                  <li key={index} className="flex flex-col items-start">
+                    <div className="max-w-[88%] rounded-2xl rounded-tl-md bg-white px-4 py-3 text-base leading-relaxed shadow-soft ring-1 ring-ink/6">
                       {message.content ? <ReplyText text={message.content} /> : <Typing />}
                     </div>
+                    {/* Setiap jawaban yang sudah selesai ditutup dengan jalan ke tim. */}
+                    {message.content && !(busy && index === messages.length - 1) && (
+                      <HelpLink href={handoffUrl(messages.slice(0, index))} />
+                    )}
                   </li>
                 ),
               )}
@@ -338,29 +404,52 @@ export function Chatbot() {
                       rel="noopener noreferrer"
                       className="btn btn-wa mt-3 px-4 py-2 text-sm"
                     >
-                      <Icon.whatsapp className="h-4 w-4" /> Lanjut di WhatsApp
+                      <Icon.whatsapp className="h-4 w-4" /> Hubungi kami
                     </a>
                   </div>
                 </li>
               )}
             </ol>
 
-            {!started && (
-              <div className="mt-4 flex flex-wrap gap-2" aria-label="Pertanyaan cepat">
-                {QUICK_REPLIES.map((reply) => (
+            {!busy && !started && (
+              <div className="mt-4 grid grid-cols-2 gap-2" aria-label="Pertanyaan cepat">
+                {QUICK_REPLIES.map((reply) => {
+                  const ReplyIcon = QUICK_ICON[reply.id] ?? Icon.message;
+                  return (
+                    <button
+                      key={reply.id}
+                      type="button"
+                      onClick={() => send(reply.prompt)}
+                      className="flex min-h-14 items-center gap-2.5 rounded-2xl bg-white px-3 py-2.5 text-left text-sm leading-snug font-semibold text-ink ring-1 ring-ink/8 transition hover:ring-navy-300 active:scale-[0.98]"
+                    >
+                      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-navy-50 text-navy-700">
+                        <ReplyIcon className="h-4 w-4" />
+                      </span>
+                      {reply.label}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Setelah ada jawaban: saran pertanyaan dalam satu baris yang bisa digeser. */}
+          {!busy && started && (
+            <div className="shrink-0 border-t border-ink/6 bg-cream-50" aria-label="Pertanyaan lain">
+              <div className="flex gap-2 overflow-x-auto px-4 py-2.5 [scrollbar-width:none] sm:px-5 [&::-webkit-scrollbar]:hidden">
+                {QUICK_REPLIES.filter((reply) => !messages.some((m) => m.role === "user" && m.content === reply.prompt)).map((reply) => (
                   <button
                     key={reply.id}
                     type="button"
                     onClick={() => send(reply.prompt)}
-                    disabled={busy}
-                    className="rounded-full bg-white px-3.5 py-2 text-sm font-semibold text-navy-800 ring-1 ring-navy-200 transition hover:bg-navy-50 hover:ring-navy-400 disabled:opacity-50"
+                    className="shrink-0 rounded-full bg-white px-4 py-2.5 text-sm font-semibold whitespace-nowrap text-navy-800 ring-1 ring-ink/10 transition hover:ring-navy-300"
                   >
                     {reply.label}
                   </button>
                 ))}
               </div>
-            )}
-          </div>
+            </div>
+          )}
 
           <form
             onSubmit={(event) => {
@@ -391,8 +480,8 @@ export function Chatbot() {
                     send(draft);
                   }
                 }}
-                placeholder="Tulis pertanyaanmu…"
-                className="max-h-[120px] min-h-10 flex-1 resize-none bg-transparent py-2 text-[15px] leading-relaxed text-ink outline-none placeholder:text-ink-soft/55"
+                placeholder="Ketik pertanyaanmu…"
+                className="max-h-[120px] min-h-10 flex-1 resize-none bg-transparent py-2 text-base leading-relaxed text-ink outline-none placeholder:text-ink-soft/55"
               />
               <button
                 type="submit"
@@ -403,8 +492,8 @@ export function Chatbot() {
                 <SendIcon className="h-5 w-5" />
               </button>
             </div>
-            <p className="mt-2 flex items-start justify-between gap-3 px-1 text-[11px] leading-snug text-ink-soft">
-              <span>Dijawab otomatis dan bisa keliru. Untuk hal pribadi, lebih baik lewat WhatsApp.</span>
+            <p className="mt-1.5 flex items-start justify-between gap-3 px-1 text-[11px] leading-snug text-ink-soft/80">
+              <span>Dijawab otomatis, bisa keliru.</span>
               {remaining < 100 && <span className="tabular shrink-0">{remaining}</span>}
             </p>
           </form>
@@ -418,9 +507,26 @@ export function Chatbot() {
   );
 }
 
+/** Baris kecil di bawah setiap jawaban: jalan ke tim lewat WhatsApp. */
+function HelpLink({ href }: { href: string }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="mt-1.5 ml-1 inline-flex items-center gap-1.5 rounded-full py-1 pr-2 text-sm text-ink-soft transition hover:text-navy-700"
+    >
+      <Icon.whatsapp className="h-4 w-4 text-[#1da851]" />
+      Perlu bantuan?
+      <span className="font-semibold text-navy-700 underline decoration-sun-500 decoration-2 underline-offset-4">Hubungi kami</span>
+    </a>
+  );
+}
+
 function Typing() {
   return (
     <span className="flex items-center gap-1 py-1" aria-label="Sedang menulis">
+      <span className="mr-1.5 text-sm text-ink-soft">Sedang menulis</span>
       {[0, 150, 300].map((delay) => (
         <span
           key={delay}

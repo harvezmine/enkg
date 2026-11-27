@@ -8,19 +8,19 @@ import { deletePerson, removeMembership, removeRelative, setMarriedOn } from "@/
 import { DbError } from "@/components/admin/db-error";
 import { DeleteButton } from "@/components/admin/delete-button";
 import { AssignLifeGroupForm } from "@/components/admin/life-group/forms";
-import { AccountPanel } from "@/components/admin/people/account-panel";
+import { AccountPanel, type AccountView } from "@/components/admin/people/account-panel";
 import { PersonAvatar } from "@/components/admin/people/avatar";
 import { FamilyTree } from "@/components/admin/people/family-tree";
 import { FamilyForm, MembershipForm } from "@/components/admin/people/forms";
 import { AdminPageHeader, Badge, Card, DateInput, Notice } from "@/components/admin/ui";
 import { Icon } from "@/components/icons";
 import { adminDb } from "@/lib/admin-auth";
+import { getSession } from "@/lib/auth";
 import {
   GENDER_LABEL,
   LIFE_GROUP_SEGMENT_LABEL,
   PERSON_STATUS_LABEL,
   TABLES,
-  type Account,
   type ContactSubmission,
   type Person,
 } from "@/lib/db-types";
@@ -104,20 +104,20 @@ export default async function PersonPage({
     .sort((a, b) => a.team.sort_order - b.team.sort_order);
 
   const isLeader = person.life_group_role === "leader" && Boolean(group);
-  const [photos, submission, account] = await Promise.all([
+  const [photos, submission, account, session] = await Promise.all([
     signPhotos(supabase, [person.photo_path, ...family.map((m) => m.person.photo_path), ...leaders.map((l) => l.photo_path)]),
     person.submission_id
       ? supabase.from(TABLES.submissions).select("*").eq("id", person.submission_id).maybeSingle()
       : Promise.resolve({ data: null }),
-    // Akun portal hanya relevan untuk leader. password_hash tidak pernah diambil.
-    isLeader
-      ? supabase
-          .from(TABLES.accounts)
-          .select("id, person_id, role, login, is_active, must_change_password, last_login_at, created_at, updated_at")
-          .eq("person_id", person.id)
-          .maybeSingle()
-      : Promise.resolve({ data: null }),
+    // password_hash tidak pernah diambil.
+    supabase
+      .from(TABLES.accounts)
+      .select("id, email, name, person_id, is_admin, is_active, must_change_password, last_login_at, created_at, updated_at")
+      .eq("person_id", person.id)
+      .maybeSingle(),
+    getSession(),
   ]);
+  const linkedAccount = account.data as AccountView | null;
   const photo = (p: Person) => (p.photo_path ? photos.get(p.photo_path) : null);
   const from = submission.data as ContactSubmission | null;
 
@@ -314,10 +314,15 @@ export default async function PersonPage({
             )}
           </Section>
 
-          {isLeader && (
+          {(isLeader || linkedAccount) && (
             <div id="akun-portal" className="scroll-mt-24">
-              <Section title="Akun portal leader">
-                <AccountPanel person={person} account={account.data as Omit<Account, "password_hash"> | null} />
+              <Section title="Akun login">
+                <AccountPanel
+                  person={person}
+                  account={linkedAccount}
+                  leaderOf={isLeader ? group!.name : null}
+                  isSelf={linkedAccount?.id === session?.account.id}
+                />
               </Section>
             </div>
           )}

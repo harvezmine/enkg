@@ -1,8 +1,7 @@
-import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { PortalShell } from "@/components/portal/shell";
-import { getLeaderContext } from "@/lib/leader-auth";
+import { requireLeader } from "@/lib/leader-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -11,14 +10,15 @@ export const dynamic = "force-dynamic";
  * hanya untuk data kerangka. Setiap halaman tetap memanggil requireLeader().
  */
 export default async function PortalAppLayout({ children }: { children: ReactNode }) {
-  const context = await getLeaderContext();
-  if (!context) redirect("/portal/keluar?alasan=sesi");
+  // Admin yang bukan leader diarahkan ke admin panel, bukan dikeluarkan.
+  const context = await requireLeader({ allowPasswordChange: true });
 
   return (
     <PortalShell
       groupName={context.lifeGroup.name}
       leaderName={context.person.nickname || context.person.full_name}
       locked={context.account.must_change_password}
+      isAdmin={context.isAdmin}
     >
       {children}
     </PortalShell>

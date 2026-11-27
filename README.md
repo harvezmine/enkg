@@ -77,7 +77,13 @@ Pengaturannya sama dengan situs Janji Pengharapan (`jp/`):
 
 ## Admin panel
 
-Pengurus mengelola konten di **`/admin`**. Polanya sama dengan admin panel Janji Pengharapan (`jp/`): satu kata sandi bersama, sesi berlaku 7 hari, dan login dikunci 15 menit setelah 5 kali salah.
+Semua orang masuk di **`/masuk`** dengan **email + password** masing-masing (tanpa 2FA). Sesi berlaku 14 hari, dan login dikunci 15 menit setelah 5 kali salah.
+
+- **Admin** (centang Admin di **Pengguna & akses**) membuka **`/admin`**.
+- **Leader Life Group** membuka **`/portal`** untuk grupnya. Aksesnya mengikuti data jemaat: akun harus ditautkan ke orang yang tercatat sebagai leader sebuah Life Group aktif.
+- Admin yang juga leader melihat tombol **Portal Life Group** di admin panel (dan **Admin panel** di portal), tanpa login ulang.
+- Akun didaftarkan admin di **Pengguna & akses** atau di bagian **Akun login** halaman data jemaat. Password sementara tampil sekali dan wajib diganti saat pertama masuk.
+- **Admin pertama:** selama belum ada admin, `/masuk` menampilkan form "Buat admin pertama" yang meminta kode pengaturan, yaitu isi `ADMIN_PASSWORD` di `.env.production`.
 
 | Menu | Isi | Tampil di situs |
 |---|---|---|
@@ -99,11 +105,11 @@ Di **Data jemaat → Impor Excel**: unduh template (berisi contoh, petunjuk, dan
 
 ### Portal leader Life Group (`/portal`)
 
-Leader masuk dengan **nomor WhatsApp + password sendiri**, terpisah dari kata sandi pengurus. Akunnya dibuat admin dari halaman data jemaat si leader (bagian "Akun portal leader"); password sementara tampil sekali dan bisa langsung dikirim lewat WhatsApp, lalu wajib diganti saat pertama masuk.
+Leader masuk di `/masuk` dengan **email + password** akunnya. Akunnya dibuat admin dari halaman data jemaat si leader (bagian "Akun login") atau dari **Pengguna & akses**; password sementara tampil sekali dan bisa langsung dikirim lewat WhatsApp, lalu wajib diganti saat pertama masuk.
 
 - Leader hanya melihat anggota grupnya sendiri (tanpa catatan pengurus), bisa mengubah data diri anggotanya (bukan status, catatan, atau Life Group), menjadwalkan pertemuan, mengisi laporan (kehadiran, tamu, jalannya pertemuan, pokok doa), dan membaca atau mengunduh materi. Setiap perubahan tercatat "diubah oleh" di halaman admin.
 - Akses dicek ulang ke database di setiap request: begitu akun dinonaktifkan, password di-reset, atau orangnya tidak lagi tercatat sebagai leader, sesinya langsung gugur.
-- Cookie leader tidak pernah bisa membuka `/admin`.
+- Leader yang bukan admin tidak pernah bisa membuka `/admin`; peran dicek ke database di setiap request.
 
 Isi artikel ditulis sebagai teks biasa: `## Judul`, `### Subjudul`, `> kutipan`, `- daftar`, `1. daftar bernomor`, `**tebal**`, `*miring*`.
 

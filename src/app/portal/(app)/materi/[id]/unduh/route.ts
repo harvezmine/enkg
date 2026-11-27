@@ -13,7 +13,7 @@ import { publicUrl } from "@/lib/public-url";
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const context = await getLeaderContext();
   if (!context || context.account.must_change_password) {
-    return NextResponse.redirect(publicUrl(request, "/portal/keluar?alasan=sesi"));
+    return NextResponse.redirect(publicUrl(request, "/keluar?alasan=sesi"));
   }
 
   const material = await groupMaterial(context, (await params).id);

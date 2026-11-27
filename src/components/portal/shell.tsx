@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
-import { portalSignOut } from "@/app/actions/portal";
+import { signOut } from "@/app/actions/auth";
 import logo from "@/assets/brand/logo-light.png";
 import { Icon } from "@/components/icons";
 import { cn } from "@/lib/utils";
@@ -27,11 +27,14 @@ export function PortalShell({
   groupName,
   leaderName,
   locked,
+  isAdmin = false,
   children,
 }: {
   groupName: string;
   leaderName: string;
   locked: boolean;
+  /** Leader ini juga admin: tampilkan jalan balik ke admin panel. */
+  isAdmin?: boolean;
   children: ReactNode;
 }) {
   const pathname = usePathname();
@@ -67,7 +70,16 @@ export function PortalShell({
             </nav>
           )}
 
-          <form action={portalSignOut} className={cn(locked ? "ml-auto" : "ml-auto lg:ml-2")}>
+          {isAdmin && !locked && (
+            <Link
+              href="/admin"
+              className="ml-auto inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full bg-sun-500 px-3.5 text-xs font-semibold text-ink transition hover:bg-sun-400 lg:ml-2"
+            >
+              <Icon.layout className="h-4 w-4" />
+              Admin panel
+            </Link>
+          )}
+          <form action={signOut} className={cn(locked || isAdmin ? "ml-1" : "ml-auto lg:ml-2", locked && "ml-auto")}>
             <button
               type="submit"
               aria-label="Keluar"

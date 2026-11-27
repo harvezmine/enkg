@@ -87,17 +87,20 @@ const GUIDES: Guide[] = [
   },
   {
     id: "leader",
-    title: "Menunjuk leader dan membuat akun portal",
-    summary: "Leader punya halaman sendiri untuk melihat anggota grup dan mengisi laporan pertemuan.",
+    title: "Menunjuk leader dan mendaftarkan akun",
+    summary: "Admin dan leader masuk dengan email dan password masing-masing. Leader punya portal sendiri untuk grupnya.",
     icon: Icon.star,
     steps: [
       "Buka Life Group-nya. Di **Masukkan ke grup ini**, cari namanya dan pilih **Sebagai: Leader**. Bisa juga tekan **Jadikan leader** di kartu anggota.",
-      "Tekan nama leader itu untuk membuka datanya. Di bagian **Akun portal leader**, tekan **Buat akun portal**.",
-      "Password sementara hanya tampil sekali. Tekan **Kirim lewat WhatsApp** supaya langsung sampai ke leadernya.",
-      "Leader masuk lewat alamat situs ditambah /portal (misalnya everynationkg.com/portal) dengan nomor WhatsApp dan password itu, lalu membuat password sendiri.",
+      "Tekan nama leader itu untuk membuka datanya. Di bagian **Akun login**, isi emailnya lalu tekan **Buat akun**. Untuk admin, buka **Pengguna & akses** lalu **Tambah pengguna** dan centang **Admin**.",
+      "Password sementara hanya tampil sekali. Tekan **Kirim lewat WhatsApp** atau **Salin** supaya sampai ke orangnya.",
+      "Semua orang masuk di alamat situs ditambah /masuk (misalnya everynationkg.com/masuk) dengan email dan password itu, lalu membuat password sendiri.",
     ],
-    tip: "Leader hanya bisa melihat dan mengubah data anggota grupnya sendiri. Catatan pengurus tidak pernah terlihat oleh leader.",
-    links: [{ href: "/admin/life-group", label: "Buka Life Group" }],
+    tip: "Admin yang juga leader melihat tombol **Portal Life Group** di admin panel, jadi tidak perlu login dua kali. Leader hanya bisa melihat dan mengubah data anggota grupnya sendiri.",
+    links: [
+      { href: "/admin/life-group", label: "Buka Life Group" },
+      { href: "/admin/pengguna", label: "Pengguna & akses" },
+    ],
   },
   {
     id: "pelayanan",

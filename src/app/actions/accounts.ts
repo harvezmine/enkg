@@ -2,17 +2,17 @@
 
 import { revalidatePath } from "next/cache";
 
-import { adminDb } from "@/lib/admin-auth";
+import { currentAdmin } from "@/lib/admin-auth";
 import { TABLES } from "@/lib/db-types";
 import { bool, text } from "@/lib/form-data";
 import { generateTempPassword, hashPassword } from "@/lib/password";
-import { phoneDigits } from "@/lib/people";
 import { whatsappLink } from "@/lib/whatsapp";
 
 /*
- * Akun portal leader, dikelola admin dari halaman data jemaat. Semua aksi
- * lewat adminDb(). Password sementara hanya dikembalikan sekali ke admin yang
- * membuatnya dan tidak pernah disimpan dalam bentuk asli.
+ * Akun login (email + password), dikelola admin dari halaman Pengguna dan
+ * halaman data jemaat. Semua aksi lewat currentAdmin() (= adminDb()).
+ * Password sementara hanya dikembalikan sekali ke admin yang membuatnya dan
+ * tidak pernah disimpan dalam bentuk asli.
  */
 
 export type AccountActionState = {
@@ -20,124 +20,147 @@ export type AccountActionState = {
   message?: string;
   /** Hanya ada tepat setelah dibuat / di-reset. */
   tempPassword?: string;
-  login?: string;
+  email?: string;
   waUrl?: string;
 };
 
-const LOGIN = /^\d{8,15}$/;
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const UUID = /^[0-9a-f-]{36}$/i;
 
-function credentialsMessage(name: string, login: string, password: string) {
+function credentialsMessage(name: string, email: string, password: string) {
   const site = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://everynationkg.com").replace(/\/+$/, "");
   return [
-    `Halo ${name}, ini akun Portal Leader Life Group ENKG kamu.`,
+    `Halo ${name}, ini akun ENKG kamu.`,
     "",
-    `Masuk di: ${site}/portal/login`,
-    `Nomor WhatsApp: ${login}`,
+    `Masuk di: ${site}/masuk`,
+    `Email: ${email}`,
     `Password sementara: ${password}`,
     "",
     "Waktu pertama masuk, kamu akan diminta membuat password baru.",
   ].join("\n");
 }
 
-type PersonRow = { id: string; full_name: string; nickname: string | null; phone: string | null };
-
-async function loadPerson(supabase: Awaited<ReturnType<typeof adminDb>>, personId: string) {
-  const { data } = await supabase.from(TABLES.people).select("id, full_name, nickname, phone").eq("id", personId).maybeSingle();
-  return data as PersonRow | null;
-}
-
-function refresh(personId: string) {
-  revalidatePath(`/admin/jemaat/${personId}`);
+function refresh(personId?: string | null) {
+  revalidatePath("/admin/pengguna");
   revalidatePath("/admin/life-group");
+  if (personId) revalidatePath(`/admin/jemaat/${personId}`);
 }
 
-export async function createLeaderAccount(_prev: AccountActionState, fd: FormData): Promise<AccountActionState> {
-  const supabase = await adminDb();
-  const person = await loadPerson(supabase, text(fd, "person_id", 60));
-  if (!person) return { status: "error", message: "Data jemaat tidak ditemukan." };
+type Db = Awaited<ReturnType<typeof currentAdmin>>["supabase"];
 
-  const login = phoneDigits(person.phone ?? "");
-  if (!LOGIN.test(login)) return { status: "error", message: "Isi nomor WhatsApp yang lengkap di data jemaat dulu." };
+async function personPhone(supabase: Db, personId: string | null) {
+  if (!personId) return null;
+  const { data } = await supabase.from(TABLES.people).select("full_name, nickname, phone").eq("id", personId).maybeSingle();
+  return data as { full_name: string; nickname: string | null; phone: string | null } | null;
+}
 
-  const { data: existing } = await supabase.from(TABLES.accounts).select("id").eq("person_id", person.id).maybeSingle();
-  if (existing) return { status: "error", message: "Orang ini sudah punya akun portal. Pakai Reset password." };
+export async function createAccount(_prev: AccountActionState, fd: FormData): Promise<AccountActionState> {
+  const { supabase } = await currentAdmin();
+  const email = text(fd, "email", 200).toLowerCase();
+  const personId = text(fd, "person_id", 60) || null;
+  const isAdmin = bool(fd, "is_admin");
+  let name = text(fd, "name", 120).replace(/\s+/g, " ");
+
+  if (!EMAIL.test(email)) return { status: "error", message: "Alamat email belum benar." };
+  if (personId && !UUID.test(personId)) return { status: "error", message: "Data jemaat tidak valid." };
+
+  const person = await personPhone(supabase, personId);
+  if (personId && !person) return { status: "error", message: "Data jemaat tidak ditemukan." };
+  if (!name) name = person?.full_name ?? "";
+  if (name.length < 2) return { status: "error", message: "Isi nama pemilik akun." };
 
   const tempPassword = generateTempPassword();
   const { error } = await supabase.from(TABLES.accounts).insert({
-    person_id: person.id,
-    login,
+    email,
+    name,
+    person_id: personId,
+    is_admin: isAdmin,
     password_hash: await hashPassword(tempPassword),
     must_change_password: true,
   });
   if (error) {
-    console.error("[akun] createLeaderAccount:", error);
+    console.error("[akun] createAccount:", error);
+    const duplicate = error.code === "23505";
     return {
       status: "error",
-      message: error.code === "23505" ? "Nomor WhatsApp ini sudah dipakai akun leader lain." : "Gagal membuat akun. Coba lagi sebentar.",
+      message: duplicate
+        ? error.message.includes("person") ? "Orang ini sudah punya akun." : "Email itu sudah dipakai akun lain."
+        : "Gagal membuat akun. Coba lagi sebentar.",
     };
   }
 
-  refresh(person.id);
-  const name = person.nickname || person.full_name.split(" ")[0]!;
+  refresh(personId);
+  const first = person?.nickname || name.split(" ")[0]!;
   return {
     status: "success",
     message: "Akun dibuat.",
     tempPassword,
-    login,
-    waUrl: whatsappLink(person.phone!, credentialsMessage(name, login, tempPassword)),
+    email,
+    waUrl: person?.phone ? whatsappLink(person.phone, credentialsMessage(first, email, tempPassword)) : undefined,
   };
 }
 
-/**
- * Password sementara baru. Sesi lama otomatis gugur (sidik jari password
- * berubah), dan nomor login ikut disamakan dengan nomor WA terbaru.
- */
-export async function resetLeaderPassword(_prev: AccountActionState, fd: FormData): Promise<AccountActionState> {
-  const supabase = await adminDb();
-  const { data: account } = await supabase
-    .from(TABLES.accounts)
-    .select("id, person_id, login")
-    .eq("id", text(fd, "account_id", 60))
-    .maybeSingle();
+/** Password sementara baru. Sesi lama otomatis gugur (sidik jari password berubah). */
+export async function resetAccountPassword(_prev: AccountActionState, fd: FormData): Promise<AccountActionState> {
+  const { supabase } = await currentAdmin();
+  const id = text(fd, "account_id", 60);
+  const { data: account } = await supabase.from(TABLES.accounts).select("id, email, name, person_id").eq("id", id).maybeSingle();
   if (!account) return { status: "error", message: "Akun tidak ditemukan." };
 
-  const person = await loadPerson(supabase, account.person_id);
-  if (!person) return { status: "error", message: "Data jemaat tidak ditemukan." };
-
-  const phoneLogin = phoneDigits(person.phone ?? "");
-  const login = LOGIN.test(phoneLogin) ? phoneLogin : account.login;
   const tempPassword = generateTempPassword();
-
   const { error } = await supabase
     .from(TABLES.accounts)
-    .update({ login, password_hash: await hashPassword(tempPassword), must_change_password: true })
-    .eq("id", account.id);
+    .update({ password_hash: await hashPassword(tempPassword), must_change_password: true })
+    .eq("id", id);
   if (error) {
-    console.error("[akun] resetLeaderPassword:", error);
-    return {
-      status: "error",
-      message: error.code === "23505" ? "Nomor WhatsApp terbaru sudah dipakai akun leader lain." : "Gagal reset password.",
-    };
+    console.error("[akun] reset:", error);
+    return { status: "error", message: "Gagal membuat password baru." };
   }
 
-  refresh(person.id);
-  const name = person.nickname || person.full_name.split(" ")[0]!;
+  refresh(account.person_id);
+  const person = await personPhone(supabase, account.person_id);
+  const first = person?.nickname || account.name.split(" ")[0]!;
   return {
     status: "success",
-    message: "Password sementara baru sudah dibuat. Sesi lama otomatis keluar.",
+    message: "Password sementara baru sudah dibuat. Sesi lamanya otomatis keluar.",
     tempPassword,
-    login,
-    waUrl: person.phone ? whatsappLink(person.phone, credentialsMessage(name, login, tempPassword)) : undefined,
+    email: account.email,
+    waUrl: person?.phone ? whatsappLink(person.phone, credentialsMessage(first, account.email, tempPassword)) : undefined,
   };
 }
 
-export async function setLeaderAccountActive(fd: FormData) {
-  const supabase = await adminDb();
-  const { data } = await supabase
+export async function setAccountActive(fd: FormData) {
+  const session = await currentAdmin();
+  const id = text(fd, "account_id", 60);
+  // Admin tidak bisa mengunci dirinya sendiri.
+  if (id === session.account.id) return;
+  const { data } = await session.supabase
     .from(TABLES.accounts)
     .update({ is_active: bool(fd, "active") })
-    .eq("id", text(fd, "account_id", 60))
+    .eq("id", id)
     .select("person_id")
     .maybeSingle();
-  if (data?.person_id) refresh(data.person_id);
+  refresh(data?.person_id);
+}
+
+export async function setAccountAdmin(fd: FormData) {
+  const session = await currentAdmin();
+  const id = text(fd, "account_id", 60);
+  if (id === session.account.id) return;
+  const { data } = await session.supabase
+    .from(TABLES.accounts)
+    .update({ is_admin: bool(fd, "admin") })
+    .eq("id", id)
+    .select("person_id")
+    .maybeSingle();
+  refresh(data?.person_id);
+}
+
+export async function deleteAccount(fd: FormData) {
+  const session = await currentAdmin();
+  // DeleteButton mengirim "id".
+  const id = text(fd, "account_id", 60) || text(fd, "id", 60);
+  if (id === session.account.id) return;
+  const { data } = await session.supabase.from(TABLES.accounts).delete().eq("id", id).select("person_id").maybeSingle();
+  refresh(data?.person_id);
 }

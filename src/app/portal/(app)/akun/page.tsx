@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { portalSignOut } from "@/app/actions/portal";
+import { signOut } from "@/app/actions/auth";
 import { AdminPageHeader, Card, Notice } from "@/components/admin/ui";
 import { Icon } from "@/components/icons";
 import { PasswordForm } from "@/components/portal/forms";
@@ -45,8 +45,8 @@ export default async function PortalAccountPage({ searchParams }: { searchParams
               <dd className="font-semibold text-ink">{lifeGroup.name}</dd>
             </div>
             <div>
-              <dt className="text-xs text-ink-soft">Nomor untuk masuk</dt>
-              <dd className="tabular font-semibold text-ink">{account.login}</dd>
+              <dt className="text-xs text-ink-soft">Email untuk masuk</dt>
+              <dd className="font-semibold break-all text-ink">{account.email}</dd>
             </div>
             {account.last_login_at && (
               <div>
@@ -55,7 +55,7 @@ export default async function PortalAccountPage({ searchParams }: { searchParams
               </div>
             )}
           </dl>
-          <form action={portalSignOut} className="mt-5 border-t border-ink/8 pt-4">
+          <form action={signOut} className="mt-5 border-t border-ink/8 pt-4">
             <button type="submit" className="inline-flex items-center gap-2 text-sm font-semibold text-ink-soft hover:text-red-700">
               <Icon.logout className="h-4 w-4" /> Keluar
             </button>

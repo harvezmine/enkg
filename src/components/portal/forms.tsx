@@ -2,7 +2,8 @@
 
 import { useActionState, useState } from "react";
 
-import { changeLeaderPassword, saveMeeting, saveReport, type PortalState } from "@/app/actions/portal";
+import { changePassword, type AuthState } from "@/app/actions/auth";
+import { saveMeeting, saveReport, type PortalState } from "@/app/actions/portal";
 import { PersonAvatar } from "@/components/admin/people/avatar";
 import { submitKeepingValues } from "@/components/admin/submit-keeping-values";
 import { UnsavedGuard } from "@/components/admin/unsaved-guard";
@@ -188,11 +189,13 @@ export function ReportForm({
 
 /* ── Ganti password ───────────────────────────────────────────────────────── */
 
+/** Ganti password sendiri. Dipakai portal leader dan halaman akun admin. */
 export function PasswordForm({ minLength }: { minLength: number }) {
-  const [state, action, pending] = useActionState(changeLeaderPassword, initial);
+  const [state, action, pending] = useActionState(changePassword, {} as AuthState);
 
+  // Isian tidak dikosongkan saat password lama salah (bawaan React 19 untuk <form action>).
   return (
-    <form action={action} className="space-y-4">
+    <form onSubmit={submitKeepingValues(action)} className="space-y-4">
       <Field label="Password sekarang" htmlFor="current" hint="Kalau baru dapat akun, isi password sementara dari admin.">
         <Input id="current" name="current" type="password" autoComplete="current-password" required />
       </Field>
@@ -202,7 +205,7 @@ export function PasswordForm({ minLength }: { minLength: number }) {
       <Field label="Ulangi password baru" htmlFor="confirm">
         <Input id="confirm" name="confirm" type="password" autoComplete="new-password" minLength={minLength} required />
       </Field>
-      {state.status === "error" && state.message && <Notice tone="error">{state.message}</Notice>}
+      {state.error && <Notice tone="error">{state.error}</Notice>}
       <SubmitButton pending={pending} label="Simpan password" />
     </form>
   );

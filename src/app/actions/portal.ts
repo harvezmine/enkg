@@ -1,153 +1,25 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { PEOPLE_BUCKET, TABLES, type Account, type LgMaterial } from "@/lib/db-types";
+import { PEOPLE_BUCKET, TABLES, type LgMaterial } from "@/lib/db-types";
 import { nullable, text } from "@/lib/form-data";
 import { groupMembers, requireLeader, type LeaderContext } from "@/lib/leader-auth";
-import { LEADER_COOKIE, LEADER_SESSION_MAX_AGE, createLeaderToken, isLeaderPortalConfigured } from "@/lib/leader-session";
-import {
-  MIN_LEADER_PASSWORD_LENGTH,
-  dummyPasswordHash,
-  hashPassword,
-  passwordFingerprint,
-  verifyPassword,
-} from "@/lib/password";
 import { phoneDigits, todayWib } from "@/lib/people";
 import { parsePersonFields } from "@/lib/person-fields";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { fromWibInput } from "@/lib/utils";
 
 /*
- * Aksi portal leader Life Group. Setiap aksi (kecuali masuk) diawali
+ * Aksi portal leader Life Group. Setiap aksi diawali
  * requireLeader(), dan setiap query dibatasi ke life_group_id milik leader
  * itu sendiri. id pertemuan dari form hanya dipakai bersama filter grupnya.
  */
 
 export type PortalState = { status: "idle" | "success" | "error"; message?: string };
 
-/* ── Masuk & keluar ───────────────────────────────────────────────────────── */
-
-/** Batas percobaan salah per IP dan per nomor. Di memori proses, per worker PM2. */
-const MAX_FAILS = 5;
-const LOCK_MS = 15 * 60 * 1000;
-const failures = new Map<string, { count: number; until: number }>();
-
-async function clientIp() {
-  const h = await headers();
-  return h.get("x-real-ip") || h.get("x-forwarded-for")?.split(",").at(-1)?.trim() || "local";
-}
-
-function lockedMinutes(keys: string[], now: number) {
-  for (const key of keys) {
-    const record = failures.get(key);
-    if (record && record.count >= MAX_FAILS && record.until > now) return Math.ceil((record.until - now) / 60_000);
-  }
-  return 0;
-}
-
-function recordFailure(keys: string[], now: number) {
-  for (const key of keys) {
-    const record = failures.get(key);
-    failures.set(key, { count: (record && record.until > now ? record.count : 0) + 1, until: now + LOCK_MS });
-  }
-}
-
-async function setLeaderCookie(accountId: string, passwordHash: string) {
-  const store = await cookies();
-  store.set(LEADER_COOKIE, await createLeaderToken(accountId, passwordFingerprint(passwordHash)), {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/portal",
-    maxAge: LEADER_SESSION_MAX_AGE,
-  });
-}
-
-export async function portalSignIn(_prev: PortalState, fd: FormData): Promise<PortalState> {
-  if (!isLeaderPortalConfigured()) return { status: "error", message: "Portal belum dikonfigurasi." };
-
-  const login = phoneDigits(text(fd, "login", 40));
-  const password = String(fd.get("password") ?? "").slice(0, 200);
-  const now = Date.now();
-  for (const [key, record] of failures) if (record.until <= now) failures.delete(key);
-
-  const keys = [`ip:${await clientIp()}`, `login:${login}`];
-  const locked = lockedMinutes(keys, now);
-  if (locked) return { status: "error", message: `Terlalu banyak percobaan. Coba lagi dalam ${locked} menit.` };
-
-  if (!/^\d{8,15}$/.test(login) || !password) {
-    return { status: "error", message: "Isi nomor WhatsApp dan password kamu." };
-  }
-
-  const supabase = createAdminClient();
-  const { data: account } = await supabase.from(TABLES.accounts).select("*").eq("login", login).maybeSingle();
-  const found = account as Account | null;
-
-  // Nomor tidak terdaftar tetap diverifikasi ke hash palsu: waktu jawabnya sama.
-  const valid = await verifyPassword(password, found?.password_hash ?? (await dummyPasswordHash()));
-  if (!found || !valid) {
-    recordFailure(keys, now);
-    return { status: "error", message: "Nomor WhatsApp atau password salah." };
-  }
-  if (!found.is_active) return { status: "error", message: "Akun ini sedang dinonaktifkan. Hubungi admin gereja." };
-
-  const { data: person } = await supabase
-    .from(TABLES.people)
-    .select("life_group_role, life_group_id")
-    .eq("id", found.person_id)
-    .maybeSingle();
-  if (!person || person.life_group_role !== "leader" || !person.life_group_id) {
-    return { status: "error", message: "Kamu belum tercatat sebagai leader Life Group. Hubungi admin gereja." };
-  }
-
-  for (const key of keys) failures.delete(key);
-  await supabase.from(TABLES.accounts).update({ last_login_at: new Date().toISOString() }).eq("id", found.id);
-  await setLeaderCookie(found.id, found.password_hash);
-  redirect(found.must_change_password ? "/portal/akun?wajib=1" : "/portal");
-}
-
-export async function portalSignOut() {
-  const store = await cookies();
-  store.delete({ name: LEADER_COOKIE, path: "/portal" });
-  redirect("/portal/login");
-}
-
-/* ── Ganti password ───────────────────────────────────────────────────────── */
-
-export async function changeLeaderPassword(_prev: PortalState, fd: FormData): Promise<PortalState> {
-  const context = await requireLeader({ allowPasswordChange: true });
-  const current = String(fd.get("current") ?? "").slice(0, 200);
-  const next = String(fd.get("next") ?? "").slice(0, 200);
-  const confirm = String(fd.get("confirm") ?? "").slice(0, 200);
-
-  if (next.length < MIN_LEADER_PASSWORD_LENGTH) {
-    return { status: "error", message: `Password baru minimal ${MIN_LEADER_PASSWORD_LENGTH} karakter.` };
-  }
-  if (next !== confirm) return { status: "error", message: "Konfirmasi password baru belum sama." };
-  if (next === current) return { status: "error", message: "Password baru harus berbeda dari yang sekarang." };
-
-  const { data } = await context.supabase.from(TABLES.accounts).select("password_hash").eq("id", context.account.id).single();
-  if (!data || !(await verifyPassword(current, data.password_hash))) {
-    return { status: "error", message: "Password sekarang salah." };
-  }
-
-  const passwordHash = await hashPassword(next);
-  const { error } = await context.supabase
-    .from(TABLES.accounts)
-    .update({ password_hash: passwordHash, must_change_password: false })
-    .eq("id", context.account.id);
-  if (error) {
-    console.error("[portal] changeLeaderPassword:", error);
-    return { status: "error", message: "Gagal menyimpan password. Coba lagi sebentar." };
-  }
-
-  // Sesi di perangkat lain gugur (sidik jari berubah); perangkat ini dapat cookie baru.
-  await setLeaderCookie(context.account.id, passwordHash);
-  redirect("/portal?password=1");
-}
+/* Masuk, keluar, dan ganti password ada di actions/auth.ts (satu akun untuk admin & leader). */
 
 /* ── Pertemuan & laporan ──────────────────────────────────────────────────── */
 

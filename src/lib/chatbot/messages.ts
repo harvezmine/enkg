@@ -55,7 +55,7 @@ export const CRISIS_REPLY = [
   "- **healing119.id** untuk bantuan krisis psikologis",
   "- **119** kalau nyawa sedang terancam",
   "",
-  `Tim kami juga mau menemani dan mendoakan kamu. [Chat WhatsApp tim](${WHATSAPP_URL})`,
+  `Tim kami juga mau menemani dan mendoakan kamu. [hubungi kami lewat WhatsApp](${WHATSAPP_URL})`,
 ].join("\n");
 
 /** Pilihan cepat di jendela chat. `prompt` yang dikirim sebagai pesan pengunjung. */
@@ -64,6 +64,8 @@ export const QUICK_REPLIES = [
   { id: "lifegroup", label: "Gabung Life Group", prompt: "Aku mau gabung Life Group, caranya gimana?" },
   { id: "doa", label: "Minta didoakan", prompt: "Aku mau minta didoakan." },
   { id: "lokasi", label: "Lokasi", prompt: "Gerejanya di mana?" },
+  { id: "anak", label: "Ibadah anak", prompt: "Ada ibadah untuk anak? Jam berapa?" },
+  { id: "pertama", label: "Pertama kali datang", prompt: "Aku mau datang pertama kali hari Minggu. Apa yang perlu aku tahu?" },
 ] as const;
 
 const has = (text: string, words: RegExp) => words.test(fold(text));
@@ -120,7 +122,7 @@ export function fallbackReply(question: string, k: ChatKnowledge): string {
           ...accounts.map((account) => `- ${account.label}: ${account.number}`),
           "Atau scan QRIS di [bagian Give](#give).",
         ].join("\n")
-      : `Info rekening bisa ditanyakan langsung ke tim. [Chat WhatsApp](${WHATSAPP_URL})`;
+      : `Info rekening bisa ditanyakan langsung ke tim. [hubungi kami lewat WhatsApp](${WHATSAPP_URL})`;
   }
 
   if (has(question, /\b(procon|kelas|seminar|workshop|pelatihan)\b/)) {
@@ -135,7 +137,7 @@ export function fallbackReply(question: string, k: ChatKnowledge): string {
     const online = k.schedule.filter((item) => item.online);
     return online.length
       ? online.map((item) => `- **${item.title}**: ${item.when}, ${item.start} WIB${item.link ? `. [Buka Zoom](${item.link})` : ""}${item.note ? ` (${item.note})` : ""}`).join("\n")
-      : `Untuk ibadah online, tanya tim dulu ya. [Chat WhatsApp](${WHATSAPP_URL})`;
+      : `Untuk ibadah online, tanya tim dulu ya. [hubungi kami lewat WhatsApp](${WHATSAPP_URL})`;
   }
 
   if (has(question, /\b(jadwal|ibadah|minggu|jam|kebaktian|service|kapan|acara|event)\b/)) {
@@ -147,5 +149,5 @@ export function fallbackReply(question: string, k: ChatKnowledge): string {
     ].join("\n");
   }
 
-  return `Untuk pertanyaan ini, tim kami lebih tepat menjawabnya. [Chat WhatsApp tim](${WHATSAPP_URL}) ya.`;
+  return `Untuk pertanyaan ini, tim kami lebih tepat menjawabnya. [hubungi kami lewat WhatsApp](${WHATSAPP_URL}) ya.`;
 }

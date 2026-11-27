@@ -37,7 +37,7 @@ export function parseInline(text: string): Inline[] {
       out.push({ type: "bold", text: bold });
     } else {
       const target = safeHref(href ?? bare ?? "");
-      if (target) out.push({ type: "link", text: label ?? "Chat WhatsApp", ...target });
+      if (target) out.push({ type: "link", text: label ?? "hubungi kami lewat WhatsApp", ...target });
       else out.push({ type: "text", text: label ?? whole });
     }
     last = match.index + whole.length;
