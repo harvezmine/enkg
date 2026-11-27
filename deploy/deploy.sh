@@ -36,6 +36,9 @@ cp -r .next/standalone/. "$RELEASE/"
 # Dua folder ini tidak ikut ke standalone dan harus disalin manual.
 cp -r .next/static "$RELEASE/.next/static"
 cp -r public "$RELEASE/public"
+# Pemicu ringkasan harian bot Telegram (proses PM2 enkg-telegram-daily).
+mkdir -p "$RELEASE/scripts"
+cp scripts/telegram-daily.mjs "$RELEASE/scripts/"
 
 echo "▸ Mengaktifkan rilis baru"
 mkdir -p "$APP_DIR/logs"

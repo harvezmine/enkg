@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 
 import { Icon } from "@/components/icons";
+import { HelpTip } from "./help-tip";
 import { cn } from "@/lib/utils";
 
 /* Primitif tampilan admin panel, satu gaya dengan situs (navy · krem · kuning). */
@@ -102,19 +103,23 @@ export function Field({
   htmlFor,
   hint,
   optional,
+  help,
   children,
 }: {
   label: string;
   htmlFor: string;
   hint?: ReactNode;
   optional?: boolean;
+  /** Penjelasan lebih panjang di balik tombol "?" di samping label. */
+  help?: ReactNode;
   children: ReactNode;
 }) {
   return (
     <div>
-      <label htmlFor={htmlFor} className="flex items-baseline gap-2 text-sm font-semibold text-ink">
+      <label htmlFor={htmlFor} className="flex items-center gap-2 text-sm font-semibold text-ink">
         {label}
         {optional && <span className="text-xs font-normal text-ink-soft">opsional</span>}
+        {help && <HelpTip label={`Penjelasan ${label.toLowerCase()}`}>{help}</HelpTip>}
       </label>
       {hint && <p className="mt-1 text-xs leading-relaxed text-ink-soft">{hint}</p>}
       <div className="mt-2">{children}</div>
@@ -130,10 +135,20 @@ export function Textarea({ className, ...props }: ComponentProps<"textarea">) {
   return <textarea {...props} className={cn(control, "min-h-36 resize-y leading-relaxed", className)} />;
 }
 
-export function Select({ className, children, ...props }: ComponentProps<"select">) {
+/** Bagian yang jarang perlu diubah, dilipat supaya form utama tetap sederhana. */
+export function Advanced({ title = "Pengaturan lanjutan", children }: { title?: string; children: ReactNode }) {
   return (
-    <select {...props} className={cn(control, "cursor-pointer pr-10", className)}>
-      {children}
-    </select>
+    <details className="group rounded-xl bg-white ring-1 ring-ink/10 open:p-4">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-ink-soft group-open:mb-3 group-open:p-0 hover:text-ink [&::-webkit-details-marker]:hidden">
+        {title}
+        <Icon.chevronDown className="h-4 w-4 transition-transform group-open:rotate-180" />
+      </summary>
+      <div className="space-y-4">{children}</div>
+    </details>
   );
 }
+
+/** Kontrol custom (dropdown, tanggal, jam, angka) pengganti kontrol bawaan browser. */
+export { Select } from "./controls/select";
+export { DateInput, DateTimeInput, NumberInput, TimeInput } from "./controls/date-time";
+export { RichEditor } from "./controls/rich-editor";

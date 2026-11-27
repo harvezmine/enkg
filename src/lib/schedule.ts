@@ -17,7 +17,8 @@ export function nextOccurrence(rec: Recurrence, startTime: string, now: Date): D
   const local = new Date(now.getTime() + JAKARTA_OFFSET_MS);
   const today = Date.UTC(local.getUTCFullYear(), local.getUTCMonth(), local.getUTCDate());
 
-  for (let i = 0; i <= 62; i++) {
+  // Setahun penuh: "Jumat ke-5" bisa berjarak lebih dari dua bulan.
+  for (let i = 0; i <= 400; i++) {
     const day = new Date(today + i * DAY_MS);
     if (day.getUTCDay() !== rec.weekday) continue;
     if (rec.kind === "monthly-nth" && Math.ceil(day.getUTCDate() / 7) !== rec.nth) continue;
@@ -27,7 +28,7 @@ export function nextOccurrence(rec: Recurrence, startTime: string, now: Date): D
     );
     if (start.getTime() > now.getTime()) return start;
   }
-  throw new Error("Tidak ada jadwal dalam 62 hari ke depan");
+  throw new Error("Tidak ada jadwal dalam setahun ke depan");
 }
 
 export function recurrenceLabel(rec: Recurrence): string {

@@ -1,5 +1,7 @@
+import { Chatbot } from "@/components/chatbot/chatbot";
 import { About } from "@/components/sections/about";
 import { Beliefs } from "@/components/sections/beliefs";
+import { CalendarSection } from "@/components/sections/calendar";
 import { Connect } from "@/components/sections/connect";
 import { Give } from "@/components/sections/give";
 import { Hero } from "@/components/sections/hero";
@@ -9,7 +11,7 @@ import { Procon } from "@/components/sections/procon";
 import { Services } from "@/components/sections/services";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { WhatsAppFab } from "@/components/whatsapp-fab";
+import { getCalendarWindow, getSchedule } from "@/lib/calendar-data";
 import { getNewsItems, getProconEvents } from "@/lib/queries";
 
 // Halaman statis yang dibangun ulang tiap jam, supaya "ibadah berikutnya"
@@ -19,7 +21,9 @@ export const revalidate = 3600;
 
 export default async function HomePage() {
   const now = new Date();
-  const [newsItems, proconEvents] = await Promise.all([getNewsItems(), getProconEvents()]);
+  const [newsItems, proconEvents, schedule] = await Promise.all([getNewsItems(), getProconEvents(), getSchedule()]);
+  // Jadwal rutin dari kalender admin (atau jadwal bawaan), dipakai Hero, Pelayanan, News, dan Kalender.
+  const calendar = await getCalendarWindow(schedule.items, now);
 
   return (
     <>
@@ -31,18 +35,19 @@ export default async function HomePage() {
       </a>
       <SiteHeader />
       <main id="konten">
-        <Hero now={now} />
+        <Hero now={now} schedule={schedule.items} />
         <About />
         <LifeGroup />
-        <Services now={now} />
+        <Services items={schedule.items} />
+        <CalendarSection now={now} items={schedule.items} calendar={calendar} />
         <Beliefs />
-        <News now={now} items={newsItems} />
+        <News now={now} items={newsItems} schedule={schedule.items} />
         <Procon events={proconEvents} />
         <Connect />
         <Give />
       </main>
-      <SiteFooter now={now} />
-      <WhatsAppFab />
+      <SiteFooter now={now} schedule={schedule.items} />
+      <Chatbot />
     </>
   );
 }

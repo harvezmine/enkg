@@ -1,7 +1,8 @@
 import { ministries, type Ministry } from "@/content/ministries";
-import { schedule, upcomingSchedule } from "@/content/schedule";
+import { schedule as staticSchedule } from "@/content/schedule";
 import { site } from "@/content/site";
-import { formatJakartaDate, recurrenceLabel } from "@/lib/schedule";
+import { WEEKDAYS, dotClock, recurringBySlug, type CalendarItem, type RecurringItem } from "@/lib/calendar";
+import { recurrenceLabel } from "@/lib/schedule";
 
 import { Icon } from "../icons";
 import { Reveal } from "../reveal";
@@ -29,9 +30,25 @@ function Cta({ ministry, className }: { ministry: Ministry; className: string })
   );
 }
 
+/** "Minggu · 10.30 WIB" dari jadwal, supaya ikut berubah saat jam diubah di admin. */
+function dayAndTime(item: RecurringItem) {
+  const day = item.recurrence.kind === "weekly" ? WEEKDAYS[item.recurrence.weekday] : recurrenceLabel(item.recurrence);
+  return `${day} · ${dotClock(item.start)} WIB`;
+}
+
+/** Jam di panel kartu diambil dari kalender (admin), teks lainnya dari content/ministries.ts. */
+type Times = {
+  service: RecurringItem;
+  prayer: RecurringItem | null;
+  kids: RecurringItem | null;
+  heritage: RecurringItem | null;
+  wednesday: RecurringItem | null;
+  friday: RecurringItem | null;
+};
+
 /** Ibadah Minggu: jangkar gelap, jamnya jadi elemen terbesar di seluruh section. */
-function SundayService({ ministry }: { ministry: Ministry }) {
-  const service = schedule.find((item) => item.id === "sunday-service")!;
+function SundayService({ ministry, times }: { ministry: Ministry; times: Times }) {
+  const service = times.service;
   const panel = ministry.panel;
   return (
     <article className="bg-navy-deep relative isolate flex flex-col justify-between gap-10 overflow-hidden rounded-[2rem] p-8 text-cream-100 shadow-lit sm:p-10 lg:flex-row lg:items-end lg:p-12">
@@ -52,9 +69,9 @@ function SundayService({ ministry }: { ministry: Ministry }) {
       </div>
       {panel.kind === "time" && (
         <p className="font-display tabular relative text-[5.5rem] leading-[0.85] font-bold tracking-tighter sm:text-[7rem] lg:text-right lg:text-[8.5rem]">
-          {panel.figure}
+          {dotClock(service.start)}
           <span className="mt-2 block text-base font-semibold tracking-normal text-sun-400 sm:text-lg">
-            {panel.unit} · {panel.note}
+            {panel.unit} · {times.prayer ? `Doa bersama ${dotClock(times.prayer.start)}` : panel.note}
           </span>
         </p>
       )}
@@ -63,7 +80,7 @@ function SundayService({ ministry }: { ministry: Ministry }) {
 }
 
 /** Kids Church: bentuk-bentuk lengkung bertumpuk, satu-satunya grafis bermain di situs. */
-function KidsChurch({ ministry }: { ministry: Ministry }) {
+function KidsChurch({ ministry, time }: { ministry: Ministry; time: RecurringItem | null }) {
   const panel = ministry.panel;
   const shapes = [
     { h: "h-16", c: "bg-[#c9825c]" },
@@ -75,11 +92,11 @@ function KidsChurch({ ministry }: { ministry: Ministry }) {
   return (
     <article className="group relative flex h-full flex-col justify-between overflow-hidden rounded-[2rem] bg-[#f0e5d5] p-8 text-[#5d3b26] shadow-lit-soft ring-1 ring-ink/5 sm:p-9">
       <div className="relative">
-        <p className="text-sm font-semibold text-[#9a6340]">{ministry.meta}</p>
+        <p className="text-sm font-semibold text-[#9a6340]">{time ? dayAndTime(time) : ministry.meta}</p>
         <h3 className="font-display mt-3 text-3xl font-bold sm:text-4xl">{ministry.name}</h3>
         {panel.kind === "time" && (
           <p className="font-display tabular mt-6 text-6xl leading-none font-bold tracking-tight sm:text-7xl">
-            {panel.figure}
+            {time ? dotClock(time.start) : panel.figure}
             <span className="ml-2 align-baseline text-xl font-semibold opacity-70">{panel.unit}</span>
           </p>
         )}
@@ -107,7 +124,7 @@ function KidsChurch({ ministry }: { ministry: Ministry }) {
  * antara keduanya, satu-satunya berlatar sun penuh. Jamnya sama dengan Kids
  * Church, jadi yang dibesarkan rentang umurnya, bukan jamnya lagi.
  */
-function Heritage({ ministry }: { ministry: Ministry }) {
+function Heritage({ ministry, time }: { ministry: Ministry; time: RecurringItem | null }) {
   const panel = ministry.panel;
   return (
     <article className="group relative flex h-full flex-col justify-between overflow-hidden rounded-[2rem] bg-sun-500 p-8 text-ink shadow-lit-soft sm:p-9">
@@ -135,7 +152,7 @@ function Heritage({ ministry }: { ministry: Ministry }) {
       </svg>
 
       <div className="relative">
-        <p className="text-sm font-semibold text-ink/65">{ministry.meta}</p>
+        <p className="text-sm font-semibold text-ink/65">{time ? dayAndTime(time) : ministry.meta}</p>
         <h3 className="font-display mt-3 text-3xl font-bold sm:text-4xl">{ministry.name}</h3>
         {panel.kind === "age" && (
           <p className="font-display tabular mt-6 text-6xl leading-none font-bold tracking-tight sm:text-7xl">
@@ -192,7 +209,7 @@ function Youth({ ministry }: { ministry: Ministry }) {
 }
 
 /** Doa & Life Group: pasangan kartu tenang. */
-function QuietCard({ ministry, tone }: { ministry: Ministry; tone: "prayer" | "life-group" }) {
+function QuietCard({ ministry, tone, meta }: { ministry: Ministry; tone: "prayer" | "life-group"; meta?: string }) {
   const panel = ministry.panel;
   return (
     <article
@@ -201,7 +218,7 @@ function QuietCard({ ministry, tone }: { ministry: Ministry; tone: "prayer" | "l
       }`}
     >
       <div>
-        <p className="text-sm font-semibold text-navy-700">{ministry.meta}</p>
+        <p className="text-sm font-semibold text-navy-700">{meta ?? ministry.meta}</p>
         <h3 className="font-display mt-2 text-2xl font-bold">{ministry.name}</h3>
         {panel.kind === "verse" && (
           <blockquote className="mt-5 border-l-2 border-navy-700/30 pl-4">
@@ -226,23 +243,50 @@ function QuietCard({ ministry, tone }: { ministry: Ministry; tone: "prayer" | "l
 }
 
 /** Hal-hal yang paling sering ditanya tamu baru. Hanya fakta yang sudah pasti. */
-const firstVisit = [
-  { icon: Icon.clock, label: "Kapan", body: "Minggu 10.00 WIB. Doa bersama mulai 09.15." },
-  { icon: Icon.mapPin, label: "Di mana", body: `${site.address.venue}, ${site.address.building}.` },
-  { icon: Icon.check, label: "Pakai apa", body: "Pakai yang membuatmu nyaman. Tidak ada aturan." },
-  { icon: Icon.users, label: "Bawa anak", body: `Kids Church 10.30 di ${site.address.kidsRoom}. Usia 12–17 ke Heritage.` },
-] as const;
+function firstVisit(times: Times) {
+  const kids = times.kids ? `Kids Church ${dotClock(times.kids.start)} di ${times.kids.place}.` : "Ada Kids Church untuk anak.";
+  return [
+    {
+      icon: Icon.clock,
+      label: "Kapan",
+      body: `Minggu ${dotClock(times.service.start)} WIB.${times.prayer ? ` Doa bersama mulai ${dotClock(times.prayer.start)}.` : ""}`,
+    },
+    { icon: Icon.mapPin, label: "Di mana", body: `${site.address.venue}, ${site.address.building}.` },
+    { icon: Icon.check, label: "Pakai apa", body: "Pakai yang membuatmu nyaman. Tidak ada aturan." },
+    { icon: Icon.users, label: "Bawa anak", body: `${kids} Usia 12–17 ke Heritage.` },
+  ] as const;
+}
 
-export function Services({ now }: { now: Date }) {
-  const upcoming = upcomingSchedule(now);
+/** "Rabu 20.00 via Zoom · Jumat ke-4 onsite", dari jadwal doa yang sedang berlaku. */
+function prayerMeta(times: Times) {
+  const parts = [
+    times.wednesday && times.wednesday.recurrence.kind === "weekly"
+      ? `${WEEKDAYS[times.wednesday.recurrence.weekday]} ${dotClock(times.wednesday.start)}${times.wednesday.mode === "online" ? " via Zoom" : ""}`
+      : null,
+    times.friday && times.friday.recurrence.kind === "monthly-nth"
+      ? `${WEEKDAYS[times.friday.recurrence.weekday]} ke-${times.friday.recurrence.nth} ${times.friday.mode === "online" ? "online" : "onsite"}`
+      : null,
+  ].filter(Boolean);
+  return parts.length ? parts.join(" · ") : undefined;
+}
+
+/** `items`: jadwal dari kalender admin (atau jadwal bawaan). Jadwal lengkapnya ada di section Kalender. */
+export function Services({ items }: { items: CalendarItem[] }) {
   const byId = (id: string) => ministries.find((m) => m.id === id)!;
-  // Kelompokkan per pola hari, urut sesuai definisi di content/schedule.ts.
-  const groups = [...new Set(schedule.map((item) => recurrenceLabel(item.recurrence)))].map((label) => {
-    const items = upcoming
-      .filter((item) => recurrenceLabel(item.recurrence) === label)
-      .sort((a, b) => a.start.localeCompare(b.start));
-    return { label, next: items[0].next, items };
-  });
+  const pick = (slug: string) => recurringBySlug(items, slug, staticSchedule);
+  // Hanya Ibadah Minggu yang selalu jatuh ke jadwal bawaan; yang lain boleh tidak ada.
+  const fromItems = (slug: string) => {
+    const found = items.find((item) => item.slug === slug);
+    return found && found.recurrence.kind !== "once" ? (found as RecurringItem) : null;
+  };
+  const times: Times = {
+    service: pick("sunday-service")!,
+    prayer: fromItems("sunday-prayer"),
+    kids: fromItems("kids-church"),
+    heritage: fromItems("heritage"),
+    wednesday: fromItems("wednesday-prayer"),
+    friday: fromItems("friday-prayer"),
+  };
 
   return (
     <Section id="pelayanan">
@@ -267,7 +311,7 @@ export function Services({ now }: { now: Date }) {
       {/* Pita untuk tamu baru, supaya pertanyaan pertama terjawab sebelum ditanya. */}
       <Reveal delay={100} className="mt-12 sm:mt-14">
         <ul className="grid gap-x-8 gap-y-7 border-y border-ink/15 py-8 sm:grid-cols-2 lg:grid-cols-4">
-          {firstVisit.map(({ icon: ItemIcon, label, body }) => (
+          {firstVisit(times).map(({ icon: ItemIcon, label, body }) => (
             <li key={label} className="flex items-start gap-3.5">
               <ItemIcon className="mt-0.5 h-5 w-5 shrink-0 text-navy-700" strokeWidth={1.5} />
               <div>
@@ -284,13 +328,13 @@ export function Services({ now }: { now: Date }) {
           tahu anaknya masuk yang mana tanpa harus membaca ketiganya. */}
       <div className="mt-12 grid gap-5 sm:mt-14 md:grid-cols-2 lg:grid-cols-3">
         <Reveal className="md:col-span-2 lg:col-span-3">
-          <SundayService ministry={byId("sunday-service")} />
+          <SundayService ministry={byId("sunday-service")} times={times} />
         </Reveal>
         <Reveal delay={60}>
-          <KidsChurch ministry={byId("kids-church")} />
+          <KidsChurch ministry={byId("kids-church")} time={times.kids} />
         </Reveal>
         <Reveal delay={120}>
-          <Heritage ministry={byId("heritage")} />
+          <Heritage ministry={byId("heritage")} time={times.heritage} />
         </Reveal>
         <Reveal delay={180} className="md:col-span-2 lg:col-span-1">
           <Youth ministry={byId("youth")} />
@@ -300,61 +344,12 @@ export function Services({ now }: { now: Date }) {
       {/* Doa & Life Group. */}
       <div className="mt-5 grid gap-5 md:grid-cols-2">
         <Reveal>
-          <QuietCard ministry={byId("prayer")} tone="prayer" />
+          <QuietCard ministry={byId("prayer")} tone="prayer" meta={prayerMeta(times)} />
         </Reveal>
         <Reveal delay={60}>
           <QuietCard ministry={byId("life-group")} tone="life-group" />
         </Reveal>
       </div>
-      {/* Jadwal lengkap: kolom Minggu paling lebar karena isinya tiga kegiatan. */}
-      <Reveal delay={100} className="mt-5">
-        <ol className="grid gap-px overflow-hidden rounded-[2rem] bg-ink/10 shadow-lit-soft ring-1 ring-ink/5 md:grid-cols-2 xl:grid-cols-[1.75fr_1fr_1fr]">
-          {groups.map((group, index) => (
-            <li
-              key={group.label}
-              className={`bg-cream-50 p-6 sm:p-8 ${index === 0 ? "md:col-span-2 xl:col-span-1" : ""}`}
-            >
-              <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                <h3 className="font-display text-xl font-bold">{group.label}</h3>
-                <p className="text-sm text-navy-700">{formatJakartaDate(group.next)}</p>
-              </div>
-              <ul className={`mt-6 grid gap-5 ${index === 0 ? "sm:grid-cols-2 xl:grid-cols-1" : ""}`}>
-                {group.items.map((item) => (
-                  <li key={item.id} className="grid grid-cols-[4.5rem_1fr] gap-3">
-                    <p className="font-display tabular text-2xl leading-none font-bold tracking-tight sm:text-3xl">
-                      {item.start.replace(":", ".")}
-                    </p>
-                    <div className="min-w-0">
-                      <p className="font-semibold">{item.title}</p>
-                      <p className="mt-0.5 flex items-center gap-1.5 text-sm text-ink-soft">
-                        {item.mode === "online" ? (
-                          <Icon.video className="h-4 w-4 shrink-0 text-navy-700" />
-                        ) : (
-                          <Icon.mapPin className="h-4 w-4 shrink-0 text-navy-700" />
-                        )}
-                        {item.place}
-                        {item.end && ` · sampai ${item.end.replace(":", ".")}`}
-                      </p>
-                      {item.href && (
-                        <a
-                          href={item.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-navy-700 underline-offset-4 hover:underline"
-                        >
-                          Buka Zoom <Icon.arrowUpRight className="h-3.5 w-3.5" />
-                        </a>
-                      )}
-                      {item.note && <p className="mt-0.5 text-xs text-ink-soft">{item.note}</p>}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ol>
-      </Reveal>
-
     </Section>
   );
 }

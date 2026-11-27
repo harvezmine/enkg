@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 
 import { adminDb } from "@/lib/admin-auth";
 import { SUBMISSION_STATUS_LABEL, TABLES, type SubmissionStatus } from "@/lib/db-types";
+import { bool, nullable, text } from "@/lib/form-data";
 import { fromWibInput, slugify } from "@/lib/utils";
 
 /**
@@ -17,9 +18,6 @@ import { fromWibInput, slugify } from "@/lib/utils";
 
 export type ActionState = { status: "idle" | "success" | "error"; message?: string };
 
-const text = (fd: FormData, key: string, max = 500) => String(fd.get(key) ?? "").trim().slice(0, max);
-const bool = (fd: FormData, key: string) => fd.get(key) === "on" || fd.get(key) === "true";
-const nullable = (value: string) => (value === "" ? null : value);
 const isUrl = (value: string) => value === "" || /^https?:\/\//i.test(value);
 
 /** Halaman publik ikut diperbarui supaya perubahan langsung terlihat. */

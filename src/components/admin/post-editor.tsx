@@ -10,7 +10,8 @@ import { slugify } from "@/lib/utils";
 import { ImageUpload } from "./image-upload";
 import { submitKeepingValues } from "./submit-keeping-values";
 import { PublishToggle } from "./toggle";
-import { Field, Input, Notice, Select, Textarea } from "./ui";
+import { Advanced, Field, Input, Notice, RichEditor, Select } from "./ui";
+import { UnsavedGuard } from "@/components/admin/unsaved-guard";
 
 const initial: ActionState = { status: "idle" };
 
@@ -25,6 +26,7 @@ export function PostEditor({ post }: { post?: Post }) {
 
   return (
     <form onSubmit={submitKeepingValues(action)} className="grid gap-6 lg:grid-cols-12 lg:gap-8">
+      <UnsavedGuard />
       {post && <input type="hidden" name="id" value={post.id} />}
       {post?.published_at && <input type="hidden" name="published_at" value={post.published_at} />}
 
@@ -38,17 +40,8 @@ export function PostEditor({ post }: { post?: Post }) {
           <Input id="excerpt" name="excerpt" defaultValue={post?.excerpt ?? ""} maxLength={400} placeholder="Ringkasan singkat" />
         </Field>
 
-        <Field label="Isi" htmlFor="body" hint="Baris kosong memisahkan paragraf. ## untuk sub-judul, > untuk kutipan, - untuk daftar, **tebal**.">
-          <Textarea
-            id="body"
-            name="body"
-            value={body}
-            onChange={(event) => setBody(event.target.value)}
-            className="min-h-[26rem] font-mono text-sm"
-            placeholder={"Tulis di sini…\n\n## Sub-judul\n\nParagraf berikutnya."}
-            required
-          />
-          <p className="mt-1.5 text-right text-xs text-ink-soft">{body.trim() ? body.trim().split(/\s+/).length : 0} kata</p>
+        <Field label="Isi" htmlFor="body" hint="Tekan Enter dua kali untuk paragraf baru. Pakai tombol di atas kotak untuk sub-judul, tebal, dan daftar.">
+          <RichEditor id="body" name="body" value={body} onChange={setBody} minHeight="min-h-[26rem]" placeholder="Tulis di sini…" required />
         </Field>
       </div>
 
@@ -70,18 +63,20 @@ export function PostEditor({ post }: { post?: Post }) {
           <Input id="author" name="author" defaultValue={post?.author ?? "Tim ENKG"} />
         </Field>
 
-        <Field label="Slug URL" htmlFor="slug" hint={`/news/${effectiveSlug || "…"}`}>
-          <Input
-            id="slug"
-            name="slug"
-            value={effectiveSlug}
-            onChange={(event) => {
-              setSlugTouched(true);
-              setSlug(event.target.value);
-            }}
-            placeholder="otomatis-dari-judul"
-          />
-        </Field>
+        <Advanced>
+          <Field label="Alamat halaman" htmlFor="slug" hint={`Dibuat otomatis dari judul: everynationkg.com/news/${effectiveSlug || "…"}. Ubah hanya kalau perlu.`}>
+            <Input
+              id="slug"
+              name="slug"
+              value={effectiveSlug}
+              onChange={(event) => {
+                setSlugTouched(true);
+                setSlug(event.target.value);
+              }}
+              placeholder="otomatis-dari-judul"
+            />
+          </Field>
+        </Advanced>
 
         <ImageUpload name="cover_url" defaultValue={post?.cover_url} />
 

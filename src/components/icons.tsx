@@ -277,4 +277,45 @@ export const Icon = {
       <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
     </Svg>
   ),
+  search: (props: IconProps) => (
+    <Svg {...props}>
+      <path d="M3 10a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+      <path d="M21 21l-6 -6" />
+    </Svg>
+  ),
+  cake: (props: IconProps) => (
+    <Svg {...props}>
+      <path d="M3 20h18v-8a3 3 0 0 0 -3 -3h-12a3 3 0 0 0 -3 3v8z" />
+      <path d="M3 14.803c.312 .135 .654 .204 1 .197a2.4 2.4 0 0 0 2 -1a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1c.35 .007 .692 -.062 1 -.197" />
+      <path d="M12 4l1.465 1.638a2 2 0 1 1 -3.015 .099l1.55 -1.737z" />
+    </Svg>
+  ),
+  addressBook: (props: IconProps) => (
+    <Svg {...props}>
+      <path d="M20 6v12a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2z" />
+      <path d="M10 16h6" />
+      <path d="M11 11a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+      <path d="M4 8h3" />
+      <path d="M4 12h3" />
+      <path d="M4 16h3" />
+    </Svg>
+  ),
+  heartHandshake: (props: IconProps) => (
+    <Svg {...props}>
+      <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
+      <path d="M12 6l-3.293 3.293a1 1 0 0 0 0 1.414l.543 .543c.69 .69 1.81 .69 2.5 0l1 -1a3.182 3.182 0 0 1 4.5 0l2.25 2.25" />
+      <path d="M12.5 15.5l2 2" />
+      <path d="M15 13l2 2" />
+    </Svg>
+  ),
+  star: (props: IconProps) => (
+    <Svg {...props}>
+      <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
+    </Svg>
+  ),
+  chevronDown: (props: IconProps) => (
+    <Svg {...props}>
+      <path d="M6 9l6 6l6 -6" />
+    </Svg>
+  ),
 };

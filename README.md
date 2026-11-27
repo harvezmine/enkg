@@ -85,13 +85,32 @@ Pengurus mengelola konten di **`/admin`**. Polanya sama dengan admin panel Janji
 | Contact Us | Pendaftaran Life Group dan permohonan doa: status (Baru / Sudah dihubungi / Selesai), catatan pengurus, tombol WhatsApp | Tidak (privat) |
 | News | Kabar dan artikel dengan gambar sampul | Section News + `/news/<slug>` |
 | Event & ProCon | Event gereja dan kelas ProCon | Event gereja di section News, ProCon di section ProCon, detail di `/event/<slug>` |
+| Data jemaat | Kartu jemaat: data diri, foto, alamat, ulang tahun, relasi keluarga (pasangan dengan tanggal menikah, orang tua, anak, saudara), status. **Impor Excel** (template bisa diunduh, pratinjau dan validasi sebelum disimpan) dan **Ekspor** ke Excel | Tidak (privat) |
+| Life Group | Grup beserta leader dan anggotanya, antrean jemaat baru yang menunggu grup, tombol kabari leader, laporan pertemuan | Hanya nama, jam, dan wilayah grup yang menyalakan "Tampil di kalender publik" |
+| Pelayanan | Tim pelayanan (Musisi, Usher, dst.), anggota, peran, koordinator | Tidak (privat) |
+| Materi LG | Tulisan dan booklet PDF untuk leader Life Group | Hanya di portal leader |
+| Kalender | Jadwal rutin (mingguan, minggu ke-N tiap bulan, atau sekali) | Section Kalender, jam ibadah di hero dan Pelayanan |
+
+### Impor & ekspor Excel
+
+Di **Data jemaat → Impor Excel**: unduh template (berisi contoh, petunjuk, dan daftar Life Group serta tim yang ada), isi satu baris per orang, lalu unggah `.xlsx` atau `.csv`. Spreadsheet lama juga bisa langsung dipakai selama ada kolom nama; judul seperti "No WA" atau "Tgl Lahir" dikenali otomatis. Semua baris diperiksa dulu: data dobel, tanggal yang salah, Life Group atau tim yang belum ada. Orang yang sudah ada (cocok lewat nomor WA atau nama) bisa dilewati atau diperbarui, dan kolom kosong tidak menghapus data lama. Nama pasangan dihubungkan otomatis sebagai suami/istri beserta tanggal menikahnya.
+
+**Ekspor** menghasilkan file dengan kolom yang sama ditambah ID, jadi bisa diubah di Excel lalu diimpor balik.
+
+### Portal leader Life Group (`/portal`)
+
+Leader masuk dengan **nomor WhatsApp + password sendiri**, terpisah dari kata sandi pengurus. Akunnya dibuat admin dari halaman data jemaat si leader (bagian "Akun portal leader"); password sementara tampil sekali dan bisa langsung dikirim lewat WhatsApp, lalu wajib diganti saat pertama masuk.
+
+- Leader hanya melihat anggota grupnya sendiri (tanpa catatan pengurus), bisa mengubah data diri anggotanya (bukan status, catatan, atau Life Group), menjadwalkan pertemuan, mengisi laporan (kehadiran, tamu, jalannya pertemuan, pokok doa), dan membaca atau mengunduh materi. Setiap perubahan tercatat "diubah oleh" di halaman admin.
+- Akses dicek ulang ke database di setiap request: begitu akun dinonaktifkan, password di-reset, atau orangnya tidak lagi tercatat sebagai leader, sesinya langsung gugur.
+- Cookie leader tidak pernah bisa membuka `/admin`.
 
 Isi artikel ditulis sebagai teks biasa: `## Judul`, `### Subjudul`, `> kutipan`, `- daftar`, `1. daftar bernomor`, `**tebal**`, `*miring*`.
 
 ### Menyiapkan (sekali)
 
 1. Isi `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, dan `ADMIN_PASSWORD` di `.env.local` (komputer sendiri) atau `.env.production` (server). Boleh memakai project Supabase dan kata sandi yang sama dengan `jp/`.
-2. Buka Supabase → SQL Editor, lalu jalankan seluruh isi `supabase/schema.sql`. Aman dijalankan ulang. File ini membuat tabel `enkg_posts`, `enkg_events`, `enkg_contact_submissions`, aturan RLS, dan bucket gambar `enkg-media`, tanpa menyentuh tabel milik `jp`.
+2. Buka Supabase → SQL Editor, lalu jalankan seluruh isi `supabase/schema.sql`. Aman dijalankan ulang. File ini membuat semua tabel `enkg_*` (konten, jemaat, Life Group, pelayanan, akun leader, materi, pertemuan, kalender), aturan RLS, bucket gambar publik `enkg-media`, serta bucket **privat** `enkg-people` (foto jemaat) dan `enkg-materials` (booklet PDF), tanpa menyentuh tabel milik `jp`.
 3. Build ulang (`npm run build` atau `deploy/deploy.sh`), karena alamat Supabase ikut ditanam ke bundel dan ke daftar host gambar.
 
 Tanpa langkah di atas situs tetap berjalan: section News dan ProCon memakai konten statis, form Contact Us tetap diteruskan ke Google Form, dan `/admin` menampilkan petunjuk konfigurasi.
@@ -102,6 +121,54 @@ Tanpa langkah di atas situs tetap berjalan: section News dan ProCon memakai kont
 - Kiriman Contact Us disimpan ke database **dan** diteruskan ke Google Form. Pengunjung hanya melihat pesan gagal kalau keduanya gagal.
 - Gambar sampul diunggah ke Supabase Storage (JPG, PNG, WebP, GIF, AVIF; maksimal 5 MB).
 - `SUPABASE_SERVICE_ROLE_KEY` hanya dipakai di server. Jangan dibagikan dan jangan diberi awalan `NEXT_PUBLIC_`.
+- Data jemaat, akun, dan laporan Life Group tidak punya policy RLS sama sekali, jadi anon key tidak bisa membaca satu baris pun. Foto jemaat dan booklet hanya dibuka lewat signed URL berumur pendek.
+
+## Bot Telegram internal
+
+Bot untuk tim internal, dikirim **satu per satu ke tiap orang** lewat chat pribadi (tidak ada grup). Setiap pagi bot mengirim ringkasan berisi ulang tahun, anniversary pernikahan, jadwal hari ini dan besok, serta jumlah jemaat baru yang belum punya Life Group. Pendaftar "Gabung Life Group" dari situs dan jemaat baru yang ditambahkan admin langsung dikabarkan dengan tombol Life Group, jadi bisa di-assign dari Telegram, lalu ada tombol untuk mengabari leader-nya lewat WhatsApp. Permohonan doa dari situs juga langsung diteruskan.
+
+Perintah di Telegram: `/ulangtahun`, `/anniversary`, `/jadwal`, `/jemaatbaru`, `/bantuan`.
+
+### Menyiapkan (sekali)
+
+1. Di Telegram, chat **@BotFather** → `/newbot` → beri nama, lalu salin tokennya.
+2. Isi `.env.production` (lihat `.env.example`):
+   - `TELEGRAM_BOT_TOKEN`: token dari BotFather.
+   - `TELEGRAM_WEBHOOK_SECRET`: teks acak 16-256 karakter buatan sendiri, misalnya `openssl rand -hex 32`. Bukan dari Telegram.
+   - `CRON_SECRET`: teks acak lain buatan sendiri, minimal 16 karakter.
+3. Jalankan ulang `supabase/schema.sql` di Supabase SQL Editor, lalu deploy.
+4. Buka **admin panel → Bot Telegram → Sambungkan bot**. Ini butuh `NEXT_PUBLIC_SITE_URL` berupa alamat https publik.
+5. Di halaman yang sama, **Tambah penerima**: nama, nomor Telegram, dan pengingat yang dia terima (Ulang tahun, Anniversary pernikahan, Jadwal gereja, Jemaat baru, Permohonan doa).
+6. Orangnya membuka bot, menekan **Mulai**, lalu **Kirim nomor saya**. Kalau nomornya cocok dengan daftar, dia langsung tersambung. Tombol "Kirim petunjuk lewat WhatsApp" di admin panel mengirimkan langkah ini ke orangnya.
+
+### Cara kerja
+
+- **Hanya penerima yang tersambung dan aktif** yang menerima data jemaat atau bisa memakai perintah. Orang lain hanya diminta mengirim nomornya, dan nomor yang tidak terdaftar ditolak.
+- Nomor dicocokkan dari kontak yang dikirim lewat tombol "Kirim nomor saya", dan hanya kontak milik pengirimnya sendiri yang diterima (kontak orang lain yang diteruskan ditolak).
+- Tombol assign Life Group hanya berlaku untuk penerima yang mengikuti pengingat "Jemaat baru", dan hanya kalau ditekan oleh orangnya sendiri. Orang yang sudah punya Life Group tidak pernah dipindah dari Telegram.
+- Bot tidak melayani grup: kalau dimasukkan ke grup, bot pamit lalu keluar. Kalau penerima memblokir bot, statusnya kembali "Menunggu" sampai dia membuka bot lagi.
+- Ringkasan pagi: proses PM2 `enkg-telegram-daily` jalan tiap jam (menit ke-5) dan memanggil `POST /api/telegram/daily`. Ringkasan terkirim sekali sehari per orang, mulai 06.00 WIB, apa pun zona waktu server. Log ada di `logs/telegram-daily.log`.
+- Tanggal menikah diisi di data keluarga jemaat (relasi pasangan). Tanpa tanggal itu, anniversary tidak diingatkan.
+- Nama, nomor WA, domisili jemaat baru, dan isi permohonan doa ikut terkirim ke Telegram, jadi daftarkan hanya tim internal.
+
+### Uji di komputer sendiri
+
+Telegram hanya bisa memanggil webhook di alamat https publik. Untuk mencoba bot dari `next dev`, jalankan:
+
+```bash
+node --env-file=.env.local scripts/telegram-poll.mjs 3000
+```
+
+Skrip ini mengambil pesan masuk lewat `getUpdates` lalu meneruskannya ke `http://localhost:3000/api/telegram/webhook` dengan secret yang sama. Skrip **hanya jalan selama bot belum punya webhook**. Kalau situs online sudah menekan "Sambungkan bot", Telegram menolak `getUpdates` (409) dan skrip berhenti. Skrip ini sengaja tidak pernah menghapus webhook, supaya bot di situs online tidak terputus.
+
+## Chatbot di halaman utama
+
+Tombol WhatsApp melayang di halaman utama diganti chatbot "Tanya kami". Pengunjung bisa bertanya soal jadwal ibadah, Life Group, lokasi, Kids Church, ProCon, atau cara memberi, dan di bagian atas chat selalu ada tombol **Chat WhatsApp** untuk lanjut ke tim.
+
+- Jawaban AI memakai DeepSeek. Isi `DEEPSEEK_API_KEY` di `.env.production`. Kalau kosong (atau DeepSeek sedang bermasalah), chatbot tetap jalan dengan jawaban otomatis dari isi situs plus tombol WhatsApp.
+- Chatbot hanya tahu informasi publik: isi `src/content/`, jadwal kalender, event yang terbit, dan Life Group yang punya jadwal tetap. Data jemaat tidak pernah dikirim ke AI. Pertanyaan pengunjung dikirim ke DeepSeek.
+- Pesan yang menunjukkan krisis (mis. ingin mengakhiri hidup) langsung dijawab dengan nomor bantuan 119 ext 8 dan healing119.id, tanpa AI.
+- Batas: 20 pesan per 10 menit per pengunjung, pesan maksimal 600 karakter. Butuh Node 20.3 atau lebih baru di server.
 
 ## Google Form
 

@@ -78,5 +78,30 @@ module.exports = {
       out_file: `${APP_DIR}/logs/out.log`,
       error_file: `${APP_DIR}/logs/error.log`,
     },
+
+    /**
+     * Pemicu ringkasan harian bot Telegram (ulang tahun, anniversary, jadwal,
+     * jemaat baru). Jalan tiap jam lalu berhenti; situsnya yang memastikan
+     * ringkasan hanya terkirim sekali sehari mulai 06.00 WIB, apa pun zona
+     * waktu server. Tanpa CRON_SECRET skrip ini langsung keluar.
+     */
+    {
+      name: "enkg-telegram-daily",
+      script: "scripts/telegram-daily.mjs",
+      cwd: path.join(APP_DIR, "current"),
+      instances: 1,
+      exec_mode: "fork",
+      cron_restart: "5 * * * *",
+      autorestart: false,
+      env: {
+        NODE_ENV: "production",
+        PORT: Number(fileEnv.PORT || process.env.PORT || 3001),
+        CRON_SECRET: fileEnv.CRON_SECRET || process.env.CRON_SECRET || "",
+      },
+      merge_logs: true,
+      log_date_format: "YYYY-MM-DD HH:mm:ss Z",
+      out_file: `${APP_DIR}/logs/telegram-daily.log`,
+      error_file: `${APP_DIR}/logs/telegram-daily.log`,
+    },
   ],
 };

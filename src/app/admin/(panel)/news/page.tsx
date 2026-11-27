@@ -29,11 +29,6 @@ export default async function AdminNewsPage({ searchParams }: { searchParams: Pr
     <>
       <AdminPageHeader title="News" description="Kabar dan artikel yang tampil di section News halaman utama." action={newButton} />
 
-      {saved && (
-        <div className="mb-6">
-          <Notice tone="success">Tersimpan. Halaman utama sudah diperbarui.</Notice>
-        </div>
-      )}
       <DbError error={error} />
 
       {posts.length ? (

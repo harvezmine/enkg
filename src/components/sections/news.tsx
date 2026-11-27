@@ -1,11 +1,12 @@
 import Image from "next/image";
 
 import { NEWS_LABEL, type NewsItem } from "@/content/news";
-import { schedule } from "@/content/schedule";
+import { schedule as staticSchedule } from "@/content/schedule";
 import { sermons } from "@/content/sermons";
 import { site } from "@/content/site";
 import { canOptimizeImage, linkTarget } from "@/lib/images";
-import { nextOccurrence } from "@/lib/schedule";
+import { WEEKDAYS, dotClock, fromStatic, isRecurring, type CalendarItem } from "@/lib/calendar";
+import { nextOccurrence, type Recurrence } from "@/lib/schedule";
 
 import { Icon } from "../icons";
 import { LiteYouTube } from "../lite-youtube";
@@ -76,28 +77,53 @@ function NewsCard({ item, past, featured }: { item: NewsItem; past: boolean; fea
   );
 }
 
-/** `items`: kabar, artikel, dan event dari admin panel (atau konten statis bila kosong). */
-export function News({ now, items }: { now: Date; items: NewsItem[] }) {
+/** "setiap Jumat ke-4" / "setiap Rabu" untuk kalimat ringkasan. */
+function everyText(rec: Recurrence) {
+  return rec.kind === "weekly" ? `setiap ${WEEKDAYS[rec.weekday]}` : `setiap ${WEEKDAYS[rec.weekday]} ke-${rec.nth}`;
+}
+
+/**
+ * `items`: kabar, artikel, dan event dari admin panel (atau konten statis bila kosong).
+ * `schedule`: jadwal kalender. Kalau Onsite Prayer Meeting dihapus dari kalender,
+ * kartunya ikut hilang dari News.
+ */
+export function News({
+  now,
+  items,
+  schedule = staticSchedule.map(fromStatic),
+}: {
+  now: Date;
+  items: NewsItem[];
+  schedule?: CalendarItem[];
+}) {
   const today = new Date(now.getTime() + JAKARTA_OFFSET_MS).toISOString().slice(0, 10);
 
   // Event rutin terdekat ikut tampil sebagai kabar, tanggalnya selalu terkini.
-  const friday = schedule.find((item) => item.id === "friday-prayer")!;
-  const fridayDate = new Date(nextOccurrence(friday.recurrence, friday.start, now).getTime() + JAKARTA_OFFSET_MS);
-  const upcomingPrayer: NewsItem = {
-    id: "next-onsite-prayer",
-    type: "event",
-    title: "Onsite Prayer Meeting",
-    date: fridayDate.toISOString().slice(0, 10),
-    summary: "Berdoa bersama setiap Jumat ke-4, pukul 18.00 sampai 20.00 WIB di Stream Hall, Mahaka Square Lt. 2 Unit A30-32.",
-    image: {
-      src: "/images/ministries/prayer-friday.png",
-      alt: "Poster Onsite Prayer Meeting setiap Jumat ke-4 pukul 18.00 sampai 20.00 di Stream Hall",
-      width: 1080,
-      height: 1080,
-    },
-  };
+  const friday = schedule.find((item) => item.slug === "friday-prayer");
+  const upcomingPrayer: NewsItem[] =
+    friday && isRecurring(friday)
+      ? [
+          {
+            id: "next-onsite-prayer",
+            type: "event",
+            title: friday.title,
+            date: new Date(nextOccurrence(friday.recurrence, friday.start, now).getTime() + JAKARTA_OFFSET_MS)
+              .toISOString()
+              .slice(0, 10),
+            summary: `Berdoa bersama ${everyText(friday.recurrence)}, pukul ${dotClock(friday.start)}${
+              friday.end ? ` sampai ${dotClock(friday.end)}` : ""
+            } WIB di ${friday.place === site.address.venue ? `${site.address.venue}, ${site.address.building}` : friday.place}.`,
+            image: {
+              src: "/images/ministries/prayer-friday.png",
+              alt: `Poster ${friday.title} ${everyText(friday.recurrence)} pukul ${dotClock(friday.start)}`,
+              width: 1080,
+              height: 1080,
+            },
+          },
+        ]
+      : [];
 
-  const [featuredItem, ...restItems] = [upcomingPrayer, ...items].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
+  const [featuredItem, ...restItems] = [...upcomingPrayer, ...items].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
   const mosaic = sermons.slice(0, 6);
   const latest = sermons.slice(0, 4);
 

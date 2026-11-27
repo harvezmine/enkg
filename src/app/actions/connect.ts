@@ -1,9 +1,12 @@
 "use server";
 
+import { after } from "next/server";
+
 import { TABLES } from "@/lib/db-types";
 import { buildSubmission, FORMS, isFormKey, type FormKey } from "@/lib/google-forms";
 import { toSubmissionRow } from "@/lib/submissions";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { notifyNewMember, notifyPrayer } from "@/lib/telegram/notify";
 
 export type ConnectState = {
   status: "idle" | "success" | "error";
@@ -14,16 +17,20 @@ export type ConnectState = {
   values?: Record<string, string>;
 };
 
-/** Simpan ke database supaya muncul di admin panel (menu Contact Us). */
+/** Simpan ke database supaya muncul di admin panel (menu Contact Us). Mengembalikan id kirimannya, atau null. */
 async function saveToDatabase(form: FormKey, values: Record<string, string>) {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return false;
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return null;
   try {
-    const { error } = await createAdminClient().from(TABLES.submissions).insert(toSubmissionRow(form, values));
+    const { data, error } = await createAdminClient()
+      .from(TABLES.submissions)
+      .insert(toSubmissionRow(form, values))
+      .select("id")
+      .single();
     if (error) throw error;
-    return true;
+    return data.id as string;
   } catch (error) {
     console.error("[connect] gagal menyimpan ke database:", error);
-    return false;
+    return null;
   }
 }
 
@@ -73,9 +80,14 @@ export async function submitConnect(_prev: ConnectState, formData: FormData): Pr
     };
   }
 
-  const [saved, sent] = await Promise.all([saveToDatabase(form, values), sendToGoogleForm(form, submission.body)]);
+  const [savedId, sent] = await Promise.all([saveToDatabase(form, values), sendToGoogleForm(form, submission.body)]);
 
-  if (!saved && !sent) {
+  // Pendaftar Life Group dan permohonan doa dikabarkan ke penerima Telegram
+  // internal setelah respons terkirim, jadi pengunjung tidak ikut menunggu Telegram.
+  if (savedId && form === "lifeGroup") after(() => notifyNewMember({ submissionId: savedId }));
+  if (savedId && form === "prayer") after(() => notifyPrayer(savedId));
+
+  if (!savedId && !sent) {
     return {
       status: "error",
       message: "Maaf, formulir belum terkirim. Coba lagi sebentar lagi atau hubungi kami lewat WhatsApp.",

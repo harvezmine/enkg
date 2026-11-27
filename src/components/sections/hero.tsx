@@ -1,13 +1,15 @@
-import { schedule } from "@/content/schedule";
+import { schedule as staticSchedule } from "@/content/schedule";
 import { site } from "@/content/site";
+import { recurringBySlug, type CalendarItem } from "@/lib/calendar";
 import { formatJakartaDate, formatJakartaTime, nextOccurrence } from "@/lib/schedule";
 
 import { Icon } from "../icons";
 import { Grain } from "../ui";
 import { HeroBackdrop } from "./hero-backdrop";
 
-export function Hero({ now }: { now: Date }) {
-  const service = schedule.find((item) => item.id === "sunday-service")!;
+/** `schedule`: jadwal dari kalender admin. Tanpa itu, atau bila Ibadah Minggu tidak ada, pakai jadwal bawaan. */
+export function Hero({ now, schedule = [] }: { now: Date; schedule?: CalendarItem[] }) {
+  const service = recurringBySlug(schedule, "sunday-service", staticSchedule)!;
   const next = nextOccurrence(service.recurrence, service.start, now);
 
   return (

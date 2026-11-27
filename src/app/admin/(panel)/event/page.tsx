@@ -67,11 +67,6 @@ export default async function AdminEventPage({
         })}
       </nav>
 
-      {saved && (
-        <div className="mb-6">
-          <Notice tone="success">Tersimpan. Halaman utama sudah diperbarui.</Notice>
-        </div>
-      )}
       <DbError error={error} />
 
       {events.length ? (

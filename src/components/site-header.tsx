@@ -82,7 +82,7 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 aria-current={isActive ? "true" : undefined}
-                className={`relative rounded-full px-3.5 py-2 text-sm font-medium transition-colors xl:px-4 ${
+                className={`relative rounded-full px-3 py-2 text-sm font-medium transition-colors xl:px-4 ${
                   isActive ? "text-cream-100" : "text-cream-100/65 hover:text-cream-100"
                 }`}
               >

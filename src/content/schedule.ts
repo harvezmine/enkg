@@ -1,3 +1,4 @@
+import type { ScheduleCategory } from "@/lib/db-types";
 import { nextOccurrence, type Recurrence } from "@/lib/schedule";
 
 import { site } from "./site";
@@ -5,6 +6,8 @@ import { site } from "./site";
 export type ScheduleItem = {
   id: string;
   title: string;
+  /** Warna & label di kalender publik. */
+  category: ScheduleCategory;
   recurrence: Recurrence;
   /** HH:MM, waktu Jakarta */
   start: string;
@@ -17,10 +20,15 @@ export type ScheduleItem = {
 
 const SUNDAY = { kind: "weekly", weekday: 0 } as const;
 
-/** Dari poster Canva & Linktree ENKG. */
+/**
+ * Dari poster Canva & Linktree ENKG. Ini jadwal BAWAAN: situs memakainya selama
+ * tabel enkg_schedule belum terisi atau Supabase tidak bisa dihubungi. `id` sama
+ * dengan kolom `slug` di database (lihat seed di supabase/schema.sql).
+ */
 export const schedule: ScheduleItem[] = [
   {
     id: "sunday-prayer",
+    category: "doa",
     title: "Doa Sebelum Ibadah",
     recurrence: SUNDAY,
     start: "09:15",
@@ -29,6 +37,7 @@ export const schedule: ScheduleItem[] = [
   },
   {
     id: "sunday-service",
+    category: "ibadah",
     title: "Ibadah Minggu",
     recurrence: SUNDAY,
     start: "10:00",
@@ -37,6 +46,7 @@ export const schedule: ScheduleItem[] = [
   },
   {
     id: "kids-church",
+    category: "ibadah",
     title: "Kids Church",
     recurrence: SUNDAY,
     start: "10:30",
@@ -45,6 +55,7 @@ export const schedule: ScheduleItem[] = [
   },
   {
     id: "heritage",
+    category: "ibadah",
     title: "Heritage",
     recurrence: SUNDAY,
     start: "10:30",
@@ -53,6 +64,7 @@ export const schedule: ScheduleItem[] = [
   },
   {
     id: "wednesday-prayer",
+    category: "doa",
     title: "Weekly Prayer Meeting",
     recurrence: { kind: "weekly", weekday: 3 },
     start: "20:00",
@@ -63,6 +75,7 @@ export const schedule: ScheduleItem[] = [
   },
   {
     id: "friday-prayer",
+    category: "doa",
     title: "Onsite Prayer Meeting",
     recurrence: { kind: "monthly-nth", weekday: 5, nth: 4 },
     start: "18:00",

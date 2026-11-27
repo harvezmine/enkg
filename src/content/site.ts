@@ -71,6 +71,7 @@ export const navigation = [
   { href: "#siapa-kita", label: "Siapa Kita" },
   { href: "#life-group", label: "Life Group" },
   { href: "#pelayanan", label: "Pelayanan" },
+  { href: "#kalender", label: "Kalender" },
   { href: "#news", label: "News" },
   { href: "#procon", label: "ProCon" },
   { href: "#kontak", label: "Contact Us" },

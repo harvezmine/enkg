@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import { ADMIN_COOKIE, verifySessionToken } from "@/lib/admin-session";
+import { LEADER_COOKIE, verifyLeaderToken } from "@/lib/leader-session";
 
 /**
  * Alamat tujuan redirect di domain yang dibuka pengunjung.
@@ -24,6 +25,8 @@ function redirectTo(request: NextRequest, pathname: string, params?: Record<stri
  */
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  if (pathname === "/portal" || pathname.startsWith("/portal/")) return portalGate(request, pathname);
+
   const isLogin = pathname === "/admin/login";
   const authed = await verifySessionToken(request.cookies.get(ADMIN_COOKIE)?.value);
 
@@ -36,6 +39,24 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
+/**
+ * Gerbang pertama portal leader Life Group. Sesi leader terpisah dari sesi
+ * admin (cookie & kunci berbeda), jadi leader tidak pernah lolos gerbang
+ * /admin di atas. Di sini hanya tanda tangan & kedaluwarsa yang dicek;
+ * status akun dan peran leader dicek ulang ke database oleh requireLeader().
+ */
+async function portalGate(request: NextRequest, pathname: string) {
+  // /portal/keluar menghapus cookie, jadi harus bisa dibuka tanpa sesi yang sah.
+  if (pathname === "/portal/keluar") return NextResponse.next();
+
+  const isLogin = pathname === "/portal/login";
+  const authed = Boolean(await verifyLeaderToken(request.cookies.get(LEADER_COOKIE)?.value));
+
+  if (!authed && !isLogin) return redirectTo(request, "/portal/login");
+  if (authed && isLogin) return redirectTo(request, "/portal");
+  return NextResponse.next();
+}
+
 export const config = {
-  matcher: ["/admin", "/admin/:path*"],
+  matcher: ["/admin", "/admin/:path*", "/portal", "/portal/:path*"],
 };

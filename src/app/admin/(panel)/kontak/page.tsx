@@ -54,6 +54,13 @@ export default async function AdminKontakPage({
   const { data, error } = await query;
   const items = (data ?? []) as ContactSubmission[];
 
+  // Kiriman Gabung Life Group yang sudah didaftarkan sebagai data jemaat.
+  const lifeGroupIds = items.filter((item) => item.form === "lifeGroup").map((item) => item.id);
+  const { data: linked } = lifeGroupIds.length
+    ? await supabase.from(TABLES.people).select("id, submission_id").in("submission_id", lifeGroupIds)
+    : { data: [] as { id: string; submission_id: string }[] };
+  const personBySubmission = new Map((linked ?? []).map((row) => [row.submission_id, row.id]));
+
   return (
     <>
       <AdminPageHeader
@@ -170,7 +177,26 @@ export default async function AdminKontakPage({
                   </form>
                 </div>
 
-                <div className="mt-3 flex justify-end border-t border-ink/8 pt-2">
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-ink/8 pt-2">
+                  {item.form === "lifeGroup" ? (
+                    personBySubmission.has(item.id) ? (
+                      <Link
+                        href={`/admin/jemaat/${personBySubmission.get(item.id)}`}
+                        className="inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-xs font-semibold text-navy-700 transition hover:bg-navy-50"
+                      >
+                        <Icon.addressBook className="h-4 w-4" /> Lihat data jemaat
+                      </Link>
+                    ) : (
+                      <Link
+                        href={`/admin/jemaat/baru?kiriman=${item.id}`}
+                        className="inline-flex h-9 items-center gap-1.5 rounded-full bg-navy-50 px-3 text-xs font-semibold text-navy-700 transition hover:bg-navy-100"
+                      >
+                        <Icon.plus className="h-4 w-4" /> Daftarkan sebagai jemaat baru
+                      </Link>
+                    )
+                  ) : (
+                    <span />
+                  )}
                   <DeleteButton action={deleteSubmission} id={item.id} />
                 </div>
               </Card>

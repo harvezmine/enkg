@@ -39,6 +39,11 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
         </div>
 
         <p className="mt-6 text-center text-sm text-cream-100/60">
+          <Link href="/portal/login" className="font-semibold text-cream-100/80 hover:text-sun-400">
+            Leader Life Group? Masuk ke portal leader
+          </Link>
+        </p>
+        <p className="mt-3 text-center text-sm text-cream-100/60">
           <Link href="/" className="inline-flex items-center gap-1.5 hover:text-sun-400">
             Kembali ke situs
           </Link>

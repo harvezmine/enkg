@@ -2,8 +2,9 @@ import Image from "next/image";
 
 import logo from "@/assets/brand/logo-light.png";
 import { vision } from "@/content/about";
-import { schedule } from "@/content/schedule";
+import { schedule as staticSchedule } from "@/content/schedule";
 import { navigation, site, whatsappMessages, whatsappUrl } from "@/content/site";
+import { recurringBySlug, type CalendarItem } from "@/lib/calendar";
 import { formatJakartaDate, formatJakartaTime, nextOccurrence } from "@/lib/schedule";
 
 import { Icon } from "./icons";
@@ -16,8 +17,8 @@ const socials = [
   { href: site.socials.youtube, label: "YouTube", icon: Icon.youtube },
 ];
 
-export function SiteFooter({ now }: { now: Date }) {
-  const service = schedule.find((item) => item.id === "sunday-service")!;
+export function SiteFooter({ now, schedule = [] }: { now: Date; schedule?: CalendarItem[] }) {
+  const service = recurringBySlug(schedule, "sunday-service", staticSchedule)!;
   const next = nextOccurrence(service.recurrence, service.start, now);
 
   return (
