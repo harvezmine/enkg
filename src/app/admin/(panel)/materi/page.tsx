@@ -87,10 +87,7 @@ export default async function AdminMaterialsPage({ searchParams }: { searchParam
         </ul>
       ) : (
         !error && (
-          <EmptyState
-            title="Belum ada materi"
-            action={newButton}
-          />
+          <EmptyState title="Belum ada materi" />
         )
       )}
     </>

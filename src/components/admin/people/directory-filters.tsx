@@ -71,7 +71,7 @@ export function DirectoryFilters({
           }}
           placeholder="Cari nama, panggilan, wilayah, atau nomor WA"
           aria-label="Cari jemaat"
-          className="w-full rounded-full border border-ink/12 bg-white py-3.5 pr-5 pl-12 text-[15px] text-ink shadow-soft outline-none transition placeholder:text-ink-soft/60 hover:border-ink/25 focus:border-navy-700 focus:ring-4 focus:ring-navy-700/10"
+          className="w-full rounded-full border border-ink/12 bg-white py-3 pr-5 pl-12 text-[15px] text-ink outline-none transition placeholder:text-ink-soft/60 hover:border-ink/25 focus:border-navy-700 focus:ring-4 focus:ring-navy-700/10"
         />
       </div>
 

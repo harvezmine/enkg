@@ -146,7 +146,7 @@ export default async function LifeGroupPage({
       <section className="mb-10">
         <h2 className="font-display mb-4 text-xl font-bold text-ink">Leader</h2>
         {leaders.length ? (
-          <ul className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4">
+          <ul className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
             {leaders.map((person) => {
               const account = accountOf.get(person.id);
               return (
@@ -167,7 +167,7 @@ export default async function LifeGroupPage({
             })}
           </ul>
         ) : (
-          <p className="rounded-2xl border border-dashed border-red-300 bg-red-50/50 p-4 text-sm text-red-800">
+          <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-800">
             Grup ini belum punya leader.
           </p>
         )}
@@ -185,7 +185,7 @@ export default async function LifeGroupPage({
           Anggota <span className="tabular text-ink-soft">({members.length - leaders.length})</span>
         </h2>
         {members.length > leaders.length ? (
-          <ul className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4">
+          <ul className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
             {members
               .filter((p) => p.life_group_role !== "leader")
               .map((person) => (

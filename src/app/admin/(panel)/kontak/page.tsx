@@ -68,14 +68,14 @@ export default async function AdminKontakPage({
       />
 
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <nav className="flex gap-1 overflow-x-auto rounded-full bg-white p-1 ring-1 ring-ink/8" aria-label="Filter status">
+        <nav className="-mx-4 flex gap-1 overflow-x-auto px-4 sm:mx-0 sm:rounded-full sm:bg-white sm:p-1 sm:ring-1 sm:ring-ink/[0.07]" aria-label="Filter status">
           {STATUS_FILTERS.map((key) => (
             <Link
               key={key}
               href={filterHref(key, form)}
               aria-current={status === key ? "page" : undefined}
               className={cn(
-                "rounded-full px-4 py-2 text-sm font-semibold whitespace-nowrap transition",
+                "inline-flex min-h-10 shrink-0 items-center rounded-full px-4 text-sm font-semibold whitespace-nowrap transition",
                 status === key ? "bg-navy-700 text-cream-100" : "text-ink-soft hover:text-ink",
               )}
             >
@@ -83,14 +83,14 @@ export default async function AdminKontakPage({
             </Link>
           ))}
         </nav>
-        <nav className="flex gap-1 overflow-x-auto rounded-full bg-white p-1 ring-1 ring-ink/8" aria-label="Filter jenis form">
+        <nav className="-mx-4 flex gap-1 overflow-x-auto px-4 sm:mx-0 sm:rounded-full sm:bg-white sm:p-1 sm:ring-1 sm:ring-ink/[0.07]" aria-label="Filter jenis form">
           {FORM_FILTERS.map((key) => (
             <Link
               key={key}
               href={filterHref(status, key)}
               aria-current={form === key ? "page" : undefined}
               className={cn(
-                "rounded-full px-4 py-2 text-sm font-semibold whitespace-nowrap transition",
+                "inline-flex min-h-10 shrink-0 items-center rounded-full px-4 text-sm font-semibold whitespace-nowrap transition",
                 form === key ? "bg-sun-500 text-ink" : "text-ink-soft hover:text-ink",
               )}
             >
@@ -106,7 +106,7 @@ export default async function AdminKontakPage({
         <ul className="space-y-3">
           {items.map((item) => (
             <li key={item.id}>
-              <Card className={cn("p-4 sm:p-6", item.status === "baru" && "ring-sun-500/50")}>
+              <Card className={cn("p-4 sm:p-6", item.status === "baru" && "ring-sun-500/60")}>
                 <div className="flex flex-wrap items-center gap-2">
                   <Badge tone={item.status === "baru" ? "sun" : item.status === "selesai" ? "green" : "gray"}>
                     {SUBMISSION_STATUS_LABEL[item.status]}
@@ -148,7 +148,7 @@ export default async function AdminKontakPage({
                     )}
                   </div>
 
-                  <form action={updateSubmission} className="space-y-2.5 rounded-xl bg-cream-50 p-3 ring-1 ring-ink/8">
+                  <form action={updateSubmission} className="space-y-2.5 rounded-xl bg-cream-50 p-3 sm:p-4">
                     <input type="hidden" name="id" value={item.id} />
                     <label className="block text-xs font-semibold text-ink-soft" htmlFor={`status-${item.id}`}>
                       Status
@@ -167,7 +167,7 @@ export default async function AdminKontakPage({
                       id={`notes-${item.id}`}
                       name="admin_notes"
                       defaultValue={item.admin_notes ?? ""}
-                      placeholder="Mis. sudah dihubungi Ko Andi, masuk LG Young Professional"
+                      placeholder="Mis. sudah dihubungi"
                       className="min-h-20 py-2 text-sm"
                     />
                     <button type="submit" className="btn btn-navy w-full px-4 py-2.5 text-sm">
@@ -176,21 +176,21 @@ export default async function AdminKontakPage({
                   </form>
                 </div>
 
-                <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-ink/8 pt-2">
+                <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-ink/[0.06] pt-3">
                   {item.form === "lifeGroup" ? (
                     personBySubmission.has(item.id) ? (
                       <Link
                         href={`/admin/jemaat/${personBySubmission.get(item.id)}`}
-                        className="inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-xs font-semibold text-navy-700 transition hover:bg-navy-50"
+                        className="inline-flex h-10 items-center gap-1.5 rounded-full px-3 text-xs font-semibold text-navy-700 transition hover:bg-navy-50"
                       >
                         <Icon.addressBook className="h-4 w-4" /> Lihat data jemaat
                       </Link>
                     ) : (
                       <Link
                         href={`/admin/jemaat/baru?kiriman=${item.id}`}
-                        className="inline-flex h-9 items-center gap-1.5 rounded-full bg-navy-50 px-3 text-xs font-semibold text-navy-700 transition hover:bg-navy-100"
+                        className="inline-flex h-10 items-center gap-1.5 rounded-full bg-navy-50 px-3.5 text-xs font-semibold text-navy-700 transition hover:bg-navy-100"
                       >
-                        <Icon.plus className="h-4 w-4" /> Daftarkan sebagai jemaat baru
+                        <Icon.plus className="h-4 w-4" /> Daftarkan sebagai jemaat
                       </Link>
                     )
                   ) : (

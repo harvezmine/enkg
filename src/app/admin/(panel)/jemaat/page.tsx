@@ -147,7 +147,7 @@ export default async function JemaatPage({ searchParams }: { searchParams: Promi
       )}
 
       {people.length ? (
-        <ul className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4">
+        <ul className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
           {people.map((person) => (
             <li key={person.id}>
               <PersonCard
@@ -163,10 +163,7 @@ export default async function JemaatPage({ searchParams }: { searchParams: Promi
       ) : (
         !dir.error &&
         !filtered && (
-          <EmptyState
-            title="Belum ada data jemaat"
-            action={newButton}
-          />
+          <EmptyState title="Belum ada data jemaat" />
         )
       )}
     </>

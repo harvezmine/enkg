@@ -155,7 +155,7 @@ export default async function PortalHome({ searchParams }: { searchParams: Promi
             ))}
           </ul>
         ) : (
-          <p className="rounded-2xl bg-white/60 px-5 py-4 text-sm text-ink-soft ring-1 ring-ink/8">
+          <p className="rounded-2xl bg-white/60 px-5 py-4 text-sm text-ink-soft">
             Belum ada jemaat baru.
           </p>
         )}
@@ -166,7 +166,7 @@ export default async function PortalHome({ searchParams }: { searchParams: Promi
         {birthdays.length ? (
           <ul className="grid gap-2 sm:grid-cols-2">
             {birthdays.map(({ person: member, daysUntil, turning }) => (
-              <li key={member.id} className="flex items-center gap-3 rounded-2xl bg-white p-3 shadow-soft ring-1 ring-ink/8">
+              <li key={member.id} className="flex items-center gap-3 rounded-2xl bg-white p-3 shadow-hair ring-1 ring-ink/[0.07]">
                 <PersonAvatar
                   person={member}
                   photoUrl={member.photo_path ? photos.get(member.photo_path) : null}

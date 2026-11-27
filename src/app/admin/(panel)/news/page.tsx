@@ -70,10 +70,7 @@ export default async function AdminNewsPage({ searchParams }: { searchParams: Pr
         </ul>
       ) : (
         !error && (
-          <EmptyState
-            title="Belum ada News"
-            action={newButton}
-          />
+          <EmptyState title="Belum ada News" />
         )
       )}
     </>

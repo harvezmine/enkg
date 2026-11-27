@@ -69,7 +69,7 @@ export default async function PelayananPage({ searchParams }: { searchParams: Pr
             return (
               <li key={team.id}>
                 <Link href={`/admin/pelayanan/${team.id}`} className="block h-full">
-                  <Card className="flex h-full flex-col p-5 transition hover:-translate-y-0.5 hover:shadow-lift">
+                  <Card className="flex h-full flex-col p-5 transition hover:shadow-soft hover:ring-ink/15">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <h2 className="font-display text-lg leading-snug font-bold text-ink">{team.name}</h2>

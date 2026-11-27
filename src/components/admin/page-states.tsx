@@ -59,7 +59,7 @@ function StateCard({
   children: ReactNode;
 }) {
   return (
-    <div className="mx-auto max-w-lg rounded-3xl bg-white px-6 py-10 text-center shadow-soft ring-1 ring-ink/8 sm:px-10">
+    <div className="mx-auto max-w-lg rounded-3xl bg-white px-6 py-10 text-center shadow-hair ring-1 ring-ink/[0.07] sm:px-10">
       <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-sun-400/25 text-navy-800">{icon}</span>
       <h1 className="font-display mt-5 text-2xl font-bold text-ink">{title}</h1>
       <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">{text}</p>

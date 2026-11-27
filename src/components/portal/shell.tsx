@@ -105,11 +105,14 @@ export function PortalShell({
                 href={href}
                 aria-current={isActive(href) ? "page" : undefined}
                 className={cn(
-                  "flex flex-col items-center gap-1 px-1 py-2.5 text-[10px] font-semibold transition-colors",
-                  isActive(href) ? "text-navy-700" : "text-ink-soft",
+                  "flex flex-col items-center gap-1 px-1 py-2 text-[11px] font-semibold transition-colors",
+                  isActive(href) ? "text-navy-800" : "text-ink-soft",
                 )}
               >
-                <NavIcon className="h-5 w-5" />
+                {/* Sama dengan tab bar admin: ikon aktif diberi latar bulat. */}
+                <span className={cn("grid h-8 w-12 place-items-center rounded-full transition-colors", isActive(href) && "bg-navy-100")}>
+                  <NavIcon className="h-5 w-5" />
+                </span>
                 <span className="truncate">{label}</span>
               </Link>
             ))}

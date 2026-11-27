@@ -18,7 +18,7 @@ function MeetingCard({ meeting, past }: { meeting: Row; past: boolean }) {
   const present = meeting.attendee_ids.length + meeting.guest_count;
   return (
     <Link href={`/portal/pertemuan/${meeting.id}`} className="block">
-      <Card className="p-4 transition hover:shadow-lift sm:p-5">
+      <Card className="p-4 transition hover:shadow-soft hover:ring-ink/15 sm:p-5">
         <div className="flex flex-wrap items-center gap-2">
           {past ? (
             meeting.reported_at ? (
@@ -107,10 +107,7 @@ export default async function PortalMeetingsPage({ searchParams }: { searchParam
         </div>
       ) : (
         !error && (
-          <EmptyState
-            title="Belum ada pertemuan"
-            action={newButton}
-          />
+          <EmptyState title="Belum ada pertemuan" />
         )
       )}
     </>

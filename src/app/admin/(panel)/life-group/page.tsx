@@ -4,7 +4,7 @@ import Link from "next/link";
 import { DbError } from "@/components/admin/db-error";
 import { AssignLifeGroupForm, LifeGroupForm, type GroupOption } from "@/components/admin/life-group/forms";
 import { PersonAvatar } from "@/components/admin/people/avatar";
-import { AdminPageHeader, Badge, Card, EmptyState, Notice } from "@/components/admin/ui";
+import { AdminPageHeader, Badge, Card, EmptyState, Notice, SectionTitle } from "@/components/admin/ui";
 import { Icon } from "@/components/icons";
 import { adminDb } from "@/lib/admin-auth";
 import { LIFE_GROUP_SEGMENT_LABEL, TABLES, type ContactSubmission, type LifeGroup, type Person } from "@/lib/db-types";
@@ -82,7 +82,7 @@ export default async function LifeGroupsPage({
         </div>
       )}
       {notice && (
-        <div className="mb-6 flex flex-col gap-3 rounded-2xl bg-emerald-50 p-4 ring-1 ring-emerald-200 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mb-6 flex flex-col gap-3 rounded-2xl bg-emerald-50 p-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="flex items-start gap-2.5 text-sm text-emerald-800">
             <Icon.check className="mt-0.5 h-4 w-4 shrink-0" />
             {notice.message}
@@ -106,9 +106,7 @@ export default async function LifeGroupsPage({
       {/* ── Antrean jemaat baru ─────────────────────────────────────────── */}
       {waiting.length > 0 && (
         <section className="mb-10">
-          <div className="mb-4">
-            <h2 className="font-display text-xl font-bold text-ink">Jemaat baru menunggu Life Group</h2>
-          </div>
+          <SectionTitle>Menunggu Life Group</SectionTitle>
           <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {waiting.map((person) => {
               const wanted = person.submission_id ? wish.get(person.submission_id) : null;
@@ -163,7 +161,7 @@ export default async function LifeGroupsPage({
             return (
               <li key={group.id}>
                 <Link href={`/admin/life-group/${group.id}`} className="group block h-full">
-                  <Card className={`flex h-full flex-col p-5 transition hover:-translate-y-0.5 hover:shadow-lift ${group.is_active ? "" : "opacity-60"}`}>
+                  <Card className={`flex h-full flex-col p-5 transition hover:shadow-soft hover:ring-ink/15 ${group.is_active ? "" : "opacity-60"}`}>
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <div className="flex flex-wrap gap-1.5">
@@ -221,14 +219,7 @@ export default async function LifeGroupsPage({
       ) : (
         !dir.error &&
         !params.baru && (
-          <EmptyState
-            title="Belum ada Life Group"
-            action={
-              <Link href="/admin/life-group?baru=1" className="btn btn-navy px-4 py-2.5 text-sm">
-                <Icon.plus className="h-4 w-4" /> Life Group baru
-              </Link>
-            }
-          />
+          <EmptyState title="Belum ada Life Group" />
         )
       )}
     </>

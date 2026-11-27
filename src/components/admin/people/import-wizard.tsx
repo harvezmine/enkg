@@ -298,7 +298,7 @@ export function ImportWizard({
       </div>
 
       {unknownColumns.length > 0 && (
-        <p className="rounded-xl bg-cream-50 p-3 text-sm text-ink-soft ring-1 ring-ink/8">
+        <p className="rounded-xl bg-cream-50 p-3 text-sm text-ink-soft">
           Kolom yang tidak dikenal dan dilewati: {unknownColumns.join(", ")}.
         </p>
       )}

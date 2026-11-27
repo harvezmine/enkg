@@ -26,11 +26,20 @@ const initial: ActionState = { status: "idle" };
 
 function Group({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <fieldset className="rounded-2xl bg-white p-4 shadow-soft ring-1 ring-ink/8 sm:p-6">
+    <fieldset className="rounded-2xl bg-white p-4 shadow-hair ring-1 ring-ink/[0.07] sm:p-6">
       <legend className="sr-only">{title}</legend>
       <h2 className="font-display mb-5 text-lg font-bold text-ink">{title}</h2>
       <div className="space-y-5">{children}</div>
     </fieldset>
+  );
+}
+
+function SaveButton({ pending }: { pending: boolean }) {
+  return (
+    <button type="submit" disabled={pending} className="btn btn-navy w-full">
+      {pending ? "Menyimpan…" : "Simpan"}
+      {!pending && <Icon.check className="h-4 w-4" />}
+    </button>
   );
 }
 
@@ -121,12 +130,12 @@ export function PersonEditor({
 
       <div className="space-y-5 lg:col-span-8">
         {submission && (
-          <div className="rounded-2xl bg-sun-400/15 p-4 text-sm leading-relaxed text-ink ring-1 ring-sun-500/40">
+          <div className="rounded-2xl bg-sun-400/15 p-4 text-sm leading-relaxed text-ink">
             Data awal diambil dari kiriman Contact Us: {submission.summary}. Lengkapi yang belum ada, lalu simpan.
           </div>
         )}
         {relate && (
-          <div className="rounded-2xl bg-sun-400/15 p-4 text-sm text-ink ring-1 ring-sun-500/40">
+          <div className="rounded-2xl bg-sun-400/15 p-4 text-sm text-ink">
             <p>
               Orang ini akan dicatat sebagai <strong>{relate.label}</strong> dari <strong>{relate.toName}</strong>.
             </p>
@@ -253,26 +262,23 @@ export function PersonEditor({
         </Group>
       </div>
 
-      <aside className="space-y-5 lg:col-span-4">
+      {/* HP: foto di atas, tombol Simpan menempel di bawah selama mengisi. Layar lebar: kolom kanan. */}
+      <aside className="order-first lg:order-none lg:col-span-4">
         <div className="lg:sticky lg:top-6 lg:space-y-5">
-          <div className="mx-auto max-w-56 lg:max-w-none">
+          <div className="mx-auto max-w-44 lg:max-w-none">
             <PhotoUpload name="photo_path" defaultPath={person?.photo_path} defaultUrl={photoUrl} />
           </div>
-
-          {state.status === "error" && state.message && (
-            <div className="mt-5 lg:mt-0">
-              <Notice tone="error">{state.message}</Notice>
-            </div>
-          )}
-
-          <div className="sticky bottom-24 z-10 -mx-2 mt-5 rounded-[1.75rem] bg-cream-100 p-2 shadow-[0_-20px_24px_-4px_var(--color-cream-100)] lg:static lg:mt-0 lg:shadow-none">
-            <button type="submit" disabled={pending} className="btn btn-navy w-full">
-              {pending ? "Menyimpan…" : "Simpan"}
-              {!pending && <Icon.check className="h-4 w-4" />}
-            </button>
+          <div className="hidden space-y-5 lg:block">
+            {state.status === "error" && state.message && <Notice tone="error">{state.message}</Notice>}
+            <SaveButton pending={pending} />
           </div>
         </div>
       </aside>
+
+      <div className="sticky bottom-24 z-10 -mx-2 space-y-2 rounded-[1.75rem] bg-cream-100 p-2 shadow-[0_-20px_24px_-4px_var(--color-cream-100)] lg:hidden">
+        {state.status === "error" && state.message && <Notice tone="error">{state.message}</Notice>}
+        <SaveButton pending={pending} />
+      </div>
     </form>
   );
 }

@@ -122,10 +122,7 @@ export default async function AdminEventPage({
         </ul>
       ) : (
         !error && (
-          <EmptyState
-            title={active === "procon" ? "Belum ada ProCon" : "Belum ada event"}
-            action={newButton}
-          />
+          <EmptyState title={active === "procon" ? "Belum ada ProCon" : "Belum ada event"} />
         )
       )}
     </>

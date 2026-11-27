@@ -91,7 +91,7 @@ export function AdminShell({ newSubmissions, user, children }: { newSubmissions:
     <div className="min-h-dvh lg:flex [&_.btn]:min-h-10">
       {/* ── Sidebar (desktop) ─────────────────────────────────────────────── */}
       <aside className="bg-navy-deep hidden w-64 shrink-0 flex-col text-cream-100 lg:sticky lg:top-0 lg:flex lg:h-dvh">
-        <div className="px-6 pt-7 pb-6">
+        <div className="px-6 pt-6 pb-5">
           <Link href="/admin" aria-label="Ke Ringkasan" className="inline-block">
             <Image src={logo} alt="Every Nation Kelapa Gading" className="h-9 w-auto" />
           </Link>
@@ -152,36 +152,41 @@ export function AdminShell({ newSubmissions, user, children }: { newSubmissions:
               <Icon.arrowRight className="h-4 w-4 shrink-0" />
             </Link>
           )}
-          <Link
-            href="/admin/akun"
-            className="flex items-center gap-3 rounded-xl px-3 py-2 transition-colors hover:bg-white/8"
-            title="Akun saya"
-          >
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white/10 text-sun-400">
-              <Icon.user className="h-[18px] w-[18px]" />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block truncate text-sm font-semibold text-cream-100">{user.name}</span>
-              <span className="block truncate text-xs text-cream-100/55">{user.email}</span>
-            </span>
-          </Link>
-          <Link
-            href="/"
-            target="_blank"
-            className="mt-1 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-cream-100/70 transition-colors hover:bg-white/8 hover:text-cream-100"
-          >
-            <Icon.arrowUpRight className="h-[18px] w-[18px]" />
-            Lihat situs
-          </Link>
-          <form action={signOut}>
-            <button
-              type="submit"
-              className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-cream-100/70 transition-colors hover:bg-white/8 hover:text-cream-100"
+          {/* Satu baris: akun, lihat situs, keluar. Hemat tinggi supaya semua menu muat di layar laptop. */}
+          <div className="flex items-center gap-0.5">
+            <Link
+              href="/admin/akun"
+              className="flex min-w-0 flex-1 items-center gap-3 rounded-xl px-2 py-2 transition-colors hover:bg-white/8"
+              title="Akun saya"
             >
-              <Icon.logout className="h-[18px] w-[18px]" />
-              Keluar
-            </button>
-          </form>
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white/10 text-sun-400">
+                <Icon.user className="h-[18px] w-[18px]" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-sm font-semibold text-cream-100">{user.name}</span>
+                <span className="block truncate text-xs text-cream-100/55">{user.email}</span>
+              </span>
+            </Link>
+            <Link
+              href="/"
+              target="_blank"
+              aria-label="Lihat situs"
+              title="Lihat situs"
+              className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-cream-100/60 transition-colors hover:bg-white/8 hover:text-cream-100"
+            >
+              <Icon.arrowUpRight className="h-[18px] w-[18px]" />
+            </Link>
+            <form action={signOut}>
+              <button
+                type="submit"
+                aria-label="Keluar"
+                title="Keluar"
+                className="grid h-10 w-10 place-items-center rounded-full text-cream-100/60 transition-colors hover:bg-white/8 hover:text-cream-100"
+              >
+                <Icon.logout className="h-[18px] w-[18px]" />
+              </button>
+            </form>
+          </div>
         </div>
       </aside>
 

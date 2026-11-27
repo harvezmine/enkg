@@ -45,7 +45,7 @@ export function AdminPageHeader({
 export function SectionTitle({ children, action }: { children: ReactNode; action?: ReactNode }) {
   return (
     <div className="mb-3 flex min-h-10 items-center justify-between gap-4">
-      <h2 className="font-display text-lg font-bold text-ink">{children}</h2>
+      <h2 className="font-display text-xl font-bold text-ink">{children}</h2>
       {action}
     </div>
   );

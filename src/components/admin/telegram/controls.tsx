@@ -69,13 +69,11 @@ export function AddRecipientForm() {
         </Field>
         <fieldset>
           <legend className="text-sm font-semibold text-ink">Pengingat yang dikirim</legend>
-          <div className="mt-2 space-y-2">
+          <div className="mt-1">
             {TOPICS.map((topic) => (
-              <label key={topic} className="flex cursor-pointer items-start gap-3 rounded-xl bg-white p-3 ring-1 ring-ink/10 transition hover:ring-ink/25">
-                <input type="checkbox" name="topics" value={topic} defaultChecked className="mt-0.5 h-4 w-4 shrink-0 accent-navy-700" />
-                <span className="min-w-0">
-                  <span className="block text-sm font-semibold text-ink">{TOPIC_LABEL[topic]}</span>
-                </span>
+              <label key={topic} className="-mx-2 flex min-h-11 cursor-pointer items-center gap-3 rounded-lg px-2 transition hover:bg-cream-50">
+                <input type="checkbox" name="topics" value={topic} defaultChecked className="h-4 w-4 shrink-0 accent-navy-700" />
+                <span className="text-sm font-medium text-ink">{TOPIC_LABEL[topic]}</span>
               </label>
             ))}
           </div>
@@ -103,7 +101,7 @@ export function TopicToggles({ id, topics }: { id: string; topics: Topic[] }) {
           <label
             key={topic}
             className={cn(
-              "inline-flex cursor-pointer items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold ring-1 transition",
+              "inline-flex min-h-9 cursor-pointer items-center gap-2 rounded-full px-3 text-xs font-semibold ring-1 transition",
               on ? "bg-navy-700 text-cream-100 ring-navy-700" : "bg-white text-ink-soft ring-ink/12 hover:ring-ink/25",
             )}
           >

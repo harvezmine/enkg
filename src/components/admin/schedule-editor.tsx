@@ -206,7 +206,7 @@ export function ScheduleEditor({ row }: { row?: ScheduleRow }) {
         </Field>
 
         {category === "life_group" && (
-          <p className="rounded-xl bg-cream-50 p-3.5 text-xs leading-relaxed text-ink-soft ring-1 ring-ink/8">
+          <p className="rounded-xl bg-cream-50 p-3.5 text-xs leading-relaxed text-ink-soft">
             Jadwal tiap Life Group sudah tampil otomatis. Pakai ini hanya untuk acara LG bersama.
           </p>
         )}

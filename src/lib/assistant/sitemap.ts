@@ -30,7 +30,7 @@ export const DESTINATIONS: Destination[] = [
   { task: "semua materi Life Group", href: "/admin/materi" },
   { task: "Contact Us yang belum ditanggapi", href: "/admin/kontak?status=baru" },
   { task: "semua Contact Us", href: "/admin/kontak" },
-  { task: "tambah akun admin atau leader", href: "/admin/pengguna?baru=1", steps: "isi email dan password, pilih data jemaat (wajib untuk leader)" },
+  { task: "tambah akun admin atau leader", href: "/admin/pengguna?baru=1", steps: "isi email dan password, pilih data jemaatnya; centang Jadikan admin kalau perlu. Tidak ada pilihan peran: akses portal leader otomatis kalau orang itu leader Life Group aktif (atur di halaman Life Group)" },
   { task: "pengguna & akses", href: "/admin/pengguna" },
   { task: "ganti password sendiri", href: "/admin/akun" },
   { task: "bot Telegram & penerima pengingat", href: "/admin/telegram" },

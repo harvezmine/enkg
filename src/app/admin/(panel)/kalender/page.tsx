@@ -164,9 +164,8 @@ function WeekOverview({ rows, groups, today }: { rows: ScheduleRow[]; groups: Ca
 
   return (
     <section className="mb-10">
-      <h2 className="font-display text-xl font-bold text-ink">Sepekan sekilas</h2>
-      <p className="mt-1 text-sm text-ink-soft">Jadwal rutin gereja dan Life Group yang tampil di kalender situs.</p>
-      <ol className="mt-4 grid gap-px overflow-hidden rounded-2xl bg-ink/8 shadow-soft ring-1 ring-ink/8 sm:grid-cols-2 lg:grid-cols-7">
+      <h2 className="font-display text-xl font-bold text-ink">Sepekan</h2>
+      <ol className="mt-4 grid gap-px overflow-hidden rounded-2xl bg-ink/[0.07] shadow-hair ring-1 ring-ink/[0.07] sm:grid-cols-2 lg:grid-cols-7">
         {days.map(({ day, weekday, entries }) => (
           <li key={day} className={cn("min-w-0 bg-white p-3.5 lg:min-h-44", weekday === todayWeekday && "bg-sun-400/10")}>
             <p className={cn("flex items-center justify-between text-xs font-semibold", weekday === 0 ? "text-navy-700" : "text-ink-soft")}>
@@ -346,20 +345,17 @@ export default async function AdminCalendarPage({ searchParams }: { searchParams
 
       <LifeGroupStatus groups={lifeGroups} />
 
-      <Card className="mt-10 p-5 text-sm leading-relaxed text-ink-soft">
-        <p className="font-semibold text-ink">Yang ikut tampil otomatis di kalender</p>
-        <p className="mt-1">
-          Event gereja yang sudah terbit (menu{" "}
-          <Link href="/admin/event?kategori=gereja" className="font-semibold text-navy-700 hover:underline">
-            Event & ProCon
-          </Link>
-          ) dan Life Group yang tampil di kalender (menu{" "}
-          <Link href="/admin/life-group" className="font-semibold text-navy-700 hover:underline">
-            Life Group
-          </Link>
-          ). Alamat rumah, topik, dan isi laporan pertemuan tidak pernah tampil di situs.
-        </p>
-      </Card>
+      <p className="mt-10 text-sm leading-relaxed text-ink-soft">
+        Ikut tampil otomatis:{" "}
+        <Link href="/admin/event?kategori=gereja" className="font-semibold text-navy-700 hover:underline">
+          Event
+        </Link>{" "}
+        yang terbit dan{" "}
+        <Link href="/admin/life-group" className="font-semibold text-navy-700 hover:underline">
+          Life Group
+        </Link>{" "}
+        di atas. Alamat rumah dan isi laporan tidak pernah tampil.
+      </p>
     </>
   );
 }

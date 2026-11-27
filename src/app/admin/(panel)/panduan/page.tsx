@@ -202,7 +202,7 @@ export default function PanduanPage() {
           <a
             key={id}
             href={`#${id}`}
-            className="group flex items-center gap-3 rounded-2xl bg-white p-3.5 shadow-soft ring-1 ring-ink/8 transition hover:-translate-y-0.5 hover:shadow-lift"
+            className="group flex items-center gap-3 rounded-2xl bg-white p-3.5 shadow-hair ring-1 ring-ink/[0.07] transition hover:shadow-soft hover:ring-ink/15"
           >
             <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-navy-50 text-navy-700 transition-colors group-hover:bg-navy-700 group-hover:text-cream-100">
               <GuideIcon className="h-5 w-5" />

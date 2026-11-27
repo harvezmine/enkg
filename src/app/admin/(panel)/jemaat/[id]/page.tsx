@@ -58,8 +58,8 @@ function Detail({ label, children }: { label: string; children: ReactNode }) {
 /** Formulir tambah yang terlipat, terbuka sendiri bila bagiannya masih kosong. */
 function AddDisclosure({ label, open, children }: { label: string; open: boolean; children: ReactNode }) {
   return (
-    <details open={open} className="group mt-5 rounded-xl bg-cream-50 ring-1 ring-ink/8 open:p-4 [&:not([open])]:p-0">
-      <summary className="flex cursor-pointer list-none items-center gap-2 rounded-xl p-3 text-sm font-semibold text-navy-700 group-open:mb-3 group-open:p-0 [&::-webkit-details-marker]:hidden">
+    <details open={open} className="group mt-4 rounded-xl open:bg-cream-50 open:p-4">
+      <summary className="-mx-1 flex min-h-10 cursor-pointer list-none items-center gap-2 rounded-xl px-1 text-sm font-semibold text-navy-700 group-open:mx-0 group-open:mb-3 group-open:min-h-0 group-open:px-0 [&::-webkit-details-marker]:hidden">
         <Icon.plus className="h-4 w-4 transition group-open:rotate-45" />
         {label}
       </summary>
@@ -165,11 +165,17 @@ export default async function PersonPage({
       <div className="grid gap-6 lg:grid-cols-[18rem_1fr] lg:gap-8">
         {/* ── Profil ─────────────────────────────────────────────────────── */}
         <aside className="space-y-4">
-          <Card className="overflow-hidden">
-            <div className="mx-auto aspect-4/5 w-full max-w-72 overflow-hidden lg:max-w-none">
-              <PersonAvatar person={person} photoUrl={photo(person)} className="h-full w-full text-6xl" />
-            </div>
-            <div className="space-y-3 p-4 sm:p-5">
+          <Card className="space-y-4 p-4 sm:p-5">
+            {/* HP: foto kecil di samping lencana. Layar lebar: foto besar kalau ada. */}
+            <div className="flex items-center gap-4 lg:flex-col lg:items-start">
+              <PersonAvatar
+                person={person}
+                photoUrl={photo(person)}
+                className={cn(
+                  "h-20 w-20 shrink-0 rounded-2xl text-2xl",
+                  photo(person) ? "lg:aspect-4/5 lg:h-auto lg:w-full" : "lg:h-24 lg:w-24 lg:rounded-full lg:text-3xl",
+                )}
+              />
               <div className="flex flex-wrap gap-1.5">
                 <Badge tone={person.status === "aktif" ? "green" : person.status === "baru" ? "sun" : "gray"}>
                   {PERSON_STATUS_LABEL[person.status]}
@@ -177,44 +183,46 @@ export default async function PersonPage({
                 {memberships.length > 0 && <Badge tone="navy">Pelayan</Badge>}
                 {person.life_group_role === "leader" && group && <Badge tone="navy">Leader LG</Badge>}
               </div>
-
-              {birthday && (
-                <div className={cn("rounded-xl p-3.5", birthday.daysUntil <= 7 ? "bg-sun-400/20" : "bg-cream-100")}>
-                  <p className="flex items-center gap-2 text-sm font-semibold text-ink">
-                    <Icon.cake className="h-4 w-4 text-navy-700" />
-                    {formatDayMonth(person.birth_date!)}
-                  </p>
-                  <p className="mt-1 text-xs text-ink-soft">
-                    {birthday.daysUntil === 0
-                      ? `Hari ini ulang tahun ke-${birthday.turning}`
-                      : `Ulang tahun ke-${birthday.turning}, ${birthdayPhrase(birthday.daysUntil).toLowerCase()}`}
-                  </p>
-                </div>
-              )}
-
-              {from && (
-                <p className="text-xs leading-relaxed text-ink-soft">
-                  Terdaftar dari kiriman Gabung Life Group, {formatDate(from.created_at)}.
-                </p>
-              )}
-              {person.edited_by && (
-                <p className="text-xs leading-relaxed text-ink-soft">
-                  Terakhir diubah oleh {person.edited_by}, {formatDateShort(person.updated_at)}.
-                </p>
-              )}
             </div>
+
+            {birthday && (
+              <div className={cn("rounded-xl p-3.5", birthday.daysUntil <= 7 ? "bg-sun-400/20" : "bg-cream-100")}>
+                <p className="flex items-center gap-2 text-sm font-semibold text-ink">
+                  <Icon.cake className="h-4 w-4 text-navy-700" />
+                  {formatDayMonth(person.birth_date!)}
+                </p>
+                <p className="mt-1 text-xs text-ink-soft">
+                  {birthday.daysUntil === 0
+                    ? `Hari ini ulang tahun ke-${birthday.turning}`
+                    : `Ulang tahun ke-${birthday.turning}, ${birthdayPhrase(birthday.daysUntil).toLowerCase()}`}
+                </p>
+              </div>
+            )}
+
+            {from && (
+              <p className="text-xs leading-relaxed text-ink-soft">
+                Terdaftar dari kiriman Gabung Life Group, {formatDate(from.created_at)}.
+              </p>
+            )}
+            {person.edited_by && (
+              <p className="text-xs leading-relaxed text-ink-soft">
+                Terakhir diubah oleh {person.edited_by}, {formatDateShort(person.updated_at)}.
+              </p>
+            )}
           </Card>
         </aside>
 
         <div className="min-w-0 space-y-6">
           {/* ── Data diri ───────────────────────────────────────────────── */}
           <Section title="Data diri">
-            <dl className="grid gap-x-6 gap-y-4 sm:grid-cols-2">
+            <dl className="grid grid-cols-2 gap-x-6 gap-y-4">
               <Detail label="Nama panggilan">{person.nickname}</Detail>
               <Detail label="Jenis kelamin">{person.gender ? GENDER_LABEL[person.gender] : null}</Detail>
-              <Detail label="Tempat, tanggal lahir">
-                {[person.birth_place, formatCalendarDate(person.birth_date)].filter(Boolean).join(", ")}
-              </Detail>
+              <div className="col-span-2 sm:col-span-1">
+                <Detail label="Tempat, tanggal lahir">
+                  {[person.birth_place, formatCalendarDate(person.birth_date)].filter(Boolean).join(", ")}
+                </Detail>
+              </div>
               <Detail label="Umur">{age !== null ? `${age} tahun` : null}</Detail>
               <Detail label="WhatsApp">
                 {person.phone && (
@@ -223,14 +231,16 @@ export default async function PersonPage({
                   </a>
                 )}
               </Detail>
-              <Detail label="Email">
-                {person.email && (
-                  <a href={`mailto:${person.email}`} className="font-semibold text-navy-700 hover:underline">
-                    {person.email}
-                  </a>
-                )}
-              </Detail>
-              <div className="sm:col-span-2">
+              <div className="col-span-2 sm:col-span-1">
+                <Detail label="Email">
+                  {person.email && (
+                    <a href={`mailto:${person.email}`} className="font-semibold text-navy-700 hover:underline">
+                      {person.email}
+                    </a>
+                  )}
+                </Detail>
+              </div>
+              <div className="col-span-2">
                 <Detail label="Alamat">{person.address && <span className="whitespace-pre-line">{person.address}</span>}</Detail>
               </div>
               <Detail label="Wilayah">{person.area}</Detail>
@@ -248,7 +258,7 @@ export default async function PersonPage({
                 <form action={removeFromLifeGroup}>
                   <input type="hidden" name="person_id" value={person.id} />
                   <input type="hidden" name="life_group_id" value={group.id} />
-                  <button type="submit" className="rounded-full px-3 py-1.5 text-xs font-semibold text-ink-soft transition hover:text-red-700">
+                  <button type="submit" className="-mr-2 inline-flex h-10 items-center rounded-full px-3 text-xs font-semibold text-ink-soft transition hover:text-red-700">
                     Keluarkan dari grup
                   </button>
                 </form>
@@ -337,7 +347,7 @@ export default async function PersonPage({
                     {spouses.map(({ member, marriedOn }) => {
                       const next = marriedOn ? nextBirthday(marriedOn, today) : null;
                       return (
-                        <li key={member.relationshipId} className="rounded-xl bg-cream-50 p-3.5 ring-1 ring-ink/8">
+                        <li key={member.relationshipId} className="rounded-xl bg-cream-50 p-3.5">
                           <div className="flex flex-wrap items-center justify-between gap-2">
                             <p className="flex items-center gap-2 text-sm text-ink">
                               <Icon.heart className="h-4 w-4 shrink-0 text-navy-700" />

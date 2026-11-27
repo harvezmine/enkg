@@ -45,8 +45,8 @@ export function MemberCard({
     <article
       id={`anggota-${member.id}`}
       className={cn(
-        "flex h-full scroll-mt-24 flex-col overflow-hidden rounded-2xl bg-white shadow-soft ring-1 transition",
-        highlight ? "ring-2 ring-navy-700" : "ring-ink/8",
+        "flex h-full scroll-mt-24 flex-col overflow-hidden rounded-2xl bg-white shadow-hair ring-1 transition",
+        highlight ? "ring-2 ring-navy-700" : "ring-ink/[0.07]",
       )}
     >
       <div className="relative aspect-square overflow-hidden bg-cream-100">

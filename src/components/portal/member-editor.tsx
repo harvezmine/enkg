@@ -18,7 +18,7 @@ const initial: PortalState = { status: "idle" };
 
 function Group({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <fieldset className="rounded-2xl bg-white p-4 shadow-soft ring-1 ring-ink/8 sm:p-6">
+    <fieldset className="rounded-2xl bg-white p-4 shadow-hair ring-1 ring-ink/[0.07] sm:p-6">
       <legend className="sr-only">{title}</legend>
       <h2 className="font-display mb-5 text-lg font-bold text-ink">{title}</h2>
       <div className="space-y-5">{children}</div>
@@ -85,7 +85,7 @@ export function MemberEditor({
           <div className="mx-auto max-w-52 lg:max-w-none">
             <PhotoUpload name="photo_path" defaultPath={member.photo_path} defaultUrl={photoUrl} uploadUrl="/portal/upload/foto" />
           </div>
-          <p className="rounded-xl bg-cream-50 p-3.5 text-xs leading-relaxed text-ink-soft ring-1 ring-ink/8">
+          <p className="rounded-xl bg-cream-50 p-3.5 text-xs leading-relaxed text-ink-soft">
             Status jemaat, Life Group, dan catatan pengurus hanya bisa diubah admin gereja.
           </p>
         </div>

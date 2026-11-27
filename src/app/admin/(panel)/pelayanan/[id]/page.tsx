@@ -85,7 +85,7 @@ export default async function TeamPage({
       </Card>
 
       {members.length ? (
-        <ul className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4">
+        <ul className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
           {members.map(({ member, person }) => (
             <li key={member.id}>
               <PersonCard

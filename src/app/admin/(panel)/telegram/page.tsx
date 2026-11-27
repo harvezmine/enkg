@@ -5,7 +5,7 @@ import { removeChat, setChatActive } from "@/app/actions/telegram";
 import { DbError } from "@/components/admin/db-error";
 import { DeleteButton } from "@/components/admin/delete-button";
 import { AddRecipientForm, ConnectBotButton, DigestNowButton, TestMessageButton, TopicToggles } from "@/components/admin/telegram/controls";
-import { AdminPageHeader, Badge, Card } from "@/components/admin/ui";
+import { AdminPageHeader, Badge, Card, EmptyState } from "@/components/admin/ui";
 import { Icon } from "@/components/icons";
 import { adminDb } from "@/lib/admin-auth";
 import { callTelegram } from "@/lib/telegram/api";
@@ -94,14 +94,15 @@ export default async function TelegramPage() {
       <div className="grid gap-6 lg:grid-cols-[1fr_22rem] lg:items-start lg:gap-8">
         <div className="min-w-0 space-y-6">
           {/* ── Ringkasan status ─────────────────────────────────────── */}
-          <Card className={`flex flex-wrap items-center gap-4 p-4 sm:p-5 ${ready ? "" : "ring-sun-500/40"}`}>
-            <span
-              className={`grid h-12 w-12 shrink-0 place-items-center rounded-2xl ${ready ? "bg-emerald-50 text-emerald-700" : "bg-sun-400/20 text-[#7a5a00]"}`}
-            >
-              {ready ? <Icon.check className="h-6 w-6" /> : <Icon.alert className="h-6 w-6" />}
-            </span>
-            <div className="min-w-0 flex-1">
-              <p className="font-display text-lg font-bold text-ink">
+          <Card className={`flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:p-5 ${ready ? "" : "ring-sun-500/50"}`}>
+            <div className="flex min-w-0 flex-1 items-start gap-3">
+              <span
+                className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${ready ? "bg-emerald-50 text-emerald-700" : "bg-sun-400/20 text-[#7a5a00]"}`}
+              >
+                {ready ? <Icon.check className="h-5 w-5" /> : <Icon.alert className="h-5 w-5" />}
+              </span>
+              <div className="min-w-0 flex-1">
+              <p className="font-display text-lg leading-snug font-bold text-ink">
                 {ready ? "Bot siap" : !config ? "Bot belum diatur di server" : !bot ? "Kunci bot ditolak Telegram" : "Bot belum tersambung ke situs"}
               </p>
               <p className="mt-0.5 text-sm text-ink-soft">
@@ -111,15 +112,16 @@ export default async function TelegramPage() {
                     ? "Minta pengelola server mengisi pengaturan bot. Petunjuknya ada di bagian Detail teknis."
                     : !bot
                       ? "Periksa lagi token bot dari BotFather di pengaturan server."
-                      : "Tekan Sambungkan bot di samping. Cukup sekali setelah situs online."}
+                      : "Tekan Sambungkan bot. Cukup sekali setelah situs online."}
               </p>
+              </div>
             </div>
             {bot && (
               <a
                 href={`https://t.me/${bot.username}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn-outline shrink-0 px-4 py-2.5 text-sm"
+                className="btn btn-outline shrink-0 self-start px-4 py-2.5 text-sm sm:self-auto"
               >
                 Buka @{bot.username}
               </a>
@@ -159,7 +161,7 @@ export default async function TelegramPage() {
                             <input type="hidden" name="active" value={recipient.is_active ? "false" : "true"} />
                             <button
                               type="submit"
-                              className="rounded-full px-3 py-1.5 text-xs font-semibold text-ink-soft transition hover:bg-cream-100 hover:text-ink"
+                              className="-mr-2 inline-flex h-10 items-center rounded-full px-3 text-xs font-semibold text-ink-soft transition hover:bg-cream-100 hover:text-ink"
                             >
                               {recipient.is_active ? "Hentikan sementara" : "Aktifkan lagi"}
                             </button>
@@ -167,7 +169,7 @@ export default async function TelegramPage() {
                         </div>
 
                         {status === "menunggu" && (
-                          <div className="mt-4 rounded-xl bg-sun-400/15 p-3.5 text-sm text-ink ring-1 ring-sun-500/40">
+                          <div className="mt-4 rounded-xl bg-sun-400/15 p-3.5 text-sm text-ink">
                             <p>
                               Belum membuka bot. Minta {recipient.name?.split(" ")[0] || "dia"} membuka{" "}
                               {bot ? <strong>@{bot.username}</strong> : "bot gereja"}, menekan Mulai, lalu Kirim nomor saya.
@@ -184,7 +186,7 @@ export default async function TelegramPage() {
                         <p className="mt-4 mb-2 text-xs font-semibold text-ink-soft">Pengingat yang dikirim</p>
                         <TopicToggles id={recipient.id} topics={recipient.topics} />
 
-                        <div className="mt-4 flex flex-wrap items-start justify-between gap-2 border-t border-ink/8 pt-3">
+                        <div className="mt-4 flex flex-wrap items-start justify-between gap-2 border-t border-ink/[0.06] pt-3">
                           {status === "tersambung" ? <TestMessageButton id={recipient.id} /> : <span />}
                           <DeleteButton action={removeChat} id={recipient.id} label="Hapus penerima" />
                         </div>
@@ -195,12 +197,7 @@ export default async function TelegramPage() {
               </ul>
             ) : (
               !list.error && (
-                <div className="rounded-2xl border border-dashed border-ink/15 bg-white/60 px-6 py-10 text-center">
-                  <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-navy-50 text-navy-700">
-                    <Icon.message className="h-5 w-5" />
-                  </div>
-                  <p className="font-display mt-4 text-lg font-bold text-ink">Belum ada penerima</p>
-                </div>
+                <EmptyState title="Belum ada penerima" />
               )
             )}
           </section>
