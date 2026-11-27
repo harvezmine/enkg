@@ -140,7 +140,7 @@ export function UnsavedGuard({
               Perubahan belum disimpan
             </h2>
             <p id="unsaved-text" className="mt-2 text-[15px] leading-relaxed text-ink-soft">
-              Kalau pindah halaman sekarang, isian yang baru kamu ubah akan hilang. Tekan Simpan dulu kalau mau menyimpannya.
+              Perubahan yang belum disimpan akan hilang.
             </p>
             <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
               <button type="button" onClick={leave} className="btn btn-outline px-5 py-3 text-sm">

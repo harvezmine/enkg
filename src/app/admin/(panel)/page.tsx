@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 import { DbError } from "@/components/admin/db-error";
-import { GettingStarted, type StartStep } from "@/components/admin/getting-started";
 import { PersonAvatar } from "@/components/admin/people/avatar";
 import { AdminPageHeader, Badge, Card, EmptyState } from "@/components/admin/ui";
 import { Icon } from "@/components/icons";
@@ -108,10 +107,7 @@ export default async function AdminDashboard() {
     }),
   ].sort((x, y) => x.daysUntil - y.daysUntil || x.title.localeCompare(y.title, "id"));
 
-  const [photos, setup] = await Promise.all([
-    signPhotos(supabase, celebrations.slice(0, 12).flatMap((item) => item.people.map((p) => p.photo_path))),
-    setupProgress(supabase),
-  ]);
+  const photos = await signPhotos(supabase, celebrations.slice(0, 12).flatMap((item) => item.people.map((p) => p.photo_path)));
   const waitingCount = waiting.count ?? 0;
   const submissions = (recent.data ?? []) as ContactSubmission[];
   const newCount = baru.count ?? 0;
@@ -131,7 +127,6 @@ export default async function AdminDashboard() {
     <>
       <AdminPageHeader
         title="Ringkasan"
-        description="Tanggapi kiriman dan jemaat baru dulu, lalu perbarui isi situs."
         action={
           <div className="flex flex-wrap gap-2">
             <Link href="/admin/jemaat/baru" className="btn btn-navy px-4 py-2.5 text-sm">
@@ -148,8 +143,6 @@ export default async function AdminDashboard() {
       />
 
       <DbError error={error} />
-
-      <GettingStarted steps={setup} />
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 xl:grid-cols-4">
         {cards.map(({ label, value, href, icon: CardIcon, urgent }) => (
@@ -210,7 +203,7 @@ export default async function AdminDashboard() {
             ))}
           </ul>
           {celebrations.length > 12 && (
-            <p className="mt-3 text-sm text-ink-soft">Dan {celebrations.length - 12} lagi. Lihat lewat filter bulan lahir di Data jemaat.</p>
+            <p className="mt-3 text-sm text-ink-soft">Dan {celebrations.length - 12} lagi.</p>
           )}
         </section>
       )}
@@ -251,113 +244,10 @@ export default async function AdminDashboard() {
           !error && (
             <EmptyState
               title="Belum ada kiriman"
-              description="Pendaftaran Life Group dan permohonan doa dari situs akan muncul di sini."
             />
           )
         )}
       </section>
     </>
   );
-}
-
-type Db = Awaited<ReturnType<typeof adminDb>>;
-
-/**
- * Kemajuan langkah awal untuk daftar "Mulai dari sini". Setiap hitungan
- * dibaca terpisah dan kegagalannya diabaikan: tabel yang belum ada (mis. bot
- * Telegram belum disiapkan) cukup dianggap belum selesai.
- */
-async function setupProgress(supabase: Db): Promise<StartStep[]> {
-  const count = async (run: () => PromiseLike<{ count: number | null; error: unknown }>) => {
-    try {
-      const { count: value, error } = await run();
-      return error ? 0 : (value ?? 0);
-    } catch {
-      return 0;
-    }
-  };
-  const head = (table: string) => supabase.from(table).select("id", { count: "exact", head: true });
-
-  const [groups, people, leaders, accounts, servants, telegram, schedule] = await Promise.all([
-    count(() => head(TABLES.lifeGroups)),
-    count(() => head(TABLES.people)),
-    count(() => head(TABLES.people).eq("life_group_role", "leader").not("life_group_id", "is", null)),
-    count(() => head(TABLES.accounts)),
-    count(() => head(TABLES.teamMembers)),
-    count(() => head("enkg_telegram_chats").not("chat_id", "is", null)),
-    // Jadwal dianggap sudah dicek kalau pernah diubah atau ditambah dari admin
-    // (jadwal bawaan dari schema.sql punya slug dan belum pernah diubah).
-    (async () => {
-      try {
-        const { data } = await supabase.from(TABLES.schedule).select("slug, created_at, updated_at");
-        return (data ?? []).some(
-          (row) => !row.slug || new Date(row.updated_at).getTime() - new Date(row.created_at).getTime() > 2000,
-        )
-          ? 1
-          : 0;
-      } catch {
-        return 0;
-      }
-    })(),
-  ]);
-
-  return [
-    {
-      key: "life-group",
-      title: "Buat Life Group",
-      description: "Daftarkan kelompok kecil yang sudah berjalan, lengkap dengan hari dan jam pertemuannya.",
-      href: "/admin/life-group?baru=1",
-      cta: "Buat Life Group",
-      done: groups > 0,
-    },
-    {
-      key: "jemaat",
-      title: "Isi data jemaat",
-      description: "Tambah satu per satu, atau unggah file Excel yang sudah kamu punya. Data ini hanya bisa dilihat pengurus.",
-      href: people > 0 ? "/admin/jemaat" : "/admin/jemaat/impor",
-      cta: people > 0 ? "Lihat data jemaat" : "Impor dari Excel",
-      done: people > 0,
-    },
-    {
-      key: "leader",
-      title: "Tunjuk leader tiap Life Group",
-      description: "Buka Life Group, lalu masukkan leadernya. Leader inilah yang nanti mendampingi jemaat baru.",
-      href: "/admin/life-group",
-      cta: "Atur leader",
-      done: leaders > 0,
-    },
-    {
-      key: "akun-leader",
-      title: "Buatkan akun portal untuk leader",
-      description: "Buka data leader, lalu tekan Buat akun portal. Password sementaranya bisa langsung dikirim lewat WhatsApp.",
-      href: "/admin/life-group",
-      cta: "Pilih leader",
-      done: accounts > 0,
-    },
-    {
-      key: "pelayanan",
-      title: "Isi tim pelayanan",
-      description: "Masukkan siapa saja yang melayani: musisi, singer, usher, multimedia, dan lainnya.",
-      href: "/admin/pelayanan",
-      cta: "Buka Pelayanan",
-      done: servants > 0,
-    },
-    {
-      key: "kalender",
-      title: "Cek jadwal di kalender",
-      description: "Pastikan jam ibadah dan doa sudah benar. Jadwal ini tampil di halaman utama situs.",
-      href: "/admin/kalender",
-      cta: "Buka Kalender",
-      done: schedule > 0,
-      confirmable: true,
-    },
-    {
-      key: "telegram",
-      title: "Sambungkan bot Telegram",
-      description: "Pengingat ulang tahun, anniversary, dan jemaat baru dikirim ke Telegram pengurus setiap pagi.",
-      href: "/admin/telegram",
-      cta: "Atur Telegram",
-      done: telegram > 0,
-    },
-  ];
 }

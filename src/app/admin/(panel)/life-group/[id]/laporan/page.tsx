@@ -156,7 +156,6 @@ export default async function LifeGroupReportsPage({ params }: { params: Promise
         !error && (
           <EmptyState
             title="Belum ada pertemuan"
-            description="Pertemuan yang dijadwalkan leader lewat portal, beserta laporannya, akan muncul di sini."
           />
         )
       )}

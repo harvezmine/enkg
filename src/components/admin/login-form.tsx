@@ -55,13 +55,13 @@ export function SetupForm({ minLength }: { minLength: number }) {
       <Field label="Nama kamu" htmlFor="name">
         <Input id="name" name="name" autoComplete="name" autoFocus required />
       </Field>
-      <Field label="Email" htmlFor="email" hint="Dipakai untuk masuk ke panel.">
+      <Field label="Email" htmlFor="email">
         <Input id="email" name="email" type="email" autoComplete="email" inputMode="email" required />
       </Field>
       <Field label="Password" htmlFor="password" hint={`Minimal ${minLength} karakter.`}>
         <PasswordInput id="password" autoComplete="new-password" minLength={minLength} />
       </Field>
-      <Field label="Kode pengaturan" htmlFor="code" hint="Isi ADMIN_PASSWORD dari pengelola server. Hanya dipakai sekali ini.">
+      <Field label="Kode pengaturan" htmlFor="code" hint="Isi ADMIN_PASSWORD dari pengelola server.">
         <PasswordInput id="code" autoComplete="off" />
       </Field>
       {state.error && <Notice tone="error">{state.error}</Notice>}

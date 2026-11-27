@@ -64,9 +64,7 @@ export default async function LifeGroupsPage({
       <AdminPageHeader
         title="Life Group"
         description={
-          dir.lifeGroups.length
-            ? `${dir.lifeGroups.length} grup, ${totalMembers} orang sudah tergabung.`
-            : "Kelompok kecil beserta leader dan anggotanya."
+          dir.lifeGroups.length ? `${dir.lifeGroups.length} grup · ${totalMembers} orang` : undefined
         }
         action={
           !params.baru && (
@@ -110,9 +108,6 @@ export default async function LifeGroupsPage({
         <section className="mb-10">
           <div className="mb-4">
             <h2 className="font-display text-xl font-bold text-ink">Jemaat baru menunggu Life Group</h2>
-            <p className="mt-1 text-sm text-ink-soft">
-              Pilih grupnya, lalu kabari leader-nya supaya mereka disapa minggu ini.
-            </p>
           </div>
           <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {waiting.map((person) => {
@@ -228,7 +223,6 @@ export default async function LifeGroupsPage({
         !params.baru && (
           <EmptyState
             title="Belum ada Life Group"
-            description="Buat grupnya dulu, lalu tunjuk leader dan masukkan anggotanya."
             action={
               <Link href="/admin/life-group?baru=1" className="btn btn-navy px-4 py-2.5 text-sm">
                 <Icon.plus className="h-4 w-4" /> Life Group baru

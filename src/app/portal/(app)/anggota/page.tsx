@@ -39,7 +39,7 @@ export default async function PortalMembersPage({ searchParams }: { searchParams
     <>
       <AdminPageHeader
         title="Anggota"
-        description={`${members.length} orang di ${context.lifeGroup.name}. Kalau ada data yang berubah, ketuk tombol ubah di kartunya.`}
+        description={`${members.length} orang di ${context.lifeGroup.name}`}
       />
 
       {updated && (
@@ -72,7 +72,7 @@ export default async function PortalMembersPage({ searchParams }: { searchParams
           ))}
         </ul>
       ) : (
-        !error && <EmptyState title="Belum ada anggota" description="Admin gereja yang menambahkan anggota ke grup kamu." />
+        !error && <EmptyState title="Belum ada anggota" />
       )}
     </>
   );

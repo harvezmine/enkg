@@ -51,9 +51,6 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
         <div className="text-center">
           <Image src={logo} alt="Every Nation Kelapa Gading" className="mx-auto h-12 w-auto" priority />
           <h1 className="font-display mt-6 text-2xl font-bold text-cream-100">{setup ? "Buat admin pertama" : "Masuk"}</h1>
-          <p className="mt-1.5 text-sm text-cream-100/60">
-            {setup ? "Sekali saja, sebelum admin lain didaftarkan dari panel." : "Untuk pengurus dan leader Life Group"}
-          </p>
         </div>
 
         <div className="animate-rise mt-8 space-y-4 rounded-3xl bg-cream-50 p-6 shadow-deep sm:p-7">
@@ -74,7 +71,6 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
           ) : (
             <>
               <LoginForm next={next} />
-              <p className="text-center text-xs leading-relaxed text-ink-soft">Belum punya akun atau lupa password? Minta ke admin gereja.</p>
             </>
           )}
         </div>

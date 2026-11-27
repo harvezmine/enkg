@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "News baru" };
 export default function NewPostPage() {
   return (
     <>
-      <AdminPageHeader title="News baru" description="Simpan sebagai draf dulu kalau belum siap terbit." backHref="/admin/news" />
+      <AdminPageHeader title="News baru" backHref="/admin/news" />
       <PostEditor />
     </>
   );

@@ -12,9 +12,10 @@ import {
 } from "@/app/actions/accounts";
 import { Icon } from "@/components/icons";
 import type { Account } from "@/lib/db-types";
-import { formatDateTime } from "@/lib/utils";
+import { cn, formatDateTime } from "@/lib/utils";
 
 import { DeleteButton } from "../delete-button";
+import { submitKeepingValues } from "../submit-keeping-values";
 import { Badge, Field, Input, Notice } from "../ui";
 import { PersonPicker, type PickerOption } from "./person-picker";
 
@@ -49,7 +50,7 @@ export function Credentials({ state }: { state: AccountActionState }) {
   if (state.status !== "success" || !state.tempPassword) return null;
   return (
     <div className="space-y-3 rounded-xl bg-sun-400/15 p-4 ring-1 ring-sun-500/40">
-      <p className="text-sm text-ink">{state.message} Password ini hanya tampil sekali, kirim sekarang.</p>
+      <p className="text-sm text-ink">{state.message} Password hanya tampil sekali.</p>
       <dl className="space-y-1.5 text-sm">
         <div className="flex flex-wrap items-center gap-2">
           <dt className="w-20 text-ink-soft">Email</dt>
@@ -70,7 +71,7 @@ export function Credentials({ state }: { state: AccountActionState }) {
           <Icon.whatsapp className="h-4 w-4" /> Kirim lewat WhatsApp
         </a>
       ) : (
-        <p className="text-xs text-ink-soft">Nomor WA belum ada di data jemaatnya. Salin lalu kirim lewat aplikasi lain.</p>
+        <p className="text-xs text-ink-soft">Belum ada nomor WA. Salin lalu kirim manual.</p>
       )}
     </div>
   );
@@ -164,11 +165,13 @@ export function NewAccountForm({
   defaultAdmin?: boolean;
 }) {
   const [state, action, pending] = useActionState(createAccount, initial);
+  const [mode, setMode] = useState<"auto" | "manual">("auto");
+  const [show, setShow] = useState(false);
 
   if (state.status === "success") return <Credentials state={state} />;
 
   return (
-    <form action={action} className="space-y-4">
+    <form onSubmit={submitKeepingValues(action)} className="space-y-4">
       {personId && <input type="hidden" name="person_id" value={personId} />}
       <div className="grid gap-4 sm:grid-cols-2">
         {!personId && (
@@ -176,7 +179,7 @@ export function NewAccountForm({
             <Input id="account-name" name="name" defaultValue={defaultName} maxLength={120} placeholder="Nama pemilik akun" />
           </Field>
         )}
-        <Field label="Email" htmlFor="account-email" hint="Dipakai untuk masuk.">
+        <Field label="Email" htmlFor="account-email">
           <Input id="account-email" name="email" type="email" inputMode="email" defaultValue={defaultEmail ?? ""} required />
         </Field>
       </div>
@@ -184,18 +187,68 @@ export function NewAccountForm({
         <Field
           label="Data jemaat"
           htmlFor="account-person"
-          hint="Wajib untuk leader Life Group: portal LG terbuka kalau orang ini tercatat sebagai leader."
+          hint="Wajib untuk leader Life Group."
           optional
         >
           <PersonPicker name="person_id" options={people} inputId="account-person" placeholder="Cari nama di data jemaat…" />
         </Field>
       )}
-      <label className="flex items-start gap-3 rounded-xl bg-white p-3.5 ring-1 ring-ink/10">
-        <input type="checkbox" name="is_admin" defaultChecked={defaultAdmin} className="mt-0.5" />
-        <span>
-          <span className="block text-sm font-semibold text-ink">Admin</span>
-          <span className="block text-xs leading-relaxed text-ink-soft">Bisa membuka seluruh admin panel, termasuk data jemaat dan akun lain.</span>
-        </span>
+      <div>
+        <p className="text-sm font-semibold text-ink">Password</p>
+        <input type="hidden" name="password_mode" value={mode} />
+        <div className="mt-2 inline-flex rounded-full bg-white p-1 ring-1 ring-ink/10" role="radiogroup" aria-label="Password">
+          {(
+            [
+              ["auto", "Otomatis"],
+              ["manual", "Tentukan sendiri"],
+            ] as const
+          ).map(([value, label]) => (
+            <button
+              key={value}
+              type="button"
+              role="radio"
+              aria-checked={mode === value}
+              onClick={() => setMode(value)}
+              className={cn(
+                "rounded-full px-4 py-2 text-sm font-semibold transition",
+                mode === value ? "bg-navy-700 text-cream-100" : "text-ink-soft hover:text-ink",
+              )}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        {mode === "manual" && (
+          <div className="mt-3 space-y-2.5">
+            <div className="relative sm:max-w-sm">
+              <Input
+                name="password"
+                type={show ? "text" : "password"}
+                minLength={8}
+                required
+                autoComplete="new-password"
+                placeholder="Minimal 8 karakter"
+                aria-label="Password"
+                className="pr-24"
+              />
+              <button
+                type="button"
+                onClick={() => setShow(!show)}
+                className="absolute top-1/2 right-2 -translate-y-1/2 rounded-full px-3 py-1.5 text-xs font-semibold text-navy-700 hover:bg-navy-50"
+              >
+                {show ? "Sembunyikan" : "Lihat"}
+              </button>
+            </div>
+            <label className="flex items-center gap-2.5 text-sm text-ink">
+              <input type="checkbox" name="must_change" defaultChecked />
+              Minta ganti saat pertama masuk
+            </label>
+          </div>
+        )}
+      </div>
+      <label className="flex items-center gap-2.5 text-sm font-semibold text-ink">
+        <input type="checkbox" name="is_admin" defaultChecked={defaultAdmin} />
+        Jadikan admin
       </label>
       {state.status === "error" && state.message && <Notice tone="error">{state.message}</Notice>}
       <button type="submit" disabled={pending} className="btn btn-navy px-5 py-2.5 text-sm">
@@ -221,11 +274,6 @@ export function AccountPanel({
   if (!account) {
     return (
       <div className="space-y-4">
-        <p className="text-sm leading-relaxed text-ink-soft">
-          {leaderOf
-            ? `Dengan akun, ${person.full_name.split(" ")[0]} bisa masuk ke portal Life Group: melihat anggota, mengatur pertemuan, dan mengunduh materi.`
-            : "Buat akun kalau orang ini perlu masuk sebagai admin, atau nanti sebagai leader Life Group."}
-        </p>
         <NewAccountForm personId={person.id} defaultEmail={person.email} />
       </div>
     );

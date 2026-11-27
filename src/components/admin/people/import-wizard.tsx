@@ -186,19 +186,11 @@ export function ImportWizard({
         <Card className="space-y-4 p-5">
           <div>
             <p className="font-display text-lg font-bold text-ink">Belum punya file?</p>
-            <p className="mt-1 text-sm leading-relaxed text-ink-soft">
-              Unduh template, isi satu baris untuk satu orang, lalu unggah di sini. Spreadsheet lama juga bisa langsung dipakai
-              asal ada kolom nama.
-            </p>
+            <p className="mt-1 text-sm text-ink-soft">Spreadsheet lama juga bisa, asal ada kolom nama.</p>
           </div>
           <a href="/admin/jemaat-excel/template" className="btn btn-navy w-full px-4 py-2.5 text-sm">
             Unduh template
           </a>
-          <ul className="space-y-2 border-t border-ink/8 pt-4 text-sm text-ink-soft">
-            <li>Nama pasangan dihubungkan otomatis jadi relasi suami/istri.</li>
-            <li>Life Group dan tim dicocokkan dengan nama yang sudah ada di admin.</li>
-            <li>Data yang sudah ada tidak dobel. Kamu pilih: dilewati atau diperbarui.</li>
-          </ul>
         </Card>
       </div>
     );

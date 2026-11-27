@@ -251,9 +251,6 @@ export function SearchPalette({ open, onOpen, onClose }: { open: boolean; onOpen
           )}
         </div>
 
-        <p className="hidden border-t border-ink/8 px-4 py-2.5 text-xs text-ink-soft sm:block">
-          Pakai tombol panah untuk memilih, Enter untuk membuka, Esc untuk menutup.
-        </p>
       </div>
     </div>
   );

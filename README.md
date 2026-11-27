@@ -169,12 +169,21 @@ Skrip ini mengambil pesan masuk lewat `getUpdates` lalu meneruskannya ke `http:/
 
 ## Chatbot di halaman utama
 
-Tombol WhatsApp melayang di halaman utama diganti chatbot "Tanya kami". Pengunjung bisa bertanya soal jadwal ibadah, Life Group, lokasi, Kids Church, ProCon, atau cara memberi, dan di bagian atas chat selalu ada tombol **Chat WhatsApp** untuk lanjut ke tim.
+Tombol WhatsApp melayang di halaman utama diganti chatbot "Tanya kami". Pengunjung bisa bertanya soal jadwal ibadah, Life Group, lokasi, Kids Church, ProCon, atau cara memberi. Di bawah setiap jawaban ada tautan **Perlu bantuan? Hubungi kami** ke WhatsApp tim.
 
 - Jawaban AI memakai DeepSeek. Isi `DEEPSEEK_API_KEY` di `.env.production`. Kalau kosong (atau DeepSeek sedang bermasalah), chatbot tetap jalan dengan jawaban otomatis dari isi situs plus tombol WhatsApp.
 - Chatbot hanya tahu informasi publik: isi `src/content/`, jadwal kalender, event yang terbit, dan Life Group yang punya jadwal tetap. Data jemaat tidak pernah dikirim ke AI. Pertanyaan pengunjung dikirim ke DeepSeek.
 - Pesan yang menunjukkan krisis (mis. ingin mengakhiri hidup) langsung dijawab dengan nomor bantuan 119 ext 8 dan healing119.id, tanpa AI.
 - Batas: 20 pesan per 10 menit per pengunjung, pesan maksimal 600 karakter. Butuh Node 20.3 atau lebih baru di server.
+
+## Asisten admin
+
+Tombol **Asisten** di admin panel (khusus admin, bukan leader) untuk bertanya soal data gereja dan menyiapkan pekerjaan kecil. Memakai `DEEPSEEK_API_KEY` yang sama; kalau kosong, panel menampilkan "Asisten belum aktif".
+
+- **Data jemaat yang dibaca AI hanya nama, panggilan, dan nomor WA.** Tanggal lahir, alamat, email, keluarga, catatan, dan isi permohonan doa tidak pernah dikirim ke DeepSeek. Ini dijaga di kode (`src/lib/assistant/projections.ts` + tesnya), bukan cuma lewat instruksi ke AI. Angka ringkasan (jumlah jemaat, per status) boleh.
+- Yang bisa dibaca: Life Group (tanpa alamat), tim pelayanan, jadwal rutin, event, News, kiriman Contact Us (nama, WA, jenis, status).
+- Yang bisa disiapkan: draf News, event, memasukkan jemaat ke Life Group, ubah status kiriman. Semua muncul sebagai kartu dan **baru tersimpan setelah admin menekan Jalankan**. Kartu berlaku 15 menit, hanya untuk akun yang memintanya, dan hanya bisa dijalankan sekali.
+- Batas: 30 pesan per 10 menit per akun. Isi percakapan tidak dicatat ke log; riwayat hanya ada di tab browser (hilang saat tab ditutup).
 
 ## Google Form
 

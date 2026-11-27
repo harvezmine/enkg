@@ -10,6 +10,7 @@ import logo from "@/assets/brand/logo-light.png";
 import { Icon } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
+import { Assistant } from "./assistant/assistant";
 import { SearchPalette, SearchTrigger } from "./quick-search";
 import { Toaster } from "./toast";
 
@@ -292,6 +293,7 @@ export function AdminShell({ newSubmissions, user, children }: { newSubmissions:
 
       <SearchPalette open={searchOpen} onOpen={openSearch} onClose={closeSearch} />
       <Toaster />
+      <Assistant />
     </div>
   );
 }

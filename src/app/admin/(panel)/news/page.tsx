@@ -27,7 +27,7 @@ export default async function AdminNewsPage({ searchParams }: { searchParams: Pr
 
   return (
     <>
-      <AdminPageHeader title="News" description="Kabar dan artikel yang tampil di section News halaman utama." action={newButton} />
+      <AdminPageHeader title="News" action={newButton} />
 
       <DbError error={error} />
 
@@ -72,7 +72,6 @@ export default async function AdminNewsPage({ searchParams }: { searchParams: Pr
         !error && (
           <EmptyState
             title="Belum ada News"
-            description="Selama kosong, section News di halaman utama memakai kabar bawaan. Simpan sebagai draf dulu kalau belum siap terbit."
             action={newButton}
           />
         )

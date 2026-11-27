@@ -113,7 +113,7 @@ export function MemberEditor({
             <Field label="Tempat lahir" htmlFor="birth_place" optional>
               <Input id="birth_place" name="birth_place" defaultValue={value("birth_place")} maxLength={80} placeholder="Jakarta" />
             </Field>
-            <Field label="Tanggal lahir" htmlFor="birth_date" hint="Supaya ulang tahunnya muncul di beranda kamu." optional>
+            <Field label="Tanggal lahir" htmlFor="birth_date" optional>
               <DateInput id="birth_date" name="birth_date" defaultValue={value("birth_date")} max={todayWib()} startView="year" aria-label="Tanggal lahir" />
             </Field>
           </div>
@@ -146,7 +146,7 @@ export function MemberEditor({
               placeholder="Jalan, nomor rumah, RT/RW, kelurahan"
             />
           </Field>
-          <Field label="Wilayah" htmlFor="area" hint="Singkat saja. Mis. Kelapa Gading, Sunter." optional>
+          <Field label="Wilayah" htmlFor="area" hint="Mis. Kelapa Gading, Sunter." optional>
             <Input id="area" name="area" defaultValue={value("area")} maxLength={80} />
           </Field>
         </Group>

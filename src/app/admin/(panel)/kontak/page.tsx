@@ -65,7 +65,6 @@ export default async function AdminKontakPage({
     <>
       <AdminPageHeader
         title="Contact Us"
-        description="Pendaftaran Life Group dan permohonan doa dari situs. Kiriman yang sama juga masuk ke Google Sheet gereja."
       />
 
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -204,7 +203,7 @@ export default async function AdminKontakPage({
           ))}
         </ul>
       ) : (
-        !error && <EmptyState title="Tidak ada kiriman" description="Coba ubah filter, atau tunggu kiriman baru dari form Contact Us." />
+        !error && <EmptyState title="Tidak ada kiriman" />
       )}
     </>
   );

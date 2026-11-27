@@ -19,7 +19,7 @@ export default async function PortalMaterialsPage() {
 
   return (
     <>
-      <AdminPageHeader title="Materi Life Group" description="Bahan untuk pertemuan grup. Baca langsung di sini atau unduh booklet-nya." />
+      <AdminPageHeader title="Materi Life Group" />
       <DbError error={error} />
       {materials.length ? (
         <ul className="grid gap-3 sm:grid-cols-2">
@@ -54,7 +54,7 @@ export default async function PortalMaterialsPage() {
           ))}
         </ul>
       ) : (
-        !error && <EmptyState title="Belum ada materi" description="Materi yang diterbitkan admin untuk grup kamu akan muncul di sini." />
+        !error && <EmptyState title="Belum ada materi" />
       )}
     </>
   );

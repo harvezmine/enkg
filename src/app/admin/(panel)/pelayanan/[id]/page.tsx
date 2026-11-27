@@ -113,7 +113,7 @@ export default async function TeamPage({
           ))}
         </ul>
       ) : (
-        <EmptyState title="Belum ada pelayan di tim ini" description="Cari namanya di form di atas. Kalau belum terdaftar, isi data jemaatnya dulu." />
+        <EmptyState title="Belum ada pelayan di tim ini" />
       )}
 
       <div className="mt-10 flex justify-end">

@@ -75,7 +75,6 @@ export default async function NewPersonPage({
     <>
       <AdminPageHeader
         title={relate ? `Keluarga ${relate.toName}` : "Jemaat baru"}
-        description="Cukup nama dulu kalau data lain belum lengkap. Sisanya bisa dilengkapi kapan saja."
         backHref={source ? `/admin/jemaat/${source.id}` : "/admin/jemaat"}
       />
       <DbError error={dir.error} />

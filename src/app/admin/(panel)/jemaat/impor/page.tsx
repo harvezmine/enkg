@@ -17,7 +17,6 @@ export default async function ImportPage() {
     <>
       <AdminPageHeader
         title="Impor dari Excel"
-        description="Masukkan banyak data jemaat sekaligus. Semua baris diperiksa dulu sebelum disimpan."
         backHref="/admin/jemaat"
       />
       <DbError error={dir.error} />

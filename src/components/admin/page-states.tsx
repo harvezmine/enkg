@@ -90,7 +90,7 @@ export function PageError({
   return (
     <StateCard
       title="Halaman ini belum bisa dibuka"
-      text="Mungkin internet sedang lambat atau server sedang sibuk. Data kamu aman. Coba lagi sebentar lagi."
+      text="Coba lagi sebentar. Data kamu aman."
       icon={<Icon.alert className="h-7 w-7" />}
     >
       <button
@@ -119,7 +119,7 @@ export function PageNotFound({ homeHref, homeLabel, text }: { homeHref: string; 
   return (
     <StateCard
       title="Halaman tidak ditemukan"
-      text={text ?? "Mungkin datanya sudah dihapus, atau tautannya salah. Kembali ke halaman awal lalu cari lagi dari sana."}
+      text={text ?? "Mungkin datanya sudah dihapus atau tautannya salah."}
       icon={<Icon.search className="h-7 w-7" />}
     >
       <Link href={homeHref} className="btn btn-navy px-5 py-3 text-sm">

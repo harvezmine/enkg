@@ -33,7 +33,6 @@ export default async function EditMemberPage({ params }: { params: Promise<{ id:
     <>
       <AdminPageHeader
         title={isSelf ? "Ubah data kamu" : `Ubah data ${name}`}
-        description="Perubahan langsung tersimpan di data jemaat gereja. Admin bisa melihat siapa yang terakhir mengubahnya."
         backHref="/portal/anggota"
       />
       <MemberEditor

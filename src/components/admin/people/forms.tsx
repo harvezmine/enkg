@@ -67,7 +67,7 @@ export function FamilyForm({
       </div>
 
       {as === "pasangan" && (
-        <Field label="Tanggal menikah" htmlFor="relation-married" hint="Untuk pengingat anniversary." optional>
+        <Field label="Tanggal menikah" htmlFor="relation-married" optional>
           <DateInput id="relation-married" name="married_on" max={todayWib()} startView="year" className="sm:max-w-72" aria-label="Tanggal menikah" />
         </Field>
       )}

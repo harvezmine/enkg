@@ -212,10 +212,6 @@ function LifeGroupStatus({ groups }: { groups: CalendarGroup[] }) {
           {shown} dari {groups.length} grup tampil di kalender
         </p>
       </div>
-      <p className="mt-1 text-sm text-ink-soft">
-        Tiap grup tampil di hari dan jam rutinnya. Kalau leader menjadwalkan pertemuan lewat portal, pertemuan itu menggantikan jadwal rutin
-        pekan tersebut. Yang tampil hanya nama grup, jam, dan wilayah.
-      </p>
       <ul className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
         {groups.map((group) => {
           const routine = lifeGroupRoutine(group);
@@ -286,7 +282,6 @@ export default async function AdminCalendarPage({ searchParams }: { searchParams
     <>
       <AdminPageHeader
         title="Kalender"
-        description="Jadwal ibadah, doa, dan Life Group yang tampil di kalender halaman utama. Jam Ibadah Minggu di Hero dan Pelayanan juga diambil dari sini."
         action={
           <div className="flex flex-wrap gap-2">
             <Link href="/#kalender" target="_blank" className="btn btn-outline px-4 py-2.5 text-sm">
@@ -324,15 +319,15 @@ export default async function AdminCalendarPage({ searchParams }: { searchParams
               </div>
             </section>
           )}
-          <Group title="Tiap bulan" description="Hari tertentu di minggu ke-berapa setiap bulan." rows={monthly} />
-          <Group title="Sekali" description="Acara satu kali. Yang sudah lewat tidak tampil lagi di situs." rows={upcomingOnce} />
+          <Group title="Tiap bulan" rows={monthly} />
+          <Group title="Sekali" description="Yang sudah lewat tidak tampil di situs." rows={upcomingOnce} />
           <Group title="Sudah lewat" rows={pastOnce} pastIds={new Set(pastOnce.map((row) => row.id))} />
         </>
       ) : (
         !error && (
           <EmptyState
             title="Belum ada jadwal di database"
-            description="Selama kosong, situs memakai jadwal bawaan: Ibadah Minggu, Kids Church, Heritage, dan doa bersama. Salin jadwal itu ke sini supaya bisa diubah."
+            description="Situs memakai jadwal bawaan."
             action={
               <div className="flex flex-wrap justify-center gap-2">
                 <form action={importDefaultSchedule}>

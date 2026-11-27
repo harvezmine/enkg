@@ -156,7 +156,7 @@ export default async function PortalHome({ searchParams }: { searchParams: Promi
           </ul>
         ) : (
           <p className="rounded-2xl bg-white/60 px-5 py-4 text-sm text-ink-soft ring-1 ring-ink/8">
-            Belum ada jemaat baru. Kalau admin menambahkan orang ke grup kamu, mereka muncul di sini.
+            Belum ada jemaat baru.
           </p>
         )}
       </section>
@@ -205,7 +205,7 @@ export default async function PortalHome({ searchParams }: { searchParams: Promi
             ))}
           </ul>
         ) : (
-          <EmptyState title="Belum ada yang berulang tahun" description="Tidak ada anggota yang berulang tahun dalam 30 hari ke depan." />
+          <EmptyState title="Belum ada yang berulang tahun" />
         )}
       </section>
     </>

@@ -173,7 +173,7 @@ export function ScheduleEditor({ row }: { row?: ScheduleRow }) {
           </Field>
         </div>
 
-        <Field label="Catatan" htmlFor="note" hint="Tampil kecil di bawah jadwal, mis. Meeting ID dan passcode Zoom." optional>
+        <Field label="Catatan" htmlFor="note" optional>
           <Textarea id="note" name="note" defaultValue={row?.note ?? ""} className="min-h-20" maxLength={300} />
         </Field>
       </div>
@@ -189,10 +189,9 @@ export function ScheduleEditor({ row }: { row?: ScheduleRow }) {
           name="published"
           defaultChecked={row?.published ?? true}
           label="Tampilkan di situs"
-          description="Kalau mati, jadwal hanya terlihat di panel ini."
         />
 
-        <Field label="Jenis" htmlFor="category" hint="Menentukan warna titik di kalender.">
+        <Field label="Jenis" htmlFor="category">
           <Select id="category" name="category" value={category} onChange={(event) => setCategory(event.target.value as ScheduleCategory)}>
             {CATEGORIES.map((category) => (
               <option key={category} value={category}>
@@ -202,14 +201,13 @@ export function ScheduleEditor({ row }: { row?: ScheduleRow }) {
           </Select>
         </Field>
 
-        <Field label="Urutan" htmlFor="sort_order" hint="Untuk jadwal di jam yang sama, angka kecil tampil lebih dulu.">
+        <Field label="Urutan" htmlFor="sort_order" hint="Angka kecil tampil lebih dulu.">
           <NumberInput id="sort_order" name="sort_order" defaultValue={row?.sort_order ?? 0} min={-99} max={999} aria-label="Urutan" />
         </Field>
 
         {category === "life_group" && (
           <p className="rounded-xl bg-cream-50 p-3.5 text-xs leading-relaxed text-ink-soft ring-1 ring-ink/8">
-            Jadwal tiap Life Group sudah tampil sendiri dari menu Life Group. Pakai jenis ini untuk acara Life Group bersama, misalnya LG
-            gabungan sebulan sekali.
+            Jadwal tiap Life Group sudah tampil otomatis. Pakai ini hanya untuk acara LG bersama.
           </p>
         )}
 

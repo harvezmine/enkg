@@ -108,7 +108,7 @@ export default async function PortalMeetingPage({
               </>
             ) : (
               <p className="text-sm leading-relaxed text-ink-soft">
-                Laporan bisa diisi mulai satu jam sebelum pertemuan. Sampai ketemu di pertemuannya!
+                Laporan bisa diisi mulai satu jam sebelum pertemuan.
               </p>
             )}
           </Card>

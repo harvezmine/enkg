@@ -30,7 +30,6 @@ export default async function AdminMaterialsPage({ searchParams }: { searchParam
     <>
       <AdminPageHeader
         title="Materi Life Group"
-        description="Tulisan dan booklet untuk leader. Yang terbit langsung bisa dibaca dan diunduh di portal leader."
         action={newButton}
       />
       <DbError error={error} />
@@ -90,7 +89,6 @@ export default async function AdminMaterialsPage({ searchParams }: { searchParam
         !error && (
           <EmptyState
             title="Belum ada materi"
-            description="Tambahkan tulisan atau booklet PDF untuk bahan pertemuan Life Group."
             action={newButton}
           />
         )

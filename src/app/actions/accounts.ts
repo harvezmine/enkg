@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { currentAdmin } from "@/lib/admin-auth";
 import { TABLES } from "@/lib/db-types";
 import { bool, text } from "@/lib/form-data";
-import { generateTempPassword, hashPassword } from "@/lib/password";
+import { generateTempPassword, hashPassword, MIN_LEADER_PASSWORD_LENGTH } from "@/lib/password";
 import { whatsappLink } from "@/lib/whatsapp";
 
 /*
@@ -27,16 +27,15 @@ export type AccountActionState = {
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const UUID = /^[0-9a-f-]{36}$/i;
 
-function credentialsMessage(name: string, email: string, password: string) {
+function credentialsMessage(name: string, email: string, password: string, mustChange = true) {
   const site = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://everynationkg.com").replace(/\/+$/, "");
   return [
     `Halo ${name}, ini akun ENKG kamu.`,
     "",
     `Masuk di: ${site}/masuk`,
     `Email: ${email}`,
-    `Password sementara: ${password}`,
-    "",
-    "Waktu pertama masuk, kamu akan diminta membuat password baru.",
+    `Password${mustChange ? " sementara" : ""}: ${password}`,
+    ...(mustChange ? ["", "Waktu pertama masuk, kamu akan diminta membuat password baru."] : []),
   ].join("\n");
 }
 
@@ -69,14 +68,23 @@ export async function createAccount(_prev: AccountActionState, fd: FormData): Pr
   if (!name) name = person?.full_name ?? "";
   if (name.length < 2) return { status: "error", message: "Isi nama pemilik akun." };
 
-  const tempPassword = generateTempPassword();
+  // Password: dibuat otomatis, atau ditentukan admin sendiri.
+  const manual = text(fd, "password_mode", 10) === "manual";
+  const chosen = String(fd.get("password") ?? "").slice(0, 200);
+  if (manual && chosen.length < MIN_LEADER_PASSWORD_LENGTH) {
+    return { status: "error", message: `Password minimal ${MIN_LEADER_PASSWORD_LENGTH} karakter.` };
+  }
+  const tempPassword = manual ? chosen : generateTempPassword();
+  // Password otomatis selalu wajib diganti; password pilihan admin boleh langsung dipakai.
+  const mustChange = manual ? bool(fd, "must_change") : true;
+
   const { error } = await supabase.from(TABLES.accounts).insert({
     email,
     name,
     person_id: personId,
     is_admin: isAdmin,
     password_hash: await hashPassword(tempPassword),
-    must_change_password: true,
+    must_change_password: mustChange,
   });
   if (error) {
     console.error("[akun] createAccount:", error);
@@ -96,7 +104,7 @@ export async function createAccount(_prev: AccountActionState, fd: FormData): Pr
     message: "Akun dibuat.",
     tempPassword,
     email,
-    waUrl: person?.phone ? whatsappLink(person.phone, credentialsMessage(first, email, tempPassword)) : undefined,
+    waUrl: person?.phone ? whatsappLink(person.phone, credentialsMessage(first, email, tempPassword, mustChange)) : undefined,
   };
 }
 

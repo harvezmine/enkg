@@ -44,7 +44,6 @@ export default async function AdminEventPage({
     <>
       <AdminPageHeader
         title="Event & ProCon"
-        description="Event gereja tampil di section News; ProCon tampil di section ProCon News."
         action={newButton}
       />
 
@@ -125,7 +124,6 @@ export default async function AdminEventPage({
         !error && (
           <EmptyState
             title={active === "procon" ? "Belum ada ProCon" : "Belum ada event"}
-            description="Selama kosong, halaman utama memakai konten bawaan."
             action={newButton}
           />
         )

@@ -48,7 +48,6 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
     <>
       <AdminPageHeader
         title="Pengguna & akses"
-        description="Siapa saja yang bisa masuk. Admin membuka admin panel; leader Life Group membuka portal LG-nya. Masuk pakai email dan password."
         action={
           !baru && (
             <Link href="/admin/pengguna?baru=1" className="btn btn-navy px-4 py-2.5 text-sm">
@@ -61,10 +60,7 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
 
       {baru && (
         <Card className="mb-8 p-4 sm:p-6">
-          <h2 className="font-display mb-1 text-lg font-bold text-ink">Pengguna baru</h2>
-          <p className="mb-5 text-sm text-ink-soft">
-            Password sementara muncul setelah akun dibuat. Kirim ke orangnya; saat pertama masuk ia wajib menggantinya.
-          </p>
+          <h2 className="font-display mb-5 text-lg font-bold text-ink">Pengguna baru</h2>
           <NewAccountForm people={candidates} />
         </Card>
       )}
@@ -72,7 +68,6 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
       {leadersWithout.length > 0 && (
         <Card className="mb-8 p-4 sm:p-5">
           <p className="text-sm font-semibold text-ink">Leader yang belum punya akun</p>
-          <p className="mt-1 text-sm text-ink-soft">Buat akunnya dari halaman data masing-masing, supaya mereka bisa masuk ke portal Life Group.</p>
           <ul className="mt-3 flex flex-wrap gap-2">
             {leadersWithout.map((p) => (
               <li key={p.id}>
@@ -118,7 +113,7 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
           })}
         </ul>
       ) : (
-        !accountsResult.error && <EmptyState title="Belum ada pengguna" description="Tambahkan admin atau leader Life Group." />
+        !accountsResult.error && <EmptyState title="Belum ada pengguna" />
       )}
     </>
   );

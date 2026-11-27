@@ -13,7 +13,6 @@ export default async function NewEventPage({ searchParams }: { searchParams: Pro
     <>
       <AdminPageHeader
         title={procon ? "ProCon baru" : "Event baru"}
-        description="Simpan sebagai draf dulu kalau belum siap terbit."
         backHref={procon ? "/admin/event?kategori=procon" : "/admin/event"}
       />
       <EventEditor defaultCategory={procon ? "procon" : "gereja"} />

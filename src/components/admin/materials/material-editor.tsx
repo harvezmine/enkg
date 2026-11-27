@@ -27,13 +27,13 @@ export function MaterialEditor({ material }: { material?: LgMaterial }) {
         <Field label="Judul" htmlFor="title">
           <Input id="title" name="title" defaultValue={material?.title ?? ""} placeholder="Mis. Seri Pengampunan, Minggu 1" required maxLength={200} />
         </Field>
-        <Field label="Ringkasan" htmlFor="summary" hint="Satu-dua kalimat untuk daftar materi di portal leader." optional>
+        <Field label="Ringkasan" htmlFor="summary" optional>
           <Input id="summary" name="summary" defaultValue={material?.summary ?? ""} maxLength={400} />
         </Field>
         <Field
           label="Tulisan"
           htmlFor="body"
-          hint="Kosongkan kalau materinya cukup berupa booklet PDF."
+         
           optional
         >
           <RichEditor id="body" name="body" defaultValue={material?.body} minHeight="min-h-[24rem]" placeholder="Ayat bacaan, renungan singkat, dan pertanyaan diskusi…" />
@@ -41,7 +41,7 @@ export function MaterialEditor({ material }: { material?: LgMaterial }) {
       </div>
 
       <aside className="space-y-5 lg:col-span-4">
-        <PublishToggle name="published" defaultChecked={material?.published ?? false} description="Kalau mati, leader belum bisa melihatnya." />
+        <PublishToggle name="published" defaultChecked={material?.published ?? false} />
 
         <Field label="Untuk grup" htmlFor="segment">
           <Select id="segment" name="segment" defaultValue={material?.segment ?? ""}>

@@ -10,7 +10,6 @@ export default function NewSchedulePage() {
     <>
       <AdminPageHeader
         title="Jadwal baru"
-        description="Jadwal rutin mingguan, bulanan, atau acara sekali jalan. Tampil di kalender halaman utama."
         backHref="/admin/kalender"
       />
       <ScheduleEditor />

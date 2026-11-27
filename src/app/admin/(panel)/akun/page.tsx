@@ -19,10 +19,10 @@ export default async function AdminAccountPage({ searchParams }: { searchParams:
 
   return (
     <>
-      <AdminPageHeader title="Akun saya" description="Data masuk dan password kamu." />
+      <AdminPageHeader title="Akun saya" />
       {(wajib || account.must_change_password) && (
         <div className="mb-6">
-          <Notice tone="error">Kamu masih memakai password sementara. Buat password baru dulu sebelum membuka halaman lain.</Notice>
+          <Notice tone="error">Kamu masih memakai password sementara. Buat password baru dulu.</Notice>
         </div>
       )}
       <div className="grid gap-6 lg:grid-cols-[20rem_1fr]">

@@ -36,18 +36,18 @@ export function PostEditor({ post }: { post?: Post }) {
           <Input id="title" name="title" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Judul kabar atau artikel" required />
         </Field>
 
-        <Field label="Ringkasan" htmlFor="excerpt" hint="Satu-dua kalimat untuk kartu di halaman utama. Kosongkan untuk memakai paragraf pertama." optional>
+        <Field label="Ringkasan" htmlFor="excerpt" optional>
           <Input id="excerpt" name="excerpt" defaultValue={post?.excerpt ?? ""} maxLength={400} placeholder="Ringkasan singkat" />
         </Field>
 
-        <Field label="Isi" htmlFor="body" hint="Tekan Enter dua kali untuk paragraf baru. Pakai tombol di atas kotak untuk sub-judul, tebal, dan daftar.">
+        <Field label="Isi" htmlFor="body">
           <RichEditor id="body" name="body" value={body} onChange={setBody} minHeight="min-h-[26rem]" placeholder="Tulis di sini…" required />
         </Field>
       </div>
 
       {/* Kolom samping: di HP turun ke bawah, bukan disempitkan */}
       <aside className="space-y-5 lg:col-span-4">
-        <PublishToggle name="published" defaultChecked={post?.published ?? false} description="Kalau mati, tersimpan sebagai draf." />
+        <PublishToggle name="published" defaultChecked={post?.published ?? false} />
 
         <Field label="Kategori" htmlFor="category">
           <Select id="category" name="category" defaultValue={post?.category ?? "kabar"}>
@@ -64,7 +64,7 @@ export function PostEditor({ post }: { post?: Post }) {
         </Field>
 
         <Advanced>
-          <Field label="Alamat halaman" htmlFor="slug" hint={`Dibuat otomatis dari judul: everynationkg.com/news/${effectiveSlug || "…"}. Ubah hanya kalau perlu.`}>
+          <Field label="Alamat halaman" htmlFor="slug" hint={`everynationkg.com/news/${effectiveSlug || "…"}`}>
             <Input
               id="slug"
               name="slug"

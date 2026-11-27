@@ -66,8 +66,8 @@ export default async function PortalMeetingsPage({ searchParams }: { searchParam
         title="Pertemuan"
         description={
           lifeGroup.show_on_calendar
-            ? "Jadwal pertemuan grup kamu tampil di kalender gereja. Yang terlihat hanya nama grup, jam, dan wilayah; tempat dan laporan tetap tertutup."
-            : "Jadwal pertemuan hanya terlihat oleh kamu dan admin. Minta admin kalau grup kamu ingin tampil di kalender gereja."
+            ? "Tampil di kalender gereja: nama grup, jam, dan wilayah saja."
+            : "Hanya terlihat oleh kamu dan admin."
         }
         action={newButton}
       />
@@ -109,7 +109,6 @@ export default async function PortalMeetingsPage({ searchParams }: { searchParam
         !error && (
           <EmptyState
             title="Belum ada pertemuan"
-            description="Jadwalkan pertemuan berikutnya, lalu isi laporannya setelah selesai."
             action={newButton}
           />
         )

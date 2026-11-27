@@ -39,7 +39,7 @@ export default async function PelayananPage({ searchParams }: { searchParams: Pr
     <>
       <AdminPageHeader
         title="Pelayanan"
-        description={`${serving} orang melayani di ${dir.teams.length} tim. Satu orang boleh ada di beberapa tim.`}
+        description={`${serving} orang · ${dir.teams.length} tim`}
         action={
           !params.baru && (
             <Link href="/admin/pelayanan?baru=1" className="btn btn-navy px-4 py-2.5 text-sm">
@@ -113,7 +113,6 @@ export default async function PelayananPage({ searchParams }: { searchParams: Pr
         !dir.error && (
           <EmptyState
             title="Belum ada tim pelayanan"
-            description="Buat tim seperti Musisi, Usher, atau Multimedia, lalu masukkan para pelayannya."
           />
         )
       )}

@@ -20,7 +20,6 @@ export default async function PortalAccountPage({ searchParams }: { searchParams
     <>
       <AdminPageHeader
         title={forced ? "Buat password baru" : "Akun"}
-        description={forced ? "Kamu masih memakai password sementara dari admin. Ganti dulu sebelum lanjut." : undefined}
       />
       {forced && wajib && (
         <div className="mb-6 max-w-xl">

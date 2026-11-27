@@ -144,11 +144,7 @@ export default async function LifeGroupPage({
 
       {/* ── Leader ──────────────────────────────────────────────────────── */}
       <section className="mb-10">
-        <h2 className="font-display mb-1 text-xl font-bold text-ink">Leader</h2>
-        <p className="mb-4 text-sm text-ink-soft">
-          Leader bisa masuk portal leader untuk melihat anggota grup ini dan mengisi laporan pertemuan. Akun portalnya dibuat dari
-          halaman data masing-masing.
-        </p>
+        <h2 className="font-display mb-4 text-xl font-bold text-ink">Leader</h2>
         {leaders.length ? (
           <ul className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4">
             {leaders.map((person) => {
@@ -172,7 +168,7 @@ export default async function LifeGroupPage({
           </ul>
         ) : (
           <p className="rounded-2xl border border-dashed border-red-300 bg-red-50/50 p-4 text-sm text-red-800">
-            Grup ini belum punya leader. Masukkan seseorang sebagai leader di bawah, atau jadikan salah satu anggotanya leader.
+            Grup ini belum punya leader.
           </p>
         )}
       </section>
@@ -197,7 +193,7 @@ export default async function LifeGroupPage({
               ))}
           </ul>
         ) : (
-          <EmptyState title="Belum ada anggota" description="Masukkan anggota lewat form di atas, atau dari antrean jemaat baru." />
+          <EmptyState title="Belum ada anggota" />
         )}
       </section>
 

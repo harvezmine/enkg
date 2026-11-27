@@ -117,7 +117,7 @@ export function PhotoUpload({
         )}
       </label>
 
-      <p className="mt-1.5 text-xs text-ink-soft">Foto wajah yang jelas. Hanya bisa dilihat pengurus.</p>
+      <p className="mt-1.5 text-xs text-ink-soft">Hanya bisa dilihat pengurus.</p>
       {preview && !busy && (
         <button
           type="button"

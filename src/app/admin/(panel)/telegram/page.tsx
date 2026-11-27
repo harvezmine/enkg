@@ -11,7 +11,6 @@ import { adminDb } from "@/lib/admin-auth";
 import { callTelegram } from "@/lib/telegram/api";
 import { telegramConfig, telegramEnvStatus } from "@/lib/telegram/config";
 import { allChats } from "@/lib/telegram/data";
-import { DIGEST_HOUR_WIB } from "@/lib/telegram/digest";
 import { recipientStatus, type Recipient, type RecipientStatus } from "@/lib/telegram/recipients";
 import { formatDate } from "@/lib/utils";
 import { whatsappLink } from "@/lib/whatsapp";
@@ -89,7 +88,6 @@ export default async function TelegramPage() {
     <>
       <AdminPageHeader
         title="Bot Telegram"
-        description="Pengingat ulang tahun, anniversary, jadwal, jemaat baru, dan permohonan doa, dikirim satu per satu ke tim internal lewat Telegram."
       />
       <DbError error={list.error} />
 
@@ -130,11 +128,7 @@ export default async function TelegramPage() {
 
           {/* ── Penerima ─────────────────────────────────────────────── */}
           <section>
-            <h2 className="font-display mb-1 text-xl font-bold text-ink">Penerima</h2>
-            <p className="mb-4 text-sm text-ink-soft">
-              Pesan dikirim ke tiap orang di daftar ini lewat chat pribadi. Ringkasan pagi dikirim mulai pukul{" "}
-              {String(DIGEST_HOUR_WIB).padStart(2, "0")}.00 WIB. Orang yang belum terdaftar tidak bisa melihat data apa pun dari bot.
-            </p>
+            <h2 className="font-display mb-4 text-xl font-bold text-ink">Penerima</h2>
 
             {recipients.length ? (
               <ul className="space-y-3">
@@ -206,9 +200,6 @@ export default async function TelegramPage() {
                     <Icon.message className="h-5 w-5" />
                   </div>
                   <p className="font-display mt-4 text-lg font-bold text-ink">Belum ada penerima</p>
-                  <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-ink-soft">
-                    Tambahkan nama dan nomor Telegram tim internal lewat form di samping.
-                  </p>
                 </div>
               )
             )}
@@ -217,18 +208,12 @@ export default async function TelegramPage() {
 
         <aside className="space-y-6">
           <Card className="p-4 sm:p-5">
-            <h2 className="font-display text-lg font-bold text-ink">Tambah penerima</h2>
-            <p className="mt-1 mb-4 text-sm leading-relaxed text-ink-soft">
-              Setelah ditambahkan, orangnya cukup membuka bot dan menekan Kirim nomor saya. Kalau nomornya cocok, dia langsung tersambung.
-            </p>
+            <h2 className="font-display mb-4 text-lg font-bold text-ink">Tambah penerima</h2>
             <AddRecipientForm />
           </Card>
 
           <Card className="p-4 sm:p-5">
             <h2 className="font-display text-lg font-bold text-ink">Sambungkan bot</h2>
-            <p className="mt-1 text-sm leading-relaxed text-ink-soft">
-              Dilakukan sekali setelah situs online, supaya bot bisa menerima dan membalas pesan.
-            </p>
             {config && (
               <div className="mt-4 space-y-3">
                 <ConnectBotButton />

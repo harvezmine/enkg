@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Materi baru" };
 export default function NewMaterialPage() {
   return (
     <>
-      <AdminPageHeader title="Materi baru" description="Simpan sebagai draf dulu kalau belum siap dibagikan ke leader." backHref="/admin/materi" />
+      <AdminPageHeader title="Materi baru" backHref="/admin/materi" />
       <MaterialEditor />
     </>
   );

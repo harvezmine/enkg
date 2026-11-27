@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Fragment, type ReactNode } from "react";
 
-import { ShowGettingStarted } from "@/components/admin/getting-started";
 import { AdminPageHeader, Card } from "@/components/admin/ui";
 import { Icon } from "@/components/icons";
 
@@ -196,8 +195,6 @@ export default function PanduanPage() {
     <>
       <AdminPageHeader
         title="Panduan"
-        description="Langkah singkat untuk pekerjaan yang paling sering dilakukan. Pilih topiknya di bawah."
-        action={<ShowGettingStarted />}
       />
 
       <nav aria-label="Daftar topik" className="mb-10 grid grid-cols-1 gap-2.5 sm:grid-cols-2 xl:grid-cols-3">

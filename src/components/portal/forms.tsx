@@ -51,7 +51,7 @@ export function MeetingForm({
       <UnsavedGuard />
       {meeting && <input type="hidden" name="id" value={meeting.id} />}
       <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Tanggal & jam" htmlFor="starts_at" hint="Jam dalam WIB.">
+        <Field label="Tanggal & jam" htmlFor="starts_at" hint="WIB">
           <DateTimeInput
             id="starts_at"
             name="starts_at"
@@ -174,7 +174,7 @@ export function ReportForm({
       <Field label="Tamu atau teman baru" htmlFor="guest_count" hint="Yang datang tapi belum tercatat sebagai anggota grup.">
         <NumberInput id="guest_count" name="guest_count" min={0} max={500} defaultValue={defaults.guest_count} aria-label="Jumlah tamu" />
       </Field>
-      <Field label="Jalannya pertemuan" htmlFor="report" hint="Apa yang dibahas, kesaksian, hal yang perlu diketahui pengurus." optional>
+      <Field label="Jalannya pertemuan" htmlFor="report" optional>
         <Textarea id="report" name="report" defaultValue={defaults.report ?? ""} className="min-h-40" maxLength={8000} />
       </Field>
       <Field label="Pokok doa" htmlFor="prayer_requests" optional>

@@ -156,7 +156,7 @@ export function PersonEditor({
             <Field label="Tempat lahir" htmlFor="birth_place" optional>
               <Input id="birth_place" name="birth_place" defaultValue={value("birth_place")} maxLength={80} placeholder="Jakarta" />
             </Field>
-            <Field label="Tanggal lahir" htmlFor="birth_date" hint="Dipakai untuk pengingat ulang tahun." optional>
+            <Field label="Tanggal lahir" htmlFor="birth_date" optional>
               <DateInput id="birth_date" name="birth_date" defaultValue={value("birth_date")} max={todayWib()} startView="year" aria-label="Tanggal lahir" />
             </Field>
           </div>
@@ -181,7 +181,7 @@ export function PersonEditor({
               placeholder="Jalan, nomor rumah, RT/RW, kelurahan"
             />
           </Field>
-          <Field label="Wilayah" htmlFor="area" hint="Singkat saja, untuk pengelompokan. Mis. Kelapa Gading, Sunter." optional>
+          <Field label="Wilayah" htmlFor="area" hint="Mis. Kelapa Gading, Sunter." optional>
             <Input id="area" name="area" list={areaList} defaultValue={value("area")} maxLength={80} />
             <Suggestions id={areaList} values={areas} />
           </Field>
@@ -225,8 +225,8 @@ export function PersonEditor({
               <Field
                 label="Peran di Life Group"
                 htmlFor="life_group_role"
-                hint="Leader bisa masuk portal leader setelah dibuatkan akun."
-                help="Leader memimpin pertemuan Life Group. Setelah dibuatkan akun portal, leader bisa melihat dan mengubah data anggota grupnya, menjadwalkan pertemuan, dan mengisi laporan."
+               
+                help="Dengan akun, leader bisa melihat dan mengubah data anggota grupnya, mengatur pertemuan, dan mengisi laporan."
               >
                 <Select id="life_group_role" name="life_group_role" defaultValue={person?.life_group_role ?? "anggota"}>
                   {Object.entries(LIFE_GROUP_ROLE_LABEL).map(([key, label]) => (

@@ -5,7 +5,7 @@ import { useActionState, useState } from "react";
 import type { ActionState } from "@/app/actions/admin";
 import { addRecipient, connectBot, sendDigestNow, sendTestMessage, updateChatTopics } from "@/app/actions/telegram";
 import { Icon } from "@/components/icons";
-import { TOPICS, TOPIC_HINT, TOPIC_LABEL, type Topic } from "@/lib/telegram/topics";
+import { TOPICS, TOPIC_LABEL, type Topic } from "@/lib/telegram/topics";
 import { cn } from "@/lib/utils";
 
 import { submitKeepingValues } from "../submit-keeping-values";
@@ -75,7 +75,6 @@ export function AddRecipientForm() {
                 <input type="checkbox" name="topics" value={topic} defaultChecked className="mt-0.5 h-4 w-4 shrink-0 accent-navy-700" />
                 <span className="min-w-0">
                   <span className="block text-sm font-semibold text-ink">{TOPIC_LABEL[topic]}</span>
-                  <span className="block text-xs leading-relaxed text-ink-soft">{TOPIC_HINT[topic]}</span>
                 </span>
               </label>
             ))}

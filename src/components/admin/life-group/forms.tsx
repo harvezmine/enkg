@@ -31,7 +31,7 @@ export function LifeGroupForm({ group, cancelHref }: { group?: LifeGroup; cancel
         <Field label="Nama Life Group" htmlFor="lg-name">
           <Input id="lg-name" name="name" defaultValue={group?.name ?? ""} placeholder="Mis. YP Kelapa Gading" required maxLength={80} />
         </Field>
-        <Field label="Kelompok" htmlFor="lg-segment" hint="Sama dengan pilihan di form Gabung Life Group." optional>
+        <Field label="Kelompok" htmlFor="lg-segment" optional>
           <Select id="lg-segment" name="segment" defaultValue={group?.segment ?? ""}>
             <option value="">Lainnya</option>
             {Object.entries(LIFE_GROUP_SEGMENT_LABEL).map(([key, label]) => (
@@ -54,7 +54,7 @@ export function LifeGroupForm({ group, cancelHref }: { group?: LifeGroup; cancel
         <Field label="Jam" htmlFor="lg-time" hint="WIB" optional>
           <TimeInput id="lg-time" name="meeting_time" defaultValue={group?.meeting_time} aria-label="Jam pertemuan" />
         </Field>
-        <Field label="Wilayah" htmlFor="lg-area" hint="Boleh tampil di kalender publik. Mis. Kelapa Gading." optional>
+        <Field label="Wilayah" htmlFor="lg-area" hint="Tampil di kalender publik." optional>
           <Input id="lg-area" name="area" defaultValue={group?.area ?? ""} maxLength={80} />
         </Field>
         <Field label="Tempat pertemuan" htmlFor="lg-location" hint="Hanya terlihat pengurus dan leader." optional>
@@ -71,7 +71,7 @@ export function LifeGroupForm({ group, cancelHref }: { group?: LifeGroup; cancel
           label="Tampil di kalender publik"
           description="Hanya nama grup, jam, dan wilayah. Alamat tidak pernah tampil."
         />
-        <PublishToggle name="is_active" defaultChecked={group?.is_active ?? true} label="Grup aktif" description="Matikan kalau grup sedang berhenti." />
+        <PublishToggle name="is_active" defaultChecked={group?.is_active ?? true} label="Grup aktif" />
       </div>
       <div className="flex flex-wrap items-center gap-2">
         <button type="submit" disabled={pending} className="btn btn-navy px-5 py-2.5 text-sm">

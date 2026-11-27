@@ -44,7 +44,7 @@ export function EventEditor({ event, defaultCategory = "gereja" }: { event?: Chu
 
         {procon && (
           <div className="grid gap-5 sm:grid-cols-2 sm:items-end">
-            <Field label="Topik" htmlFor="topic" hint="Tampil sebagai label kartu ProCon.">
+            <Field label="Topik" htmlFor="topic">
               <Input id="topic" name="topic" defaultValue={event?.topic ?? ""} placeholder="Keuangan" />
             </Field>
             <Field label="Mitra" htmlFor="partner" optional>
@@ -54,7 +54,7 @@ export function EventEditor({ event, defaultCategory = "gereja" }: { event?: Chu
         )}
 
         <div className="grid gap-5 sm:grid-cols-2 sm:items-end">
-          <Field label="Mulai" htmlFor="starts_at" hint={procon ? "Kosongkan bila jadwal belum ada (tampil \"Segera hadir\")." : "Jam dalam WIB."} optional={procon}>
+          <Field label="Mulai" htmlFor="starts_at" hint={procon ? "Kosongkan bila jadwal belum ada (tampil \"Segera hadir\")." : "WIB"} optional={procon}>
             <DateTimeInput id="starts_at" name="starts_at" defaultValue={toWibInput(event?.starts_at)} required={!procon} />
           </Field>
           <Field label="Selesai" htmlFor="ends_at" optional>
@@ -62,7 +62,7 @@ export function EventEditor({ event, defaultCategory = "gereja" }: { event?: Chu
           </Field>
         </div>
 
-        <Field label="Deskripsi" htmlFor="description" hint="Paragraf pertama dipakai sebagai ringkasan di kartu event." optional>
+        <Field label="Deskripsi" htmlFor="description" optional>
           <RichEditor
             id="description"
             name="description"
@@ -85,18 +85,17 @@ export function EventEditor({ event, defaultCategory = "gereja" }: { event?: Chu
           <Input id="address" name="address" defaultValue={event?.address ?? ""} placeholder="Jl. Raya Kelapa Nias No. 6, Kelapa Gading" />
         </Field>
 
-        <Field label="Link pendaftaran" htmlFor="register_url" hint="Mis. link Google Form. Kosongkan kalau daftarnya cukup lewat WhatsApp." optional>
+        <Field label="Link pendaftaran" htmlFor="register_url" hint="Mis. link Google Form." optional>
           <Input id="register_url" name="register_url" defaultValue={event?.register_url ?? ""} placeholder="https://forms.gle/…" />
         </Field>
       </div>
 
       <aside className="space-y-5 lg:col-span-4">
-        <PublishToggle name="published" defaultChecked={event?.published ?? false} description="Kalau mati, event hanya terlihat di panel ini." />
+        <PublishToggle name="published" defaultChecked={event?.published ?? false} />
 
         <Field
           label="Jenis"
           htmlFor="category"
-          hint={procon ? "Tampil di bagian ProCon di halaman utama." : "Tampil di bagian News di halaman utama."}
           help="Event gereja untuk acara jemaat seperti ibadah spesial atau retreat. ProCon untuk kelas pengembangan diri yang terbuka untuk umum."
         >
           <Select id="category" name="category" value={category} onChange={(e) => setCategory(e.target.value as EventCategory)}>
@@ -109,7 +108,7 @@ export function EventEditor({ event, defaultCategory = "gereja" }: { event?: Chu
         </Field>
 
         <Advanced>
-          <Field label="Alamat halaman" htmlFor="slug" hint={`Dibuat otomatis dari nama event: everynationkg.com/event/${effectiveSlug || "…"}. Ubah hanya kalau perlu.`}>
+          <Field label="Alamat halaman" htmlFor="slug" hint={`everynationkg.com/event/${effectiveSlug || "…"}`}>
             <Input
               id="slug"
               name="slug"

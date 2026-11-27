@@ -84,9 +84,7 @@ export default async function JemaatPage({ searchParams }: { searchParams: Promi
       <AdminPageHeader
         title="Data jemaat"
         description={
-          dir.people.length
-            ? `${dir.people.length} orang tercatat, ${servingCount} di antaranya melayani. Data ini hanya bisa dibuka pengurus.`
-            : "Data diri jemaat dan pelayan. Hanya bisa dibuka pengurus."
+          dir.people.length ? `${dir.people.length} orang · ${servingCount} melayani` : undefined
         }
         action={
           <div className="flex flex-wrap gap-2">
@@ -167,7 +165,6 @@ export default async function JemaatPage({ searchParams }: { searchParams: Promi
         !filtered && (
           <EmptyState
             title="Belum ada data jemaat"
-            description="Mulai dari pengurus dan para pelayan dulu, lalu lengkapi keluarganya dari halaman masing-masing."
             action={newButton}
           />
         )
