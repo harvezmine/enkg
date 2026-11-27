@@ -82,30 +82,29 @@ export function AdminShell({ newSubmissions, user, children }: { newSubmissions:
   const inMore = NAV.some((item) => !MOBILE_TABS.includes(item.href) && isActive(item.href));
   const openSearch = useCallback(() => setSearchOpen(true), []);
   const closeSearch = useCallback(() => setSearchOpen(false), []);
-  const current = NAV.find((item) => isActive(item.href));
 
   // Menu "Lainnya" tertutup sendiri setelah pindah halaman.
   useEffect(() => setMoreOpen(false), [pathname]);
 
   return (
-    <div className="min-h-dvh lg:flex">
+    // Semua tombol `.btn` di panel minimal 40px tingginya: enak ditekan jempol.
+    <div className="min-h-dvh lg:flex [&_.btn]:min-h-10">
       {/* ── Sidebar (desktop) ─────────────────────────────────────────────── */}
       <aside className="bg-navy-deep hidden w-64 shrink-0 flex-col text-cream-100 lg:sticky lg:top-0 lg:flex lg:h-dvh">
-        <div className="px-6 pt-7 pb-5">
-          <Link href="/admin" aria-label="Ke Ringkasan">
+        <div className="px-6 pt-7 pb-6">
+          <Link href="/admin" aria-label="Ke Ringkasan" className="inline-block">
             <Image src={logo} alt="Every Nation Kelapa Gading" className="h-9 w-auto" />
           </Link>
-          <p className="mt-3 text-xs font-semibold tracking-wide text-sun-400">Panel Pengurus</p>
         </div>
 
         <div className="px-3 pb-4">
           <SearchTrigger variant="sidebar" onOpen={openSearch} />
         </div>
 
-        <nav className="flex-1 space-y-5 overflow-y-auto px-3 pb-4" aria-label="Navigasi admin">
+        <nav className="flex-1 space-y-6 overflow-y-auto px-3 pb-4" aria-label="Navigasi admin">
           {NAV_GROUPS.map((group, index) => (
             <div key={group.title ?? index}>
-              {group.title && <p className="px-3 pb-1.5 text-xs font-semibold text-cream-100/45">{group.title}</p>}
+              {group.title && <p className="px-3 pb-2 text-xs font-semibold text-cream-100/40">{group.title}</p>}
               <div className="space-y-0.5">
                 {group.items.map(({ href, label, icon: NavIcon }) => {
                   const active = isActive(href);
@@ -115,9 +114,9 @@ export function AdminShell({ newSubmissions, user, children }: { newSubmissions:
                       href={href}
                       aria-current={active ? "page" : undefined}
                       className={cn(
-                        "flex items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] transition-colors",
+                        "flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-[15px] transition-colors",
                         active
-                          ? "bg-cream-100 font-semibold text-navy-900 shadow-soft"
+                          ? "bg-cream-100 font-semibold text-navy-900"
                           : "font-medium text-cream-100/70 hover:bg-white/8 hover:text-cream-100",
                       )}
                     >
@@ -189,9 +188,8 @@ export function AdminShell({ newSubmissions, user, children }: { newSubmissions:
       {/* ── Konten ────────────────────────────────────────────────────────── */}
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="bg-navy-deep sticky top-0 z-30 flex items-center justify-between gap-2 px-4 py-2.5 text-cream-100 lg:hidden">
-          <Link href="/admin" className="flex min-w-0 items-center gap-3" aria-label="Ke Ringkasan">
+          <Link href="/admin" className="flex min-h-10 min-w-0 items-center" aria-label="Ke Ringkasan">
             <Image src={logo} alt="Every Nation Kelapa Gading" className="h-7 w-auto shrink-0" />
-            <span className="truncate text-xs font-semibold text-sun-400">{current?.label ?? "Panel Pengurus"}</span>
           </Link>
           <div className="flex shrink-0 items-center">
             <SearchTrigger variant="icon" onOpen={openSearch} />

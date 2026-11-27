@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { DbError } from "@/components/admin/db-error";
 import { PersonAvatar } from "@/components/admin/people/avatar";
-import { AdminPageHeader, Badge, Card, EmptyState } from "@/components/admin/ui";
+import { AdminPageHeader, Badge, Card, EmptyState, SectionTitle } from "@/components/admin/ui";
 import { Icon } from "@/components/icons";
 import { adminDb } from "@/lib/admin-auth";
 import {
@@ -115,8 +115,8 @@ export default async function AdminDashboard() {
   const cards = [
     { label: "Kiriman baru", value: newCount, href: "/admin/kontak?status=baru", icon: Icon.inbox, urgent: newCount > 0 },
     { label: "Menunggu Life Group", value: waitingCount, href: "/admin/life-group", icon: Icon.home, urgent: waitingCount > 0 },
-    { label: "Jemaat aktif & baru", value: people.count ?? 0, href: "/admin/jemaat", icon: Icon.addressBook },
-    { label: `Ulang tahun & anniversary ${BIRTHDAY_DAYS} hari`, value: celebrations.length, href: "#ulang-tahun", icon: Icon.cake },
+    { label: "Jemaat", value: people.count ?? 0, href: "/admin/jemaat", icon: Icon.addressBook },
+    { label: "Ulang tahun", value: celebrations.length, href: "#ulang-tahun", icon: Icon.cake },
     { label: "News terbit", value: posts.count ?? 0, href: "/admin/news", icon: Icon.news },
     { label: "Draf News", value: drafts.count ?? 0, href: "/admin/news", icon: Icon.edit },
     { label: "Event mendatang", value: upcoming.count ?? 0, href: "/admin/event?kategori=gereja", icon: Icon.calendar },
@@ -144,43 +144,47 @@ export default async function AdminDashboard() {
 
       <DbError error={error} />
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 xl:grid-cols-4">
+      {/* Satu panel, sel dipisah garis tipis: tidak ada kotak di dalam kotak. */}
+      <div className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-ink/[0.07] shadow-hair ring-1 ring-ink/[0.07] sm:grid-cols-4">
         {cards.map(({ label, value, href, icon: CardIcon, urgent }) => (
-          <Link key={label} href={href} className="group">
-            <Card className={`h-full p-5 transition hover:-translate-y-0.5 hover:shadow-lift ${urgent ? "bg-sun-400/15 ring-sun-500/40" : ""}`}>
-              <span className="grid h-10 w-10 place-items-center rounded-xl bg-navy-50 text-navy-700 transition-colors group-hover:bg-navy-700 group-hover:text-cream-100">
-                <CardIcon className="h-5 w-5" />
-              </span>
-              <p className="font-display tabular mt-4 text-3xl font-bold text-ink">{value}</p>
-              <p className="mt-1 text-xs font-medium text-ink-soft">{label}</p>
-            </Card>
+          <Link
+            key={label}
+            href={href}
+            className={`group flex flex-col gap-1.5 p-4 transition-colors sm:p-5 ${urgent ? "bg-sun-400/15 hover:bg-sun-400/25" : "bg-white hover:bg-cream-50"}`}
+          >
+            <span className="flex items-center gap-1.5 text-xs font-medium text-ink-soft">
+              <CardIcon className={`h-4 w-4 shrink-0 ${urgent ? "text-[#8a6500]" : "text-navy-700/70"}`} />
+              <span className="truncate">{label}</span>
+            </span>
+            <span className="font-display tabular text-2xl leading-none font-bold text-ink sm:text-[1.75rem]">{value}</span>
           </Link>
         ))}
       </div>
 
+      <div className="mt-10 grid gap-10 xl:grid-cols-2 xl:gap-8">
       {celebrations.length > 0 && (
-        <section id="ulang-tahun" className="mt-10 scroll-mt-24">
-          <h2 className="font-display mb-4 text-xl font-bold text-ink">Ulang tahun & anniversary {BIRTHDAY_DAYS} hari ke depan</h2>
-          <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            {celebrations.slice(0, 12).map((item) => (
-              <li key={item.key}>
-                <Card className={`flex h-full items-center gap-3 p-3.5 ${item.daysUntil === 0 ? "bg-sun-400/15 ring-sun-500/40" : ""}`}>
+        <section id="ulang-tahun" className="scroll-mt-24">
+          <SectionTitle>Ulang tahun & anniversary</SectionTitle>
+          <Card>
+            <ul className="divide-y divide-ink/[0.06]">
+              {celebrations.slice(0, 12).map((item) => (
+                <li key={item.key} className={`flex items-center gap-3 px-4 py-3 ${item.daysUntil === 0 ? "bg-sun-400/15" : ""}`}>
                   <span className="relative flex shrink-0">
                     {item.people.map((person, index) => (
                       <PersonAvatar
                         key={person.id}
                         person={person}
                         photoUrl={person.photo_path ? photos.get(person.photo_path) : null}
-                        className={`h-12 w-12 rounded-full text-sm ring-2 ring-white ${index ? "-ml-4" : ""}`}
+                        className={`h-11 w-11 rounded-full text-sm ring-2 ring-white ${index ? "-ml-4" : ""}`}
                       />
                     ))}
                     <span
-                      className={`absolute -right-1 -bottom-1 grid h-6 w-6 place-items-center rounded-full ring-2 ring-white ${item.kind === "anniversary" ? "bg-navy-700 text-cream-100" : "bg-sun-500 text-ink"}`}
+                      className={`absolute -right-1 -bottom-1 grid h-5 w-5 place-items-center rounded-full ring-2 ring-white ${item.kind === "anniversary" ? "bg-navy-700 text-cream-100" : "bg-sun-500 text-ink"}`}
                     >
-                      {item.kind === "anniversary" ? <Icon.heart className="h-3.5 w-3.5" /> : <Icon.cake className="h-3.5 w-3.5" />}
+                      {item.kind === "anniversary" ? <Icon.heart className="h-3 w-3" /> : <Icon.cake className="h-3 w-3" />}
                     </span>
                   </span>
-                  <Link href={`/admin/jemaat/${item.people[0]!.id}`} className="min-w-0 flex-1">
+                  <Link href={`/admin/jemaat/${item.people[0]!.id}`} className="min-w-0 flex-1 py-1">
                     <span className="block truncate text-sm font-semibold text-ink hover:underline">{item.title}</span>
                     <span className="block truncate text-xs text-ink-soft">
                       {birthdayPhrase(item.daysUntil)} · {formatDayMonth(item.date).replace(/^(\d+ \S{3})\S*/, "$1")} ·{" "}
@@ -193,61 +197,61 @@ export default async function AdminDashboard() {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`Kirim ucapan ke ${item.title}`}
-                      className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-emerald-50 text-emerald-700 transition hover:bg-emerald-600 hover:text-white"
+                      className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-emerald-50 text-emerald-700 transition hover:bg-emerald-600 hover:text-white"
                     >
                       <Icon.whatsapp className="h-4 w-4" />
                     </a>
                   )}
-                </Card>
-              </li>
-            ))}
-          </ul>
-          {celebrations.length > 12 && (
-            <p className="mt-3 text-sm text-ink-soft">Dan {celebrations.length - 12} lagi.</p>
-          )}
+                </li>
+              ))}
+            </ul>
+          </Card>
+          {celebrations.length > 12 && <p className="mt-3 text-sm text-ink-soft">Dan {celebrations.length - 12} lagi.</p>}
         </section>
       )}
 
-      <section className="mt-10">
-        <div className="mb-4 flex items-center justify-between gap-4">
-          <h2 className="font-display text-xl font-bold text-ink">Kiriman Contact Us terbaru</h2>
-          <Link href="/admin/kontak" className="shrink-0 text-sm font-semibold text-navy-700">
-            Lihat semua
-          </Link>
-        </div>
+      <section>
+        <SectionTitle
+          action={
+            <Link href="/admin/kontak" className="-mr-2 inline-flex h-10 shrink-0 items-center rounded-full px-2 text-sm font-semibold text-navy-700">
+              Lihat semua
+            </Link>
+          }
+        >
+          Kiriman terbaru
+        </SectionTitle>
 
         {submissions.length ? (
-          <ul className="space-y-3">
-            {submissions.map((item) => (
-              <li key={item.id}>
-                <Link href={`/admin/kontak?status=${item.status}`}>
-                  <Card className="p-4 transition hover:shadow-lift sm:p-5">
-                    <div className="flex flex-wrap items-center gap-2">
+          <Card>
+            <ul className="divide-y divide-ink/[0.06]">
+              {submissions.map((item) => (
+                <li key={item.id}>
+                  <Link href={`/admin/kontak?status=${item.status}`} className="block px-4 py-3.5 transition-colors hover:bg-cream-50">
+                    <span className="flex items-center justify-between gap-3">
+                      <span className="truncate font-semibold text-ink">{item.name}</span>
                       <Badge tone={item.status === "baru" ? "sun" : item.status === "selesai" ? "green" : "gray"}>
                         {SUBMISSION_STATUS_LABEL[item.status]}
                       </Badge>
-                      <Badge tone="navy">{SUBMISSION_FORM_LABEL[item.form]}</Badge>
-                      <span className="text-xs text-ink-soft">{formatDateTime(item.created_at)}</span>
-                    </div>
-                    <p className="mt-2 font-semibold text-ink">{item.name}</p>
-                    <p className="mt-0.5 line-clamp-1 text-sm text-ink-soft">
-                      {item.form === "prayer"
-                        ? item.request
-                        : [item.life_group, item.age_range, item.domicile].filter(Boolean).join(" · ")}
-                    </p>
-                  </Card>
-                </Link>
-              </li>
-            ))}
-          </ul>
+                    </span>
+                    <span className="mt-0.5 block truncate text-xs text-ink-soft">
+                      {[
+                        SUBMISSION_FORM_LABEL[item.form],
+                        formatDateTime(item.created_at),
+                        item.form === "prayer" ? item.request : [item.life_group, item.domicile].filter(Boolean).join(", "),
+                      ]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </Card>
         ) : (
-          !error && (
-            <EmptyState
-              title="Belum ada kiriman"
-            />
-          )
+          !error && <EmptyState title="Belum ada kiriman" />
         )}
       </section>
+      </div>
     </>
   );
 }

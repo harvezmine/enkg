@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Fragment, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 
 import { Icon } from "@/components/icons";
+import { isDownloadHref, isKnownAdminHref } from "@/lib/assistant/sitemap";
 import { cn } from "@/lib/utils";
 import { whatsappLink } from "@/lib/whatsapp";
 
@@ -25,9 +26,9 @@ type Item = { kind: "user"; text: string } | { kind: "assistant"; text: string; 
 const STORAGE_KEY = "enkg-asisten:v1";
 const SUGGESTIONS = [
   "Jemaat baru yang menunggu Life Group",
+  "Cara tambah jemaat baru",
+  "Cara bikin jadwal kalender",
   "Kiriman Contact Us minggu ini",
-  "Buat draf pengumuman",
-  "Anggota Heritage",
 ];
 
 function SparkIcon({ className }: { className?: string }) {
@@ -42,9 +43,12 @@ function SparkIcon({ className }: { className?: string }) {
 
 const PHONE = /((?:\+62|62|0)8\d[\d\s-]{6,13}\d)/g;
 const INLINE = /(\*\*[^*]+\*\*|\[[^\]]+\]\([^)\s]+\))/g;
+const LINK = /\[([^\]]+)\]\(([^)\s]+)\)/g;
+/** Baris yang isinya hanya tautan (boleh dipisah spasi, koma, titik tengah) tampil sebagai tombol. */
+const LINK_ROW = /^\s*(?:\[[^\]]+\]\([^)\s]+\)[\s,·|]*)+$/;
 
 function safeHref(href: string) {
-  return href.startsWith("/admin") || href.startsWith("https://wa.me/") ? href : null;
+  return isKnownAdminHref(href) || href.startsWith("https://wa.me/") ? href : null;
 }
 
 function Phones({ text }: { text: string }) {
@@ -64,6 +68,28 @@ function Phones({ text }: { text: string }) {
   );
 }
 
+function Target({ href, className, onNavigate, children }: { href: string; className: string; onNavigate: () => void; children: ReactNode }) {
+  if (href.startsWith("https://")) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
+        {children}
+      </a>
+    );
+  }
+  if (isDownloadHref(href)) {
+    return (
+      <a href={href} className={className}>
+        {children}
+      </a>
+    );
+  }
+  return (
+    <Link href={href} onClick={onNavigate} className={className}>
+      {children}
+    </Link>
+  );
+}
+
 function Inline({ text, onNavigate }: { text: string; onNavigate: () => void }) {
   return (
     <>
@@ -73,14 +99,18 @@ function Inline({ text, onNavigate }: { text: string; onNavigate: () => void }) 
         if (link) {
           const href = safeHref(link[2]!);
           if (!href) return <Fragment key={i}>{link[1]}</Fragment>;
-          return href.startsWith("/admin") ? (
-            <Link key={i} href={href} onClick={onNavigate} className="font-semibold text-navy-700 underline decoration-sun-500 decoration-2 underline-offset-2">
+          return (
+            <Target
+              key={i}
+              href={href}
+              onNavigate={onNavigate}
+              className={cn(
+                "font-semibold underline underline-offset-2",
+                href.startsWith("/admin") ? "text-navy-700 decoration-sun-500 decoration-2" : "text-emerald-700",
+              )}
+            >
               {link[1]}
-            </Link>
-          ) : (
-            <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="font-semibold text-emerald-700 underline underline-offset-2">
-              {link[1]}
-            </a>
+            </Target>
           );
         }
         return <Phones key={i} text={part} />;
@@ -89,28 +119,68 @@ function Inline({ text, onNavigate }: { text: string; onNavigate: () => void }) 
   );
 }
 
+function Actions({ line, onNavigate }: { line: string; onNavigate: () => void }) {
+  const links = [...line.matchAll(LINK)]
+    .map((match) => ({ label: match[1]!.replace(/\*\*/g, ""), href: safeHref(match[2]!) }))
+    .filter((link, i, all): link is { label: string; href: string } => Boolean(link.href) && all.findIndex((other) => other.href === link.href) === i)
+    .slice(0, 3);
+  if (!links.length) return null;
+  return (
+    <div className="flex flex-wrap gap-2 pt-1">
+      {links.map((link, i) => (
+        <Target
+          key={link.href}
+          href={link.href}
+          onNavigate={onNavigate}
+          className={cn(
+            "inline-flex min-h-10 items-center gap-1.5 rounded-full px-4 text-sm font-semibold transition",
+            link.href.startsWith("https://wa.me/")
+              ? "bg-emerald-600 text-white hover:bg-emerald-700"
+              : i === 0
+                ? "bg-navy-700 text-cream-50 hover:bg-navy-800"
+                : "bg-cream-100 text-ink ring-1 ring-ink/10 hover:ring-navy-300",
+          )}
+        >
+          {link.label}
+          <Icon.arrowRight className="h-4 w-4" />
+        </Target>
+      ))}
+    </div>
+  );
+}
+
 function Answer({ text, onNavigate }: { text: string; onNavigate: () => void }) {
   // Jaring pengaman gaya: tanpa tanda pisah panjang, tanpa judul markdown.
   const clean = text.replace(/\s—\s/g, ": ").replace(/—/g, "-").replace(/^#{1,6}\s+/gm, "");
   const blocks: ReactNode[] = [];
   let list: string[] = [];
+  let ordered = false;
   const flush = () => {
     if (!list.length) return;
+    const Tag = ordered ? "ol" : "ul";
     blocks.push(
-      <ul key={blocks.length} className="list-disc space-y-1 pl-5">
+      <Tag key={blocks.length} className={cn("space-y-1 pl-5", ordered ? "list-decimal marker:font-semibold marker:text-navy-700" : "list-disc")}>
         {list.map((item, i) => (
-          <li key={i}>
+          <li key={i} className="pl-0.5">
             <Inline text={item} onNavigate={onNavigate} />
           </li>
         ))}
-      </ul>,
+      </Tag>,
     );
     list = [];
   };
   for (const line of clean.split("\n")) {
-    const item = line.match(/^\s*(?:[-*•]|\d+[.)])\s+(.*)$/);
+    if (LINK_ROW.test(line)) {
+      flush();
+      blocks.push(<Actions key={blocks.length} line={line} onNavigate={onNavigate} />);
+      continue;
+    }
+    const item = line.match(/^\s*(?:([-*•])|\d+[.)])\s+(.*)$/);
     if (item) {
-      list.push(item[1]!);
+      const isOrdered = !item[1];
+      if (list.length && isOrdered !== ordered) flush();
+      ordered = isOrdered;
+      list.push(item[2]!);
       continue;
     }
     flush();
